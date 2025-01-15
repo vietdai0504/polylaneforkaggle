@@ -1,0 +1,8 @@
+{"time":"2024-12-24T20:37:58.567505+07:00","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-24T20:37:58.567505+07:00","level":"INFO","msg":"created symlink","path":"D:\\manga\\nckh_polylanenet\\wandb\\run-20241224_203758-tk41m5dx\\logs\\debug-core.log"}
+{"time":"2024-12-24T20:37:58.687001+07:00","level":"INFO","msg":"created new stream","id":"tk41m5dx"}
+{"time":"2024-12-24T20:37:58.687001+07:00","level":"INFO","msg":"stream: started","id":"tk41m5dx"}
+{"time":"2024-12-24T20:37:58.687001+07:00","level":"INFO","msg":"handler: started","stream_id":"tk41m5dx"}
+{"time":"2024-12-24T20:37:58.687001+07:00","level":"INFO","msg":"sender: started","stream_id":"tk41m5dx"}
+{"time":"2024-12-24T20:37:58.687001+07:00","level":"INFO","msg":"writer: Do: started","stream_id":"tk41m5dx"}
+{"time":"2024-12-24T20:37:59.2557467+07:00","level":"INFO","msg":"Starting system monitor"}

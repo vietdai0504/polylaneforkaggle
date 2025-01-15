@@ -1,0 +1,17 @@
+{"time":"2024-12-24T21:53:47.3758067+07:00","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-24T21:53:47.3758067+07:00","level":"INFO","msg":"created symlink","path":"D:\\manga\\nckh_polylanenet\\wandb\\run-20241224_215347-yr01rzaa\\logs\\debug-core.log"}
+{"time":"2024-12-24T21:53:47.4971199+07:00","level":"INFO","msg":"created new stream","id":"yr01rzaa"}
+{"time":"2024-12-24T21:53:47.4971199+07:00","level":"INFO","msg":"stream: started","id":"yr01rzaa"}
+{"time":"2024-12-24T21:53:47.4971199+07:00","level":"INFO","msg":"writer: Do: started","stream_id":"yr01rzaa"}
+{"time":"2024-12-24T21:53:47.4971199+07:00","level":"INFO","msg":"handler: started","stream_id":"yr01rzaa"}
+{"time":"2024-12-24T21:53:47.4971199+07:00","level":"INFO","msg":"sender: started","stream_id":"yr01rzaa"}
+{"time":"2024-12-24T21:53:48.1776522+07:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-24T21:54:55.3152464+07:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-24T21:54:55.3168746+07:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-12-24T21:54:56.3312782+07:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading config.yaml","runtime_seconds":0.3767314,"progress":"5.4KB/5.4KB"},{"desc":"uploading output.log","runtime_seconds":0.3767314,"progress":"40.6KB/40.6KB"}],"total_operations":2}}
+{"time":"2024-12-24T21:54:56.5960125+07:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-12-24T21:54:58.3924761+07:00","level":"INFO","msg":"stream: closing","id":"yr01rzaa"}
+{"time":"2024-12-24T21:54:58.3924761+07:00","level":"INFO","msg":"handler: closed","stream_id":"yr01rzaa"}
+{"time":"2024-12-24T21:54:58.3924761+07:00","level":"INFO","msg":"writer: Close: closed","stream_id":"yr01rzaa"}
+{"time":"2024-12-24T21:54:58.3924761+07:00","level":"INFO","msg":"sender: closed","stream_id":"yr01rzaa"}
+{"time":"2024-12-24T21:54:58.3930637+07:00","level":"INFO","msg":"stream: closed","id":"yr01rzaa"}

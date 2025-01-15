@@ -1,0 +1,483 @@
+[2024-12-24 21:53:48,288] [INFO] Experiment name: tusimple
+[2024-12-24 21:53:48,289] [INFO] Config:
+# Training settings
+exps_dir: 'experiments'
+iter_log_interval: 1
+iter_time_window: 100
+model_save_interval: 1
+seed: 1
+backup:
+model:
+  name: PolyRegression
+  parameters:
+    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+    pretrained: true
+    backbone: 'mobilenet_v2'
+    pred_category: false
+    curriculum_steps: [0, 0, 0, 0]
+loss_parameters:
+  conf_weight: 1
+  lower_weight: 1
+  upper_weight: 1
+  cls_weight: 0
+  poly_weight: 1000
+batch_size: 1
+epochs: 2695
+optimizer:
+  name: Adam
+  parameters:
+    lr: 3.0e-4
+lr_scheduler:
+  name: CosineAnnealingLR
+  parameters:
+    T_max: 385
+
+
+# Testing settings
+test_parameters:
+  conf_threshold: 0.5
+
+# Dataset settings
+datasets:
+  train:
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: train
+      img_size: [360, 640]
+      normalize: true
+      aug_chance: 0.9090909090909091 # 10/11
+      augmentations:
+       - name: Affine
+         parameters:
+           rotate: !!python/tuple [-10, 10]
+       - name: HorizontalFlip
+         parameters:
+           p: 0.5
+       - name: CropToFixedSize
+         parameters:
+           width: 1152
+           height: 648
+      root: "D:/manga/nckh_polylanenet/TUSimple/train_set"
+
+  test: &test
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: val
+      max_lanes: 5
+      img_size: [360, 640]
+      root: "D:/manga/nckh_polylanenet/TUSimple/train_set"
+      # D:\manga\nckh_polylanenet\TUSimple\train_set
+      normalize: true
+      augmentations: []
+
+  # val = test
+  val:
+    <<: *test
+
+[2024-12-24 21:53:48,293] [INFO] Args:
+Namespace(exp_name='tusimple', cfg='D:\\manga\\nckh_polylanenet\\cfgs\\tusimple.yaml', resume=False, validate=False, deterministic=False)
+total annos 910
+Transforming annotations...
+Done.
+D:\manga\myenv\Lib\site-packages\torchvision\models\_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+D:\manga\myenv\Lib\site-packages\torchvision\models\_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=MobileNet_V2_Weights.IMAGENET1K_V1`. You can also use `weights=MobileNet_V2_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+[2024-12-24 21:53:48,629] [INFO] Model structure: PolyRegression(
+  (sigmoid): Sigmoid()
+  (model): ModuleList(
+    (0): Sequential(
+      (0): Conv2dNormActivation(
+        (0): Conv2d(3, 32, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (1): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): ReLU6(inplace=True)
+      )
+      (1): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=32, bias=False)
+            (1): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2d(32, 16, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (2): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+    )
+    (1): Sequential(
+      (2): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(16, 96, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(96, 96, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), groups=96, bias=False)
+            (1): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(96, 24, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(24, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (3): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(24, 144, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(144, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(144, 144, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=144, bias=False)
+            (1): BatchNorm2d(144, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(144, 24, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(24, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+    )
+    (2): Sequential(
+      (4): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(24, 144, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(144, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(144, 144, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), groups=144, bias=False)
+            (1): BatchNorm2d(144, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(144, 32, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (5): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(32, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=192, bias=False)
+            (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(192, 32, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (6): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(32, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=192, bias=False)
+            (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(192, 32, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+    )
+    (3): Sequential(
+      (7): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(32, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(192, 192, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), groups=192, bias=False)
+            (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(192, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (8): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(64, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(384, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=384, bias=False)
+            (1): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(384, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (9): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(64, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(384, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=384, bias=False)
+            (1): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(384, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (10): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(64, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(384, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=384, bias=False)
+            (1): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(384, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (11): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(64, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(384, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=384, bias=False)
+            (1): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(384, 96, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (12): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(96, 576, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(576, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(576, 576, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=576, bias=False)
+            (1): BatchNorm2d(576, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(576, 96, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (13): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(96, 576, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(576, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(576, 576, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=576, bias=False)
+            (1): BatchNorm2d(576, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(576, 96, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+    )
+  )
+  (papfn): PathAggregationFeaturePyramidNetwork(
+    (inner_blocks): ModuleList(
+      (0): Conv2d(16, 256, kernel_size=(1, 1), stride=(1, 1))
+      (1): Conv2d(24, 256, kernel_size=(1, 1), stride=(1, 1))
+      (2): Conv2d(32, 256, kernel_size=(1, 1), stride=(1, 1))
+      (3): Conv2d(96, 256, kernel_size=(1, 1), stride=(1, 1))
+    )
+    (layer_blocks): ModuleList(
+      (0-3): 4 x Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    )
+  )
+  (papfn_output): Conv2d(256, 35, kernel_size=(1, 1), stride=(1, 1))
+  (flip_block): FeatureFlipBlock(
+    (conv): Conv2d(6, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (avg_pool): AvgPool2d(kernel_size=(1, 2), stride=(1, 2), padding=0)
+  )
+  (channel_adapter): Conv2d(256, 3, kernel_size=(1, 1), stride=(1, 1))
+  (attention): SelfAttention(
+    (attention): MultiheadAttention(
+      (out_proj): NonDynamicallyQuantizableLinear(in_features=35, out_features=35, bias=True)
+    )
+    (norm): LayerNorm((35,), eps=1e-05, elementwise_affine=True)
+  )
+)
+[2024-12-24 21:53:48,640] [INFO] Starting training.
+[2024-12-24 21:53:48,640] [INFO] Beginning epoch 1
+[2024-12-24 21:54:48,431] [INFO] Epoch [1/2695], Step [1/910], Loss: 882.2336 (conf: 0.9205, lower: 0.0000, upper: 1.3005, poly: 879.5125, cls_loss: 0.0000, line_iou: 0.5000), s/iter: 8.3450, lr: 3.0e-04
+[2024-12-24 21:54:48,492] [INFO] Epoch [1/2695], Step [2/910], Loss: 1383.8899 (conf: 1.0423, lower: 0.4664, upper: 0.8237, poly: 1882.7302, cls_loss: 0.0000, line_iou: 0.4836), s/iter: 4.1965, lr: 3.0e-04
+[2024-12-24 21:54:48,549] [INFO] Epoch [1/2695], Step [3/910], Loss: 2228.2048 (conf: 0.9005, lower: 0.4314, upper: 1.3557, poly: 3913.6497, cls_loss: 0.0000, line_iou: 0.4975), s/iter: 2.8134, lr: 3.0e-04
+[2024-12-24 21:54:48,613] [INFO] Epoch [1/2695], Step [4/910], Loss: 1976.5985 (conf: 1.2068, lower: 0.3543, upper: 0.8311, poly: 1218.8873, cls_loss: 0.0000, line_iou: 0.5000), s/iter: 2.1230, lr: 3.0e-04
+[2024-12-24 21:54:48,664] [INFO] Epoch [1/2695], Step [5/910], Loss: 1720.7265 (conf: 1.2104, lower: 0.2227, upper: 0.8598, poly: 694.4601, cls_loss: 0.0000, line_iou: 0.4857), s/iter: 1.7070, lr: 3.0e-04
+[2024-12-24 21:54:48,708] [INFO] Epoch [1/2695], Step [6/910], Loss: 1510.6982 (conf: 1.2028, lower: 0.1355, upper: 0.4474, poly: 458.2863, cls_loss: 0.0000, line_iou: 0.4849), s/iter: 1.4286, lr: 3.0e-04
+[2024-12-24 21:54:48,760] [INFO] Epoch [1/2695], Step [7/910], Loss: 1333.2211 (conf: 1.1895, lower: 0.0614, upper: 0.8681, poly: 265.7553, cls_loss: 0.0000, line_iou: 0.4840), s/iter: 1.2307, lr: 3.0e-04
+[2024-12-24 21:54:48,822] [INFO] Epoch [1/2695], Step [8/910], Loss: 1196.9836 (conf: 1.1818, lower: 0.0172, upper: 0.9308, poly: 240.7056, cls_loss: 0.0000, line_iou: 0.4852), s/iter: 1.0839, lr: 3.0e-04
+[2024-12-24 21:54:48,872] [INFO] Epoch [1/2695], Step [9/910], Loss: 1101.6186 (conf: 0.8946, lower: 0.0318, upper: 1.3573, poly: 335.9392, cls_loss: 0.0000, line_iou: 0.4764), s/iter: 0.9681, lr: 3.0e-04
+[2024-12-24 21:54:48,913] [INFO] Epoch [1/2695], Step [10/910], Loss: 1043.0153 (conf: 1.3059, lower: 0.0132, upper: 1.2610, poly: 512.5135, cls_loss: 0.0000, line_iou: 0.4921), s/iter: 0.8746, lr: 3.0e-04
+[2024-12-24 21:54:48,956] [INFO] Epoch [1/2695], Step [11/910], Loss: 985.5402 (conf: 0.8727, lower: 0.0040, upper: 1.4395, poly: 407.9791, cls_loss: 0.0000, line_iou: 0.4939), s/iter: 0.7985, lr: 3.0e-04
+[2024-12-24 21:54:49,003] [INFO] Epoch [1/2695], Step [12/910], Loss: 930.3633 (conf: 1.1405, lower: 0.0014, upper: 1.1966, poly: 320.5890, cls_loss: 0.0000, line_iou: 0.4894), s/iter: 0.7352, lr: 3.0e-04
+[2024-12-24 21:54:49,042] [INFO] Epoch [1/2695], Step [13/910], Loss: 883.4397 (conf: 0.8588, lower: 0.0002, upper: 1.5149, poly: 317.5048, cls_loss: 0.0000, line_iou: 0.4778), s/iter: 0.6811, lr: 3.0e-04
+[2024-12-24 21:54:49,084] [INFO] Epoch [1/2695], Step [14/910], Loss: 874.1823 (conf: 0.8535, lower: 0.0045, upper: 1.6167, poly: 750.8759, cls_loss: 0.0000, line_iou: 0.4851), s/iter: 0.6350, lr: 3.0e-04
+[2024-12-24 21:54:49,123] [INFO] Epoch [1/2695], Step [15/910], Loss: 834.9621 (conf: 1.1279, lower: 0.0107, upper: 1.2683, poly: 282.9885, cls_loss: 0.0000, line_iou: 0.4837), s/iter: 0.5948, lr: 3.0e-04
+[2024-12-24 21:54:49,167] [INFO] Epoch [1/2695], Step [16/910], Loss: 798.0553 (conf: 1.1262, lower: 0.0046, upper: 1.2917, poly: 241.5482, cls_loss: 0.0000, line_iou: 0.4840), s/iter: 0.5599, lr: 3.0e-04
+[2024-12-24 21:54:49,225] [INFO] Epoch [1/2695], Step [17/910], Loss: 763.9569 (conf: 1.1271, lower: 0.0137, upper: 1.3435, poly: 215.4153, cls_loss: 0.0000, line_iou: 0.4829), s/iter: 0.5301, lr: 3.0e-04
+[2024-12-24 21:54:49,288] [INFO] Epoch [1/2695], Step [18/910], Loss: 742.3550 (conf: 0.8461, lower: 0.0083, upper: 1.6754, poly: 372.1107, cls_loss: 0.0000, line_iou: 0.4819), s/iter: 0.5038, lr: 3.0e-04
+[2024-12-24 21:54:49,334] [INFO] Epoch [1/2695], Step [19/910], Loss: 715.1564 (conf: 1.1258, lower: 0.0223, upper: 1.2779, poly: 222.6713, cls_loss: 0.0000, line_iou: 0.4833), s/iter: 0.4793, lr: 3.0e-04
+[2024-12-24 21:54:49,385] [INFO] Epoch [1/2695], Step [20/910], Loss: 688.3613 (conf: 1.1283, lower: 0.0085, upper: 1.4227, poly: 176.2142, cls_loss: 0.0000, line_iou: 0.4812), s/iter: 0.4575, lr: 3.0e-04
+[2024-12-24 21:54:49,428] [INFO] Epoch [1/2695], Step [21/910], Loss: 663.4243 (conf: 1.1332, lower: 0.0125, upper: 1.4169, poly: 161.6380, cls_loss: 0.0000, line_iou: 0.4839), s/iter: 0.4374, lr: 3.0e-04
+[2024-12-24 21:54:49,469] [INFO] Epoch [1/2695], Step [22/910], Loss: 645.8961 (conf: 1.2464, lower: 0.0109, upper: 1.4417, poly: 274.6138, cls_loss: 0.0000, line_iou: 0.4909), s/iter: 0.4190, lr: 3.0e-04
+[2024-12-24 21:54:49,513] [INFO] Epoch [1/2695], Step [23/910], Loss: 623.6479 (conf: 1.1412, lower: 0.0021, upper: 1.4601, poly: 131.1111, cls_loss: 0.0000, line_iou: 0.4744), s/iter: 0.4024, lr: 3.0e-04
+[2024-12-24 21:54:49,555] [INFO] Epoch [1/2695], Step [24/910], Loss: 602.8606 (conf: 1.1389, lower: 0.0022, upper: 1.4445, poly: 121.6911, cls_loss: 0.0000, line_iou: 0.4753), s/iter: 0.3872, lr: 3.0e-04
+[2024-12-24 21:54:49,602] [INFO] Epoch [1/2695], Step [25/910], Loss: 586.9187 (conf: 0.8527, lower: 0.0094, upper: 1.9306, poly: 201.0332, cls_loss: 0.0000, line_iou: 0.4872), s/iter: 0.3733, lr: 3.0e-04
+[2024-12-24 21:54:49,649] [INFO] Epoch [1/2695], Step [26/910], Loss: 570.0187 (conf: 1.1456, lower: 0.0023, upper: 1.5894, poly: 144.3145, cls_loss: 0.0000, line_iou: 0.4654), s/iter: 0.3605, lr: 3.0e-04
+[2024-12-24 21:54:49,694] [INFO] Epoch [1/2695], Step [27/910], Loss: 554.6641 (conf: 1.1487, lower: 0.0036, upper: 1.5970, poly: 152.2249, cls_loss: 0.0000, line_iou: 0.4718), s/iter: 0.3486, lr: 3.0e-04
+[2024-12-24 21:54:49,740] [INFO] Epoch [1/2695], Step [28/910], Loss: 539.8948 (conf: 1.1505, lower: 0.0019, upper: 1.6287, poly: 137.8747, cls_loss: 0.0000, line_iou: 0.4677), s/iter: 0.3375, lr: 3.0e-04
+[2024-12-24 21:54:49,785] [INFO] Epoch [1/2695], Step [29/910], Loss: 525.4843 (conf: 1.2536, lower: 0.0017, upper: 1.9034, poly: 118.3541, cls_loss: 0.0000, line_iou: 0.4757), s/iter: 0.3272, lr: 3.0e-04
+[2024-12-24 21:54:49,836] [INFO] Epoch [1/2695], Step [30/910], Loss: 511.0930 (conf: 1.2535, lower: 0.0002, upper: 1.5761, poly: 90.4292, cls_loss: 0.0000, line_iou: 0.4884), s/iter: 0.3177, lr: 3.0e-04
+[2024-12-24 21:54:49,886] [INFO] Epoch [1/2695], Step [31/910], Loss: 498.4569 (conf: 1.1564, lower: 0.0030, upper: 1.6850, poly: 116.0623, cls_loss: 0.0000, line_iou: 0.4663), s/iter: 0.3089, lr: 3.0e-04
+[2024-12-24 21:54:49,935] [INFO] Epoch [1/2695], Step [32/910], Loss: 486.5640 (conf: 1.1554, lower: 0.0006, upper: 1.7371, poly: 114.5284, cls_loss: 0.0000, line_iou: 0.4642), s/iter: 0.3006, lr: 3.0e-04
+[2024-12-24 21:54:49,984] [INFO] Epoch [1/2695], Step [33/910], Loss: 475.1168 (conf: 1.1542, lower: 0.0051, upper: 1.7153, poly: 105.4590, cls_loss: 0.0000, line_iou: 0.4716), s/iter: 0.2927, lr: 3.0e-04
+[2024-12-24 21:54:50,039] [INFO] Epoch [1/2695], Step [34/910], Loss: 464.3295 (conf: 1.1540, lower: 0.0134, upper: 1.7151, poly: 104.9917, cls_loss: 0.0000, line_iou: 0.4746), s/iter: 0.2856, lr: 3.0e-04
+[2024-12-24 21:54:50,093] [INFO] Epoch [1/2695], Step [35/910], Loss: 453.5688 (conf: 1.1507, lower: 0.0024, upper: 1.7691, poly: 84.3080, cls_loss: 0.0000, line_iou: 0.4731), s/iter: 0.2787, lr: 3.0e-04
+[2024-12-24 21:54:50,137] [INFO] Epoch [1/2695], Step [36/910], Loss: 444.4333 (conf: 1.2462, lower: 0.0069, upper: 1.9244, poly: 121.0256, cls_loss: 0.0000, line_iou: 0.4906), s/iter: 0.2720, lr: 3.0e-04
+[2024-12-24 21:54:50,184] [INFO] Epoch [1/2695], Step [37/910], Loss: 434.0359 (conf: 1.1425, lower: 0.0021, upper: 1.8168, poly: 56.3003, cls_loss: 0.0000, line_iou: 0.4675), s/iter: 0.2658, lr: 3.0e-04
+[2024-12-24 21:54:50,223] [INFO] Epoch [1/2695], Step [38/910], Loss: 424.6355 (conf: 1.1394, lower: 0.0083, upper: 1.7797, poly: 73.4205, cls_loss: 0.0000, line_iou: 0.4716), s/iter: 0.2596, lr: 3.0e-04
+[2024-12-24 21:54:50,265] [INFO] Epoch [1/2695], Step [39/910], Loss: 418.5683 (conf: 0.8316, lower: 0.0140, upper: 2.2531, poly: 184.4234, cls_loss: 0.0000, line_iou: 0.4929), s/iter: 0.2538, lr: 3.0e-04
+[2024-12-24 21:54:50,304] [INFO] Epoch [1/2695], Step [40/910], Loss: 412.0324 (conf: 0.8264, lower: 0.0062, upper: 2.3963, poly: 153.4194, cls_loss: 0.0000, line_iou: 0.4853), s/iter: 0.2483, lr: 3.0e-04
+[2024-12-24 21:54:50,345] [INFO] Epoch [1/2695], Step [41/910], Loss: 403.1082 (conf: 1.1266, lower: 0.0032, upper: 1.8440, poly: 42.6965, cls_loss: 0.0000, line_iou: 0.4665), s/iter: 0.2430, lr: 3.0e-04
+[2024-12-24 21:54:50,385] [INFO] Epoch [1/2695], Step [42/910], Loss: 396.8492 (conf: 1.2150, lower: 0.0014, upper: 2.2805, poly: 136.2544, cls_loss: 0.0000, line_iou: 0.4804), s/iter: 0.2380, lr: 3.0e-04
+[2024-12-24 21:54:50,426] [INFO] Epoch [1/2695], Step [43/910], Loss: 388.3679 (conf: 1.1169, lower: 0.0046, upper: 1.8265, poly: 28.7432, cls_loss: 0.0000, line_iou: 0.4623), s/iter: 0.2332, lr: 3.0e-04
+[2024-12-24 21:54:50,466] [INFO] Epoch [1/2695], Step [44/910], Loss: 380.4432 (conf: 1.1112, lower: 0.0012, upper: 1.8938, poly: 36.2113, cls_loss: 0.0000, line_iou: 0.4615), s/iter: 0.2287, lr: 3.0e-04
+[2024-12-24 21:54:50,515] [INFO] Epoch [1/2695], Step [45/910], Loss: 373.4245 (conf: 1.1093, lower: 0.0001, upper: 1.2986, poly: 61.7314, cls_loss: 0.0000, line_iou: 0.4652), s/iter: 0.2246, lr: 3.0e-04
+[2024-12-24 21:54:50,569] [INFO] Epoch [1/2695], Step [46/910], Loss: 366.0073 (conf: 1.1046, lower: 0.0006, upper: 1.9170, poly: 28.7779, cls_loss: 0.0000, line_iou: 0.4335), s/iter: 0.2207, lr: 3.0e-04
+[2024-12-24 21:54:50,612] [INFO] Epoch [1/2695], Step [47/910], Loss: 359.1346 (conf: 0.7984, lower: 0.0001, upper: 2.4673, poly: 39.2941, cls_loss: 0.0000, line_iou: 0.4311), s/iter: 0.2168, lr: 3.0e-04
+[2024-12-24 21:54:50,655] [INFO] Epoch [1/2695], Step [48/910], Loss: 352.3535 (conf: 1.0982, lower: 0.0017, upper: 1.9290, poly: 30.1632, cls_loss: 0.0000, line_iou: 0.4463), s/iter: 0.2130, lr: 3.0e-04
+[2024-12-24 21:54:50,697] [INFO] Epoch [1/2695], Step [49/910], Loss: 345.8949 (conf: 1.0955, lower: 0.0050, upper: 1.9607, poly: 32.3732, cls_loss: 0.0000, line_iou: 0.4503), s/iter: 0.2094, lr: 3.0e-04
+[2024-12-24 21:54:50,737] [INFO] Epoch [1/2695], Step [50/910], Loss: 339.6877 (conf: 1.1850, lower: 0.0162, upper: 2.1203, poly: 31.7642, cls_loss: 0.0000, line_iou: 0.4499), s/iter: 0.2059, lr: 3.0e-04
+[2024-12-24 21:54:50,782] [INFO] Epoch [1/2695], Step [51/910], Loss: 333.5475 (conf: 1.0906, lower: 0.0042, upper: 2.0146, poly: 22.9789, cls_loss: 0.0000, line_iou: 0.4457), s/iter: 0.2026, lr: 3.0e-04
+[2024-12-24 21:54:50,821] [INFO] Epoch [1/2695], Step [52/910], Loss: 335.2567 (conf: 1.1787, lower: 0.0048, upper: 2.2448, poly: 418.5045, cls_loss: 0.0000, line_iou: 0.4938), s/iter: 0.1993, lr: 3.0e-04
+[2024-12-24 21:54:50,863] [INFO] Epoch [1/2695], Step [53/910], Loss: 329.3509 (conf: 1.0875, lower: 0.0098, upper: 2.0366, poly: 18.6698, cls_loss: 0.0000, line_iou: 0.4458), s/iter: 0.1961, lr: 3.0e-04
+[2024-12-24 21:54:50,903] [INFO] Epoch [1/2695], Step [54/910], Loss: 324.8663 (conf: 1.1783, lower: 0.0062, upper: 1.8160, poly: 83.6991, cls_loss: 0.0000, line_iou: 0.4840), s/iter: 0.1931, lr: 3.0e-04
+[2024-12-24 21:54:50,941] [INFO] Epoch [1/2695], Step [55/910], Loss: 319.6602 (conf: 1.1782, lower: 0.0057, upper: 2.1638, poly: 34.7333, cls_loss: 0.0000, line_iou: 0.4496), s/iter: 0.1901, lr: 3.0e-04
+[2024-12-24 21:54:50,983] [INFO] Epoch [1/2695], Step [56/910], Loss: 314.3055 (conf: 1.0839, lower: 0.0079, upper: 2.2914, poly: 15.9638, cls_loss: 0.0000, line_iou: 0.4495), s/iter: 0.1874, lr: 3.0e-04
+[2024-12-24 21:54:51,024] [INFO] Epoch [1/2695], Step [57/910], Loss: 309.2201 (conf: 1.0847, lower: 0.0000, upper: 1.9946, poly: 20.9344, cls_loss: 0.0000, line_iou: 0.4269), s/iter: 0.1847, lr: 3.0e-04
+[2024-12-24 21:54:51,064] [INFO] Epoch [1/2695], Step [58/910], Loss: 304.3988 (conf: 1.0858, lower: 0.0005, upper: 2.0135, poly: 26.0262, cls_loss: 0.0000, line_iou: 0.4539), s/iter: 0.1820, lr: 3.0e-04
+[2024-12-24 21:54:51,105] [INFO] Epoch [1/2695], Step [59/910], Loss: 300.0187 (conf: 1.0850, lower: 0.0022, upper: 2.0623, poly: 42.3404, cls_loss: 0.0000, line_iou: 0.4856), s/iter: 0.1795, lr: 3.0e-04
+[2024-12-24 21:54:51,152] [INFO] Epoch [1/2695], Step [60/910], Loss: 295.6730 (conf: 1.1748, lower: 0.0000, upper: 2.1264, poly: 35.5195, cls_loss: 0.0000, line_iou: 0.4554), s/iter: 0.1772, lr: 3.0e-04
+[2024-12-24 21:54:51,198] [INFO] Epoch [1/2695], Step [61/910], Loss: 291.1498 (conf: 1.0852, lower: 0.0009, upper: 2.0144, poly: 16.2243, cls_loss: 0.0000, line_iou: 0.4308), s/iter: 0.1749, lr: 3.0e-04
+[2024-12-24 21:54:51,244] [INFO] Epoch [1/2695], Step [62/910], Loss: 286.8152 (conf: 1.0846, lower: 0.0002, upper: 2.0114, poly: 18.8643, cls_loss: 0.0000, line_iou: 0.4471), s/iter: 0.1727, lr: 3.0e-04
+[2024-12-24 21:54:51,285] [INFO] Epoch [1/2695], Step [63/910], Loss: 282.7929 (conf: 1.1756, lower: 0.0002, upper: 2.1348, poly: 29.6496, cls_loss: 0.0000, line_iou: 0.4508), s/iter: 0.1705, lr: 3.0e-04
+[2024-12-24 21:54:51,335] [INFO] Epoch [1/2695], Step [64/910], Loss: 278.6395 (conf: 1.0853, lower: 0.0039, upper: 2.0064, poly: 13.4502, cls_loss: 0.0000, line_iou: 0.4286), s/iter: 0.1685, lr: 3.0e-04
+[2024-12-24 21:54:51,386] [INFO] Epoch [1/2695], Step [65/910], Loss: 274.7142 (conf: 1.1756, lower: 0.0009, upper: 2.2858, poly: 19.5869, cls_loss: 0.0000, line_iou: 0.4437), s/iter: 0.1666, lr: 3.0e-04
+[2024-12-24 21:54:51,432] [INFO] Epoch [1/2695], Step [66/910], Loss: 272.6438 (conf: 1.1718, lower: 0.0012, upper: 1.9581, poly: 134.4557, cls_loss: 0.0000, line_iou: 0.4862), s/iter: 0.1646, lr: 3.0e-04
+[2024-12-24 21:54:51,475] [INFO] Epoch [1/2695], Step [67/910], Loss: 268.7800 (conf: 1.0830, lower: 0.0019, upper: 2.0541, poly: 10.2346, cls_loss: 0.0000, line_iou: 0.3956), s/iter: 0.1627, lr: 3.0e-04
+[2024-12-24 21:54:51,518] [INFO] Epoch [1/2695], Step [68/910], Loss: 265.0824 (conf: 1.0854, lower: 0.0043, upper: 2.0450, poly: 13.7613, cls_loss: 0.0000, line_iou: 0.4473), s/iter: 0.1609, lr: 3.0e-04
+[2024-12-24 21:54:51,558] [INFO] Epoch [1/2695], Step [69/910], Loss: 261.5269 (conf: 1.0831, lower: 0.0000, upper: 2.0485, poly: 16.2132, cls_loss: 0.0000, line_iou: 0.4047), s/iter: 0.1590, lr: 3.0e-04
+[2024-12-24 21:54:51,600] [INFO] Epoch [1/2695], Step [70/910], Loss: 257.9866 (conf: 1.0849, lower: 0.0023, upper: 2.0446, poly: 10.1760, cls_loss: 0.0000, line_iou: 0.3958), s/iter: 0.1572, lr: 3.0e-04
+[2024-12-24 21:54:51,656] [INFO] Epoch [1/2695], Step [71/910], Loss: 254.5351 (conf: 1.0836, lower: 0.0016, upper: 2.0314, poly: 9.4513, cls_loss: 0.0000, line_iou: 0.3648), s/iter: 0.1557, lr: 3.0e-04
+[2024-12-24 21:54:51,705] [INFO] Epoch [1/2695], Step [72/910], Loss: 251.9196 (conf: 1.1711, lower: 0.0059, upper: 2.5292, poly: 62.0693, cls_loss: 0.0000, line_iou: 0.4414), s/iter: 0.1541, lr: 3.0e-04
+[2024-12-24 21:54:51,751] [INFO] Epoch [1/2695], Step [73/910], Loss: 249.3578 (conf: 1.1696, lower: 0.0027, upper: 1.9533, poly: 61.3010, cls_loss: 0.0000, line_iou: 0.4803), s/iter: 0.1525, lr: 3.0e-04
+[2024-12-24 21:54:51,791] [INFO] Epoch [1/2695], Step [74/910], Loss: 247.2947 (conf: 1.0852, lower: 0.0010, upper: 1.9420, poly: 93.1806, cls_loss: 0.0000, line_iou: 0.4827), s/iter: 0.1509, lr: 3.0e-04
+[2024-12-24 21:54:51,835] [INFO] Epoch [1/2695], Step [75/910], Loss: 245.8421 (conf: 0.7629, lower: 0.0003, upper: 2.6209, poly: 134.4818, cls_loss: 0.0000, line_iou: 0.4836), s/iter: 0.1494, lr: 3.0e-04
+[2024-12-24 21:54:51,881] [INFO] Epoch [1/2695], Step [76/910], Loss: 243.3000 (conf: 1.1677, lower: 0.0000, upper: 2.3674, poly: 48.6586, cls_loss: 0.0000, line_iou: 0.4513), s/iter: 0.1479, lr: 3.0e-04
+[2024-12-24 21:54:51,929] [INFO] Epoch [1/2695], Step [77/910], Loss: 240.4550 (conf: 1.0823, lower: 0.0022, upper: 1.9986, poly: 20.6940, cls_loss: 0.0000, line_iou: 0.4562), s/iter: 0.1465, lr: 3.0e-04
+[2024-12-24 21:54:51,970] [INFO] Epoch [1/2695], Step [78/910], Loss: 238.5938 (conf: 0.7588, lower: 0.0063, upper: 2.6401, poly: 91.3940, cls_loss: 0.0000, line_iou: 0.4814), s/iter: 0.1451, lr: 3.0e-04
+[2024-12-24 21:54:52,015] [INFO] Epoch [1/2695], Step [79/910], Loss: 235.8911 (conf: 1.0819, lower: 0.0109, upper: 2.0143, poly: 21.4938, cls_loss: 0.0000, line_iou: 0.4805), s/iter: 0.1437, lr: 3.0e-04
+[2024-12-24 21:54:52,055] [INFO] Epoch [1/2695], Step [80/910], Loss: 234.0667 (conf: 1.1687, lower: 0.0052, upper: 2.0095, poly: 86.2719, cls_loss: 0.0000, line_iou: 0.4795), s/iter: 0.1423, lr: 3.0e-04
+[2024-12-24 21:54:52,098] [INFO] Epoch [1/2695], Step [81/910], Loss: 231.6924 (conf: 0.7562, lower: 0.0058, upper: 2.7168, poly: 37.8227, cls_loss: 0.0000, line_iou: 0.4492), s/iter: 0.1410, lr: 3.0e-04
+[2024-12-24 21:54:52,145] [INFO] Epoch [1/2695], Step [82/910], Loss: 230.7407 (conf: 1.1679, lower: 0.0092, upper: 2.0788, poly: 149.9112, cls_loss: 0.0000, line_iou: 0.4878), s/iter: 0.1398, lr: 3.0e-04
+[2024-12-24 21:54:52,184] [INFO] Epoch [1/2695], Step [83/910], Loss: 228.2579 (conf: 1.1660, lower: 0.0084, upper: 2.2980, poly: 20.7393, cls_loss: 0.0000, line_iou: 0.4539), s/iter: 0.1385, lr: 3.0e-04
+[2024-12-24 21:54:52,223] [INFO] Epoch [1/2695], Step [84/910], Loss: 226.4810 (conf: 0.7571, lower: 0.0183, upper: 2.6693, poly: 75.0894, cls_loss: 0.0000, line_iou: 0.4697), s/iter: 0.1372, lr: 3.0e-04
+[2024-12-24 21:54:52,266] [INFO] Epoch [1/2695], Step [85/910], Loss: 224.1992 (conf: 0.7553, lower: 0.0119, upper: 2.6482, poly: 28.6599, cls_loss: 0.0000, line_iou: 0.4504), s/iter: 0.1360, lr: 3.0e-04
+[2024-12-24 21:54:52,306] [INFO] Epoch [1/2695], Step [86/910], Loss: 222.9357 (conf: 1.1639, lower: 0.0026, upper: 2.0488, poly: 111.8420, cls_loss: 0.0000, line_iou: 0.4831), s/iter: 0.1348, lr: 3.0e-04
+[2024-12-24 21:54:52,356] [INFO] Epoch [1/2695], Step [87/910], Loss: 220.7791 (conf: 1.0774, lower: 0.0101, upper: 2.0010, poly: 31.7712, cls_loss: 0.0000, line_iou: 0.4518), s/iter: 0.1338, lr: 3.0e-04
+[2024-12-24 21:54:52,396] [INFO] Epoch [1/2695], Step [88/910], Loss: 218.6050 (conf: 1.0773, lower: 0.0042, upper: 1.9353, poly: 25.9993, cls_loss: 0.0000, line_iou: 0.4400), s/iter: 0.1326, lr: 3.0e-04
+[2024-12-24 21:54:52,447] [INFO] Epoch [1/2695], Step [89/910], Loss: 216.9766 (conf: 0.7529, lower: 0.0006, upper: 2.5744, poly: 69.8726, cls_loss: 0.0000, line_iou: 0.4755), s/iter: 0.1316, lr: 3.0e-04
+[2024-12-24 21:54:52,491] [INFO] Epoch [1/2695], Step [90/910], Loss: 214.8842 (conf: 1.1503, lower: 0.0001, upper: 2.2424, poly: 24.8227, cls_loss: 0.0000, line_iou: 0.4431), s/iter: 0.1306, lr: 3.0e-04
+[2024-12-24 21:54:52,531] [INFO] Epoch [1/2695], Step [91/910], Loss: 212.6690 (conf: 1.0734, lower: 0.0005, upper: 1.9970, poly: 9.7934, cls_loss: 0.0000, line_iou: 0.4365), s/iter: 0.1295, lr: 3.0e-04
+[2024-12-24 21:54:52,575] [INFO] Epoch [1/2695], Step [92/910], Loss: 210.7597 (conf: 1.1476, lower: 0.0013, upper: 2.2526, poly: 33.1862, cls_loss: 0.0000, line_iou: 0.4298), s/iter: 0.1285, lr: 3.0e-04
+[2024-12-24 21:54:52,614] [INFO] Epoch [1/2695], Step [93/910], Loss: 208.6526 (conf: 1.0710, lower: 0.0000, upper: 1.9932, poly: 11.3171, cls_loss: 0.0000, line_iou: 0.4124), s/iter: 0.1275, lr: 3.0e-04
+[2024-12-24 21:54:52,654] [INFO] Epoch [1/2695], Step [94/910], Loss: 206.5972 (conf: 1.0701, lower: 0.0016, upper: 1.9672, poly: 12.0155, cls_loss: 0.0000, line_iou: 0.3955), s/iter: 0.1265, lr: 3.0e-04
+[2024-12-24 21:54:52,694] [INFO] Epoch [1/2695], Step [95/910], Loss: 205.8144 (conf: 0.7482, lower: 0.0023, upper: 2.5342, poly: 128.4544, cls_loss: 0.0000, line_iou: 0.4886), s/iter: 0.1255, lr: 3.0e-04
+[2024-12-24 21:54:52,743] [INFO] Epoch [1/2695], Step [96/910], Loss: 203.7857 (conf: 1.0685, lower: 0.0025, upper: 1.9988, poly: 7.5896, cls_loss: 0.0000, line_iou: 0.4041), s/iter: 0.1246, lr: 3.0e-04
+[2024-12-24 21:54:52,786] [INFO] Epoch [1/2695], Step [97/910], Loss: 201.7996 (conf: 0.7478, lower: 0.0015, upper: 2.4122, poly: 7.5649, cls_loss: 0.0000, line_iou: 0.4070), s/iter: 0.1237, lr: 3.0e-04
+[2024-12-24 21:54:52,826] [INFO] Epoch [1/2695], Step [98/910], Loss: 199.8648 (conf: 0.7463, lower: 0.0001, upper: 2.4958, poly: 8.5218, cls_loss: 0.0000, line_iou: 0.4205), s/iter: 0.1228, lr: 3.0e-04
+[2024-12-24 21:54:52,876] [INFO] Epoch [1/2695], Step [99/910], Loss: 197.9348 (conf: 1.0629, lower: 0.0006, upper: 1.9408, poly: 5.4087, cls_loss: 0.0000, line_iou: 0.3822), s/iter: 0.1220, lr: 3.0e-04
+[2024-12-24 21:54:52,919] [INFO] Epoch [1/2695], Step [100/910], Loss: 196.0784 (conf: 1.0639, lower: 0.0001, upper: 1.9263, poly: 8.8723, cls_loss: 0.0000, line_iou: 0.4334), s/iter: 0.1211, lr: 3.0e-04
+[2024-12-24 21:54:52,961] [INFO] Epoch [1/2695], Step [101/910], Loss: 194.6525 (conf: 1.1343, lower: 0.0012, upper: 2.3462, poly: 48.1124, cls_loss: 0.0000, line_iou: 0.4713), s/iter: 0.0380, lr: 3.0e-04
+[2024-12-24 21:54:53,005] [INFO] Epoch [1/2695], Step [102/910], Loss: 192.8695 (conf: 1.0625, lower: 0.0002, upper: 1.9764, poly: 9.3298, cls_loss: 0.0000, line_iou: 0.4146), s/iter: 0.0379, lr: 3.0e-04
+[2024-12-24 21:54:53,058] [INFO] Epoch [1/2695], Step [103/910], Loss: 191.2953 (conf: 1.1365, lower: 0.0018, upper: 2.3199, poly: 26.8125, cls_loss: 0.0000, line_iou: 0.4555), s/iter: 0.0379, lr: 3.0e-04
+[2024-12-24 21:54:53,108] [INFO] Epoch [1/2695], Step [104/910], Loss: 189.6436 (conf: 0.7406, lower: 0.0108, upper: 2.5035, poly: 15.8220, cls_loss: 0.0000, line_iou: 0.4395), s/iter: 0.0378, lr: 3.0e-04
+[2024-12-24 21:54:53,148] [INFO] Epoch [1/2695], Step [105/910], Loss: 187.9194 (conf: 1.0596, lower: 0.0006, upper: 1.9472, poly: 5.2176, cls_loss: 0.0000, line_iou: 0.3802), s/iter: 0.0377, lr: 3.0e-04
+[2024-12-24 21:54:53,199] [INFO] Epoch [1/2695], Step [106/910], Loss: 187.2341 (conf: 0.7381, lower: 0.0001, upper: 2.5853, poly: 111.4738, cls_loss: 0.0000, line_iou: 0.4859), s/iter: 0.0378, lr: 3.0e-04
+[2024-12-24 21:54:53,249] [INFO] Epoch [1/2695], Step [107/910], Loss: 185.5897 (conf: 1.0602, lower: 0.0014, upper: 1.9554, poly: 7.8595, cls_loss: 0.0000, line_iou: 0.4041), s/iter: 0.0378, lr: 3.0e-04
+[2024-12-24 21:54:53,296] [INFO] Epoch [1/2695], Step [108/910], Loss: 184.6781 (conf: 0.7381, lower: 0.0009, upper: 2.5213, poly: 83.3975, cls_loss: 0.0000, line_iou: 0.4821), s/iter: 0.0376, lr: 3.0e-04
+[2024-12-24 21:54:53,335] [INFO] Epoch [1/2695], Step [109/910], Loss: 183.1361 (conf: 1.0622, lower: 0.0005, upper: 1.9288, poly: 13.2070, cls_loss: 0.0000, line_iou: 0.3963), s/iter: 0.0375, lr: 3.0e-04
+[2024-12-24 21:54:53,375] [INFO] Epoch [1/2695], Step [110/910], Loss: 181.6762 (conf: 1.0633, lower: 0.0008, upper: 1.9634, poly: 19.0870, cls_loss: 0.0000, line_iou: 0.4325), s/iter: 0.0375, lr: 3.0e-04
+[2024-12-24 21:54:53,421] [INFO] Epoch [1/2695], Step [111/910], Loss: 180.2923 (conf: 1.0634, lower: 0.0016, upper: 1.9451, poly: 24.6084, cls_loss: 0.0000, line_iou: 0.4458), s/iter: 0.0375, lr: 3.0e-04
+[2024-12-24 21:54:53,462] [INFO] Epoch [1/2695], Step [112/910], Loss: 178.9431 (conf: 1.0639, lower: 0.0001, upper: 2.0293, poly: 25.6582, cls_loss: 0.0000, line_iou: 0.4264), s/iter: 0.0374, lr: 3.0e-04
+[2024-12-24 21:54:53,511] [INFO] Epoch [1/2695], Step [113/910], Loss: 177.4681 (conf: 0.7392, lower: 0.0081, upper: 2.5813, poly: 8.5446, cls_loss: 0.0000, line_iou: 0.3995), s/iter: 0.0376, lr: 3.0e-04
+[2024-12-24 21:54:53,553] [INFO] Epoch [1/2695], Step [114/910], Loss: 176.1654 (conf: 1.1409, lower: 0.0094, upper: 2.3191, poly: 25.0225, cls_loss: 0.0000, line_iou: 0.4676), s/iter: 0.0376, lr: 3.0e-04
+[2024-12-24 21:54:53,592] [INFO] Epoch [1/2695], Step [115/910], Loss: 174.9409 (conf: 1.0658, lower: 0.0209, upper: 1.9078, poly: 31.8673, cls_loss: 0.0000, line_iou: 0.4809), s/iter: 0.0376, lr: 3.0e-04
+[2024-12-24 21:54:53,633] [INFO] Epoch [1/2695], Step [116/910], Loss: 173.7409 (conf: 1.0647, lower: 0.0120, upper: 1.9099, poly: 32.2772, cls_loss: 0.0000, line_iou: 0.4844), s/iter: 0.0375, lr: 3.0e-04
+[2024-12-24 21:54:53,674] [INFO] Epoch [1/2695], Step [117/910], Loss: 172.4967 (conf: 1.1374, lower: 0.0107, upper: 2.2958, poly: 24.2582, cls_loss: 0.0000, line_iou: 0.4628), s/iter: 0.0373, lr: 3.0e-04
+[2024-12-24 21:54:53,714] [INFO] Epoch [1/2695], Step [118/910], Loss: 171.2823 (conf: 1.0652, lower: 0.0086, upper: 1.9019, poly: 25.7512, cls_loss: 0.0000, line_iou: 0.4717), s/iter: 0.0371, lr: 3.0e-04
+[2024-12-24 21:54:53,753] [INFO] Epoch [1/2695], Step [119/910], Loss: 172.2367 (conf: 1.1284, lower: 0.0001, upper: 2.8983, poly: 280.3615, cls_loss: 0.0000, line_iou: 0.4700), s/iter: 0.0370, lr: 3.0e-04
+[2024-12-24 21:54:53,800] [INFO] Epoch [1/2695], Step [120/910], Loss: 170.9180 (conf: 0.7399, lower: 0.0075, upper: 2.4031, poly: 10.4124, cls_loss: 0.0000, line_iou: 0.4317), s/iter: 0.0370, lr: 3.0e-04
+[2024-12-24 21:54:53,847] [INFO] Epoch [1/2695], Step [121/910], Loss: 169.6265 (conf: 1.0605, lower: 0.0095, upper: 1.9675, poly: 11.1733, cls_loss: 0.0000, line_iou: 0.4354), s/iter: 0.0371, lr: 3.0e-04
+[2024-12-24 21:54:53,888] [INFO] Epoch [1/2695], Step [122/910], Loss: 169.4047 (conf: 0.7383, lower: 0.0006, upper: 2.4230, poly: 138.9138, cls_loss: 0.0000, line_iou: 0.4923), s/iter: 0.0371, lr: 3.0e-04
+[2024-12-24 21:54:53,928] [INFO] Epoch [1/2695], Step [123/910], Loss: 168.4462 (conf: 1.1266, lower: 0.0015, upper: 1.9483, poly: 47.9450, cls_loss: 0.0000, line_iou: 0.4850), s/iter: 0.0370, lr: 3.0e-04
+[2024-12-24 21:54:53,967] [INFO] Epoch [1/2695], Step [124/910], Loss: 167.4732 (conf: 1.0586, lower: 0.0014, upper: 1.5693, poly: 44.6853, cls_loss: 0.0000, line_iou: 0.4814), s/iter: 0.0370, lr: 3.0e-04
+[2024-12-24 21:54:54,006] [INFO] Epoch [1/2695], Step [125/910], Loss: 166.2513 (conf: 1.0552, lower: 0.0031, upper: 1.9147, poly: 11.3075, cls_loss: 0.0000, line_iou: 0.4568), s/iter: 0.0369, lr: 3.0e-04
+[2024-12-24 21:54:54,047] [INFO] Epoch [1/2695], Step [126/910], Loss: 165.0963 (conf: 1.0547, lower: 0.0020, upper: 1.9210, poly: 17.2843, cls_loss: 0.0000, line_iou: 0.4600), s/iter: 0.0368, lr: 3.0e-04
+[2024-12-24 21:54:55,302] [INFO] Training session terminated.
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u1ef1' in position 106: character maps to <undefined>
+Call stack:
+  File "D:\manga\nckh_polylanenet\train.py", line 323, in <module>
+    wandb.finish()
+  File "D:\manga\myenv\Lib\site-packages\wandb\sdk\wandb_run.py", line 4066, in finish
+    wandb.run.finish(exit_code=exit_code, quiet=quiet)
+  File "D:\manga\myenv\Lib\site-packages\wandb\sdk\wandb_run.py", line 440, in wrapper
+    return func(self, *args, **kwargs)
+  File "D:\manga\myenv\Lib\site-packages\wandb\sdk\wandb_run.py", line 382, in wrapper
+    return func(self, *args, **kwargs)
+  File "D:\manga\myenv\Lib\site-packages\wandb\sdk\wandb_run.py", line 2094, in finish
+    return self._finish(exit_code)
+  File "D:\manga\myenv\Lib\site-packages\wandb\sdk\wandb_run.py", line 2100, in _finish
+    logger.info(f"finishing run {self._get_path()}")
+Message: 'finishing run teambhh/Tên_dự_án_của_bạn/yr01rzaa'
+Arguments: ()

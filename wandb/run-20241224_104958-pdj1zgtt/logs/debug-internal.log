@@ -1,0 +1,17 @@
+{"time":"2024-12-24T10:49:58.2802377+07:00","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-24T10:49:58.2802377+07:00","level":"INFO","msg":"created symlink","path":"D:\\manga\\nckh_polylanenet\\wandb\\run-20241224_104958-pdj1zgtt\\logs\\debug-core.log"}
+{"time":"2024-12-24T10:49:58.400605+07:00","level":"INFO","msg":"created new stream","id":"pdj1zgtt"}
+{"time":"2024-12-24T10:49:58.4013182+07:00","level":"INFO","msg":"stream: started","id":"pdj1zgtt"}
+{"time":"2024-12-24T10:49:58.4013182+07:00","level":"INFO","msg":"handler: started","stream_id":"pdj1zgtt"}
+{"time":"2024-12-24T10:49:58.4013182+07:00","level":"INFO","msg":"sender: started","stream_id":"pdj1zgtt"}
+{"time":"2024-12-24T10:49:58.4013182+07:00","level":"INFO","msg":"writer: Do: started","stream_id":"pdj1zgtt"}
+{"time":"2024-12-24T10:49:58.910122+07:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-24T10:51:13.6768618+07:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-24T10:51:13.6783002+07:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-12-24T10:51:14.6989688+07:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading summary, console lines 338-374","runtime_seconds":0.0757684},{"desc":"uploading output.log","runtime_seconds":0.0744395,"progress":"16.6KB/16.6KB"},{"desc":"uploading config.yaml","runtime_seconds":0.0744395,"progress":"5.4KB/5.4KB"}],"total_operations":3}}
+{"time":"2024-12-24T10:51:15.9199011+07:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-12-24T10:51:17.4284486+07:00","level":"INFO","msg":"stream: closing","id":"pdj1zgtt"}
+{"time":"2024-12-24T10:51:17.4284486+07:00","level":"INFO","msg":"handler: closed","stream_id":"pdj1zgtt"}
+{"time":"2024-12-24T10:51:17.4284486+07:00","level":"INFO","msg":"writer: Close: closed","stream_id":"pdj1zgtt"}
+{"time":"2024-12-24T10:51:17.4284486+07:00","level":"INFO","msg":"sender: closed","stream_id":"pdj1zgtt"}
+{"time":"2024-12-24T10:51:17.4284486+07:00","level":"INFO","msg":"stream: closed","id":"pdj1zgtt"}

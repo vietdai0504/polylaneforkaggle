@@ -1,0 +1,1 @@
+{"train_line_iou":0.4445936977863312,"_timestamp":1.7350517177845924e+09,"s_per_iter":0.07311866521835327,"train_upper":1.8463270664215088,"train_conf":1.0120903253555298,"learning_rate":0.0003,"_runtime":71.859677,"_step":168,"train_loss":113.94757686342511,"train_lower":0.010184766724705696,"_wandb":{"runtime":71},"epoch":1,"train_poly":20.004011154174805,"train_cls_loss":0}

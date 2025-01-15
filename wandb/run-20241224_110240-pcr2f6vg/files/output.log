@@ -1,0 +1,756 @@
+[2024-12-24 11:02:41,495] [INFO] Experiment name: tusimple
+[2024-12-24 11:02:41,495] [INFO] Config:
+# Training settings
+exps_dir: 'experiments'
+iter_log_interval: 1
+iter_time_window: 100
+model_save_interval: 1
+seed: 1
+backup:
+model:
+  name: PolyRegression
+  parameters:
+    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+    pretrained: true
+    backbone: 'mobilenet_v2'
+    pred_category: false
+    curriculum_steps: [0, 0, 0, 0]
+loss_parameters:
+  conf_weight: 1
+  lower_weight: 1
+  upper_weight: 1
+  cls_weight: 0
+  poly_weight: 1000
+batch_size: 1
+epochs: 2695
+optimizer:
+  name: Adam
+  parameters:
+    lr: 3.0e-4
+lr_scheduler:
+  name: CosineAnnealingLR
+  parameters:
+    T_max: 385
+
+
+# Testing settings
+test_parameters:
+  conf_threshold: 0.5
+
+# Dataset settings
+datasets:
+  train:
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: train
+      img_size: [360, 640]
+      normalize: true
+      aug_chance: 0.9090909090909091 # 10/11
+      augmentations:
+       - name: Affine
+         parameters:
+           rotate: !!python/tuple [-10, 10]
+       - name: HorizontalFlip
+         parameters:
+           p: 0.5
+       - name: CropToFixedSize
+         parameters:
+           width: 1152
+           height: 648
+      root: "D:/manga/nckh_polylanenet/TUSimple/train_set"
+
+  test: &test
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: val
+      max_lanes: 5
+      img_size: [360, 640]
+      root: "D:/manga/nckh_polylanenet/TUSimple/train_set"
+      # D:\manga\nckh_polylanenet\TUSimple\train_set
+      normalize: true
+      augmentations: []
+
+  # val = test
+  val:
+    <<: *test
+
+[2024-12-24 11:02:41,499] [INFO] Args:
+Namespace(exp_name='tusimple', cfg='D:\\manga\\nckh_polylanenet\\cfgs\\tusimple.yaml', resume=False, validate=False, deterministic=False)
+total annos 910
+Transforming annotations...
+Done.
+[2024-12-24 11:02:41,921] [INFO] Model structure: PolyRegression(
+  (sigmoid): Sigmoid()
+  (model): ModuleList(
+    (0): Sequential(
+      (0): Conv2dNormActivation(
+        (0): Conv2d(3, 32, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (1): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): ReLU6(inplace=True)
+      )
+      (1): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=32, bias=False)
+            (1): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2d(32, 16, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (2): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+    )
+    (1): Sequential(
+      (2): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(16, 96, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(96, 96, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), groups=96, bias=False)
+            (1): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(96, 24, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(24, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (3): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(24, 144, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(144, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(144, 144, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=144, bias=False)
+            (1): BatchNorm2d(144, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(144, 24, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(24, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+    )
+    (2): Sequential(
+      (4): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(24, 144, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(144, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(144, 144, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), groups=144, bias=False)
+            (1): BatchNorm2d(144, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(144, 32, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (5): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(32, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=192, bias=False)
+            (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(192, 32, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (6): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(32, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=192, bias=False)
+            (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(192, 32, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+    )
+    (3): Sequential(
+      (7): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(32, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(192, 192, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), groups=192, bias=False)
+            (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(192, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (8): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(64, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(384, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=384, bias=False)
+            (1): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(384, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (9): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(64, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(384, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=384, bias=False)
+            (1): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(384, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (10): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(64, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(384, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=384, bias=False)
+            (1): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(384, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (11): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(64, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(384, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=384, bias=False)
+            (1): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(384, 96, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (12): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(96, 576, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(576, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(576, 576, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=576, bias=False)
+            (1): BatchNorm2d(576, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(576, 96, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (13): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(96, 576, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(576, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(576, 576, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=576, bias=False)
+            (1): BatchNorm2d(576, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(576, 96, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+    )
+  )
+  (papfn): PathAggregationFeaturePyramidNetwork(
+    (inner_blocks): ModuleList(
+      (0): Conv2d(16, 256, kernel_size=(1, 1), stride=(1, 1))
+      (1): Conv2d(24, 256, kernel_size=(1, 1), stride=(1, 1))
+      (2): Conv2d(32, 256, kernel_size=(1, 1), stride=(1, 1))
+      (3): Conv2d(96, 256, kernel_size=(1, 1), stride=(1, 1))
+    )
+    (layer_blocks): ModuleList(
+      (0-3): 4 x Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    )
+  )
+  (papfn_output): Conv2d(256, 35, kernel_size=(1, 1), stride=(1, 1))
+  (attention): SelfAttention(
+    (attention): MultiheadAttention(
+      (out_proj): NonDynamicallyQuantizableLinear(in_features=35, out_features=35, bias=True)
+    )
+    (norm): LayerNorm((35,), eps=1e-05, elementwise_affine=True)
+  )
+  (flip_block): FeatureFlipBlock(
+    (conv): Conv2d(6, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (avg_pool): AvgPool2d(kernel_size=(1, 2), stride=(1, 2), padding=0)
+  )
+  (curvature_block): CurvatureAwareFeatureBlock(
+    (conv_main): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (conv_curve1): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(2, 2), dilation=(2, 2))
+    (conv_curve2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(3, 3), dilation=(3, 3))
+    (fusion): Conv2d(768, 256, kernel_size=(1, 1), stride=(1, 1))
+    (avg_pool): AvgPool2d(kernel_size=2, stride=2, padding=0)
+  )
+  (channel_adapter): Conv2d(256, 3, kernel_size=(1, 1), stride=(1, 1))
+)
+[2024-12-24 11:02:41,935] [INFO] Starting training.
+[2024-12-24 11:02:41,935] [INFO] Beginning epoch 1
+D:\manga\myenv\Lib\site-packages\torch\functional.py:513: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\builder\windows\pytorch\aten\src\ATen\native\TensorShape.cpp:3610.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+[2024-12-24 11:03:37,998] [INFO] Epoch [1/2695], Step [1/910], Loss: 4046.2935 (conf: 1.1705, lower: 0.3883, upper: 1.0868, poly: 3743.6477, cls_loss: 0.0000, line_iou: 300.0000), s/iter: 4.1117, lr: 3.0e-04
+[2024-12-24 11:03:38,055] [INFO] Epoch [1/2695], Step [2/910], Loss: 3487.3651 (conf: 0.9707, lower: 0.1735, upper: 2.4898, poly: 2624.8027, cls_loss: 0.0000, line_iou: 300.0000), s/iter: 2.0791, lr: 3.0e-04
+[2024-12-24 11:03:38,107] [INFO] Epoch [1/2695], Step [3/910], Loss: 2490.4218 (conf: 1.1255, lower: 0.0751, upper: 2.7749, poly: 194.1973, cls_loss: 0.0000, line_iou: 298.3624), s/iter: 1.4002, lr: 3.0e-04
+[2024-12-24 11:03:38,185] [INFO] Epoch [1/2695], Step [4/910], Loss: 1958.9064 (conf: 1.1800, lower: 0.0170, upper: 2.3317, poly: 84.5264, cls_loss: 0.0000, line_iou: 276.3048), s/iter: 1.0685, lr: 3.0e-04
+[2024-12-24 11:03:38,262] [INFO] Epoch [1/2695], Step [5/910], Loss: 1717.8490 (conf: 1.1832, lower: 0.0000, upper: 2.7206, poly: 451.9731, cls_loss: 0.0000, line_iou: 297.7426), s/iter: 0.8691, lr: 3.0e-04
+[2024-12-24 11:03:38,331] [INFO] Epoch [1/2695], Step [6/910], Loss: 1525.3023 (conf: 1.1917, lower: 0.0020, upper: 2.7584, poly: 260.2217, cls_loss: 0.0000, line_iou: 298.3952), s/iter: 0.7343, lr: 3.0e-04
+[2024-12-24 11:03:38,395] [INFO] Epoch [1/2695], Step [7/910], Loss: 1358.9115 (conf: 1.1785, lower: 0.0053, upper: 2.8954, poly: 62.9208, cls_loss: 0.0000, line_iou: 293.5663), s/iter: 0.6371, lr: 3.0e-04
+[2024-12-24 11:03:38,448] [INFO] Epoch [1/2695], Step [8/910], Loss: 1223.2431 (conf: 0.4978, lower: 0.0118, upper: 3.7241, poly: 31.3947, cls_loss: 0.0000, line_iou: 237.9362), s/iter: 0.5630, lr: 3.0e-04
+[2024-12-24 11:03:38,499] [INFO] Epoch [1/2695], Step [9/910], Loss: 1132.0895 (conf: 1.1707, lower: 0.0204, upper: 3.2790, poly: 104.4835, cls_loss: 0.0000, line_iou: 293.9068), s/iter: 0.5054, lr: 3.0e-04
+[2024-12-24 11:03:38,555] [INFO] Epoch [1/2695], Step [10/910], Loss: 1063.0397 (conf: 1.1670, lower: 0.0198, upper: 3.2975, poly: 143.1356, cls_loss: 0.0000, line_iou: 293.9716), s/iter: 0.4594, lr: 3.0e-04
+[2024-12-24 11:03:38,616] [INFO] Epoch [1/2695], Step [11/910], Loss: 1027.0856 (conf: 1.0126, lower: 0.0332, upper: 2.6342, poly: 367.3292, cls_loss: 0.0000, line_iou: 296.5359), s/iter: 0.4224, lr: 3.0e-04
+[2024-12-24 11:03:38,668] [INFO] Epoch [1/2695], Step [12/910], Loss: 971.0698 (conf: 0.4910, lower: 0.0382, upper: 4.4766, poly: 65.0315, cls_loss: 0.0000, line_iou: 284.8585), s/iter: 0.3909, lr: 3.0e-04
+[2024-12-24 11:03:38,720] [INFO] Epoch [1/2695], Step [13/910], Loss: 935.5470 (conf: 0.4946, lower: 0.0251, upper: 4.4804, poly: 204.2736, cls_loss: 0.0000, line_iou: 300.0000), s/iter: 0.3641, lr: 3.0e-04
+[2024-12-24 11:03:38,778] [INFO] Epoch [1/2695], Step [14/910], Loss: 895.0436 (conf: 1.1473, lower: 0.0482, upper: 3.3202, poly: 67.6406, cls_loss: 0.0000, line_iou: 296.3423), s/iter: 0.3416, lr: 3.0e-04
+[2024-12-24 11:03:38,830] [INFO] Epoch [1/2695], Step [15/910], Loss: 858.4139 (conf: 1.1441, lower: 0.0280, upper: 3.4130, poly: 48.2292, cls_loss: 0.0000, line_iou: 292.7837), s/iter: 0.3217, lr: 3.0e-04
+[2024-12-24 11:03:38,879] [INFO] Epoch [1/2695], Step [16/910], Loss: 826.7228 (conf: 1.1380, lower: 0.0668, upper: 3.4616, poly: 50.8546, cls_loss: 0.0000, line_iou: 295.8363), s/iter: 0.3040, lr: 3.0e-04
+[2024-12-24 11:03:38,930] [INFO] Epoch [1/2695], Step [17/910], Loss: 803.9001 (conf: 0.4812, lower: 0.0422, upper: 4.7222, poly: 152.6357, cls_loss: 0.0000, line_iou: 280.8548), s/iter: 0.2887, lr: 3.0e-04
+[2024-12-24 11:03:38,984] [INFO] Epoch [1/2695], Step [18/910], Loss: 778.0010 (conf: 0.4707, lower: 0.0415, upper: 4.7305, poly: 58.6007, cls_loss: 0.0000, line_iou: 273.8727), s/iter: 0.2751, lr: 3.0e-04
+[2024-12-24 11:03:39,036] [INFO] Epoch [1/2695], Step [19/910], Loss: 754.0699 (conf: 1.1356, lower: 0.0840, upper: 3.5413, poly: 29.5394, cls_loss: 0.0000, line_iou: 289.0095), s/iter: 0.2629, lr: 3.0e-04
+[2024-12-24 11:03:39,089] [INFO] Epoch [1/2695], Step [20/910], Loss: 732.5284 (conf: 1.1325, lower: 0.0478, upper: 3.5756, poly: 52.8782, cls_loss: 0.0000, line_iou: 265.6059), s/iter: 0.2520, lr: 3.0e-04
+[2024-12-24 11:03:39,139] [INFO] Epoch [1/2695], Step [21/910], Loss: 714.0970 (conf: 1.1337, lower: 0.0438, upper: 3.4720, poly: 69.5920, cls_loss: 0.0000, line_iou: 271.2284), s/iter: 0.2419, lr: 3.0e-04
+[2024-12-24 11:03:39,190] [INFO] Epoch [1/2695], Step [22/910], Loss: 697.3440 (conf: 1.1411, lower: 0.0570, upper: 3.5674, poly: 60.8133, cls_loss: 0.0000, line_iou: 279.9527), s/iter: 0.2328, lr: 3.0e-04
+[2024-12-24 11:03:39,245] [INFO] Epoch [1/2695], Step [23/910], Loss: 681.7402 (conf: 1.1321, lower: 0.0742, upper: 3.6382, poly: 55.9929, cls_loss: 0.0000, line_iou: 277.6194), s/iter: 0.2246, lr: 3.0e-04
+[2024-12-24 11:03:39,298] [INFO] Epoch [1/2695], Step [24/910], Loss: 668.1389 (conf: 1.1399, lower: 0.0607, upper: 3.6415, poly: 74.2700, cls_loss: 0.0000, line_iou: 276.1965), s/iter: 0.2170, lr: 3.0e-04
+[2024-12-24 11:03:39,350] [INFO] Epoch [1/2695], Step [25/910], Loss: 655.1079 (conf: 1.1402, lower: 0.0280, upper: 3.5962, poly: 48.0928, cls_loss: 0.0000, line_iou: 289.5061), s/iter: 0.2100, lr: 3.0e-04
+[2024-12-24 11:03:39,406] [INFO] Epoch [1/2695], Step [26/910], Loss: 642.0619 (conf: 1.1411, lower: 0.0071, upper: 3.6143, poly: 43.4025, cls_loss: 0.0000, line_iou: 267.7472), s/iter: 0.2038, lr: 3.0e-04
+[2024-12-24 11:03:39,458] [INFO] Epoch [1/2695], Step [27/910], Loss: 627.2654 (conf: 0.4829, lower: 0.0214, upper: 4.7039, poly: 15.4577, cls_loss: 0.0000, line_iou: 221.8905), s/iter: 0.1978, lr: 3.0e-04
+[2024-12-24 11:03:39,511] [INFO] Epoch [1/2695], Step [28/910], Loss: 615.8044 (conf: 1.1295, lower: 0.0357, upper: 3.5890, poly: 28.6405, cls_loss: 0.0000, line_iou: 272.9617), s/iter: 0.1923, lr: 3.0e-04
+[2024-12-24 11:03:39,572] [INFO] Epoch [1/2695], Step [29/910], Loss: 606.4714 (conf: 0.4780, lower: 0.0246, upper: 4.7640, poly: 61.3995, cls_loss: 0.0000, line_iou: 278.4816), s/iter: 0.1874, lr: 3.0e-04
+[2024-12-24 11:03:39,628] [INFO] Epoch [1/2695], Step [30/910], Loss: 598.8061 (conf: 1.0009, lower: 0.0169, upper: 2.9141, poly: 90.1733, cls_loss: 0.0000, line_iou: 282.4064), s/iter: 0.1827, lr: 3.0e-04
+[2024-12-24 11:03:39,684] [INFO] Epoch [1/2695], Step [31/910], Loss: 590.2845 (conf: 0.9952, lower: 0.0253, upper: 2.7696, poly: 65.0321, cls_loss: 0.0000, line_iou: 265.8154), s/iter: 0.1783, lr: 3.0e-04
+[2024-12-24 11:03:39,734] [INFO] Epoch [1/2695], Step [32/910], Loss: 581.3853 (conf: 1.1112, lower: 0.0320, upper: 3.5498, poly: 42.3069, cls_loss: 0.0000, line_iou: 258.5101), s/iter: 0.1740, lr: 3.0e-04
+[2024-12-24 11:03:39,785] [INFO] Epoch [1/2695], Step [33/910], Loss: 575.8570 (conf: 0.4723, lower: 0.0498, upper: 4.7780, poly: 100.3067, cls_loss: 0.0000, line_iou: 293.3463), s/iter: 0.1701, lr: 3.0e-04
+[2024-12-24 11:03:39,847] [INFO] Epoch [1/2695], Step [34/910], Loss: 568.1799 (conf: 1.1141, lower: 0.0555, upper: 3.6531, poly: 24.8833, cls_loss: 0.0000, line_iou: 285.1284), s/iter: 0.1666, lr: 3.0e-04
+[2024-12-24 11:03:39,899] [INFO] Epoch [1/2695], Step [35/910], Loss: 560.1464 (conf: 0.9898, lower: 0.0585, upper: 2.9113, poly: 23.6286, cls_loss: 0.0000, line_iou: 259.4175), s/iter: 0.1631, lr: 3.0e-04
+[2024-12-24 11:03:39,977] [INFO] Epoch [1/2695], Step [36/910], Loss: 555.8826 (conf: 0.9961, lower: 0.0538, upper: 2.5836, poly: 114.1914, cls_loss: 0.0000, line_iou: 288.8277), s/iter: 0.1605, lr: 3.0e-04
+[2024-12-24 11:03:40,065] [INFO] Epoch [1/2695], Step [37/910], Loss: 551.3801 (conf: 0.9975, lower: 0.0803, upper: 2.5520, poly: 96.8021, cls_loss: 0.0000, line_iou: 288.8550), s/iter: 0.1584, lr: 3.0e-04
+[2024-12-24 11:03:40,140] [INFO] Epoch [1/2695], Step [38/910], Loss: 546.0982 (conf: 1.1292, lower: 0.0779, upper: 3.6947, poly: 51.3897, cls_loss: 0.0000, line_iou: 294.3782), s/iter: 0.1560, lr: 3.0e-04
+[2024-12-24 11:03:40,202] [INFO] Epoch [1/2695], Step [39/910], Loss: 541.3848 (conf: 0.9984, lower: 0.0481, upper: 2.9156, poly: 61.6505, cls_loss: 0.0000, line_iou: 296.6621), s/iter: 0.1534, lr: 3.0e-04
+[2024-12-24 11:03:40,254] [INFO] Epoch [1/2695], Step [40/910], Loss: 536.8654 (conf: 0.9983, lower: 0.0401, upper: 2.5675, poly: 77.3485, cls_loss: 0.0000, line_iou: 279.6544), s/iter: 0.1507, lr: 3.0e-04
+[2024-12-24 11:03:40,309] [INFO] Epoch [1/2695], Step [41/910], Loss: 533.0092 (conf: 1.1330, lower: 0.0614, upper: 3.6567, poly: 80.2905, cls_loss: 0.0000, line_iou: 293.6219), s/iter: 0.1481, lr: 3.0e-04
+[2024-12-24 11:03:40,357] [INFO] Epoch [1/2695], Step [42/910], Loss: 529.1643 (conf: 1.1342, lower: 0.0559, upper: 3.6393, poly: 73.0380, cls_loss: 0.0000, line_iou: 293.6554), s/iter: 0.1455, lr: 3.0e-04
+[2024-12-24 11:03:40,409] [INFO] Epoch [1/2695], Step [43/910], Loss: 524.7674 (conf: 0.4952, lower: 0.0527, upper: 4.7658, poly: 52.6385, cls_loss: 0.0000, line_iou: 282.1426), s/iter: 0.1431, lr: 3.0e-04
+[2024-12-24 11:03:40,460] [INFO] Epoch [1/2695], Step [44/910], Loss: 519.8034 (conf: 0.9880, lower: 0.0343, upper: 2.9701, poly: 39.3111, cls_loss: 0.0000, line_iou: 263.0511), s/iter: 0.1408, lr: 3.0e-04
+[2024-12-24 11:03:40,510] [INFO] Epoch [1/2695], Step [45/910], Loss: 515.2890 (conf: 0.9842, lower: 0.0345, upper: 2.4557, poly: 38.4119, cls_loss: 0.0000, line_iou: 274.7672), s/iter: 0.1385, lr: 3.0e-04
+[2024-12-24 11:03:40,558] [INFO] Epoch [1/2695], Step [46/910], Loss: 510.8478 (conf: 1.1314, lower: 0.0279, upper: 3.7013, poly: 25.9592, cls_loss: 0.0000, line_iou: 280.1736), s/iter: 0.1363, lr: 3.0e-04
+[2024-12-24 11:03:40,611] [INFO] Epoch [1/2695], Step [47/910], Loss: 508.9671 (conf: 1.1271, lower: 0.0274, upper: 3.7151, poly: 120.2855, cls_loss: 0.0000, line_iou: 297.3001), s/iter: 0.1344, lr: 3.0e-04
+[2024-12-24 11:03:40,667] [INFO] Epoch [1/2695], Step [48/910], Loss: 504.4386 (conf: 1.1239, lower: 0.0231, upper: 3.6957, poly: 31.6479, cls_loss: 0.0000, line_iou: 255.1092), s/iter: 0.1325, lr: 3.0e-04
+[2024-12-24 11:03:40,722] [INFO] Epoch [1/2695], Step [49/910], Loss: 503.2780 (conf: 0.4855, lower: 0.0054, upper: 4.9439, poly: 155.1335, cls_loss: 0.0000, line_iou: 287.0023), s/iter: 0.1308, lr: 3.0e-04
+[2024-12-24 11:03:40,775] [INFO] Epoch [1/2695], Step [50/910], Loss: 498.3931 (conf: 1.1190, lower: 0.0117, upper: 3.7374, poly: 15.4822, cls_loss: 0.0000, line_iou: 238.6807), s/iter: 0.1290, lr: 3.0e-04
+[2024-12-24 11:03:40,825] [INFO] Epoch [1/2695], Step [51/910], Loss: 494.1199 (conf: 0.4761, lower: 0.0198, upper: 4.9895, poly: 21.0607, cls_loss: 0.0000, line_iou: 253.9126), s/iter: 0.1273, lr: 3.0e-04
+[2024-12-24 11:03:40,874] [INFO] Epoch [1/2695], Step [52/910], Loss: 490.7240 (conf: 1.1200, lower: 0.0230, upper: 3.7562, poly: 43.7511, cls_loss: 0.0000, line_iou: 268.8823), s/iter: 0.1256, lr: 3.0e-04
+[2024-12-24 11:03:40,932] [INFO] Epoch [1/2695], Step [53/910], Loss: 493.0565 (conf: 1.0099, lower: 0.0228, upper: 2.3318, poly: 313.9682, cls_loss: 0.0000, line_iou: 297.0177), s/iter: 0.1242, lr: 3.0e-04
+[2024-12-24 11:03:40,986] [INFO] Epoch [1/2695], Step [54/910], Loss: 491.1142 (conf: 1.1246, lower: 0.0320, upper: 3.7506, poly: 87.3119, cls_loss: 0.0000, line_iou: 295.9526), s/iter: 0.1227, lr: 3.0e-04
+[2024-12-24 11:03:41,036] [INFO] Epoch [1/2695], Step [55/910], Loss: 488.9984 (conf: 0.4773, lower: 0.0355, upper: 5.0580, poly: 75.3353, cls_loss: 0.0000, line_iou: 293.8362), s/iter: 0.1212, lr: 3.0e-04
+[2024-12-24 11:03:41,084] [INFO] Epoch [1/2695], Step [56/910], Loss: 486.8220 (conf: 1.1170, lower: 0.0305, upper: 3.8040, poly: 76.0245, cls_loss: 0.0000, line_iou: 286.1455), s/iter: 0.1197, lr: 3.0e-04
+[2024-12-24 11:03:41,142] [INFO] Epoch [1/2695], Step [57/910], Loss: 484.4499 (conf: 1.1218, lower: 0.0528, upper: 3.8614, poly: 55.6961, cls_loss: 0.0000, line_iou: 290.8823), s/iter: 0.1185, lr: 3.0e-04
+[2024-12-24 11:03:41,196] [INFO] Epoch [1/2695], Step [58/910], Loss: 481.3754 (conf: 1.1206, lower: 0.0754, upper: 3.8571, poly: 42.7039, cls_loss: 0.0000, line_iou: 258.3719), s/iter: 0.1172, lr: 3.0e-04
+[2024-12-24 11:03:41,248] [INFO] Epoch [1/2695], Step [59/910], Loss: 478.1358 (conf: 1.1192, lower: 0.0615, upper: 3.8806, poly: 16.0677, cls_loss: 0.0000, line_iou: 269.1075), s/iter: 0.1160, lr: 3.0e-04
+[2024-12-24 11:03:41,299] [INFO] Epoch [1/2695], Step [60/910], Loss: 474.7419 (conf: 1.1165, lower: 0.0520, upper: 3.8470, poly: 18.0518, cls_loss: 0.0000, line_iou: 251.4382), s/iter: 0.1147, lr: 3.0e-04
+[2024-12-24 11:03:41,349] [INFO] Epoch [1/2695], Step [61/910], Loss: 471.5714 (conf: 1.1131, lower: 0.0491, upper: 3.8441, poly: 20.4916, cls_loss: 0.0000, line_iou: 255.8402), s/iter: 0.1135, lr: 3.0e-04
+[2024-12-24 11:03:41,396] [INFO] Epoch [1/2695], Step [62/910], Loss: 468.6458 (conf: 1.1123, lower: 0.0611, upper: 3.8433, poly: 20.5917, cls_loss: 0.0000, line_iou: 264.5787), s/iter: 0.1123, lr: 3.0e-04
+[2024-12-24 11:03:41,451] [INFO] Epoch [1/2695], Step [63/910], Loss: 465.5490 (conf: 1.1172, lower: 0.0582, upper: 3.8211, poly: 15.2607, cls_loss: 0.0000, line_iou: 253.2873), s/iter: 0.1113, lr: 3.0e-04
+[2024-12-24 11:03:41,505] [INFO] Epoch [1/2695], Step [64/910], Loss: 462.6062 (conf: 1.1113, lower: 0.0447, upper: 3.8807, poly: 33.2039, cls_loss: 0.0000, line_iou: 238.9698), s/iter: 0.1102, lr: 3.0e-04
+[2024-12-24 11:03:41,553] [INFO] Epoch [1/2695], Step [65/910], Loss: 460.4236 (conf: 1.1149, lower: 0.0702, upper: 3.7759, poly: 28.1778, cls_loss: 0.0000, line_iou: 287.6007), s/iter: 0.1091, lr: 3.0e-04
+[2024-12-24 11:03:41,609] [INFO] Epoch [1/2695], Step [66/910], Loss: 457.7042 (conf: 1.1140, lower: 0.0553, upper: 3.7911, poly: 16.6159, cls_loss: 0.0000, line_iou: 259.3612), s/iter: 0.1081, lr: 3.0e-04
+[2024-12-24 11:03:41,659] [INFO] Epoch [1/2695], Step [67/910], Loss: 455.2269 (conf: 1.1114, lower: 0.0545, upper: 3.6602, poly: 28.5622, cls_loss: 0.0000, line_iou: 258.3433), s/iter: 0.1071, lr: 3.0e-04
+[2024-12-24 11:03:41,713] [INFO] Epoch [1/2695], Step [68/910], Loss: 452.6149 (conf: 1.1156, lower: 0.0646, upper: 3.8266, poly: 13.5854, cls_loss: 0.0000, line_iou: 259.0155), s/iter: 0.1062, lr: 3.0e-04
+[2024-12-24 11:03:41,767] [INFO] Epoch [1/2695], Step [69/910], Loss: 451.6198 (conf: 1.0034, lower: 0.0530, upper: 2.4295, poly: 90.3637, cls_loss: 0.0000, line_iou: 290.1013), s/iter: 0.1053, lr: 3.0e-04
+[2024-12-24 11:03:41,824] [INFO] Epoch [1/2695], Step [70/910], Loss: 448.9647 (conf: 1.1214, lower: 0.0427, upper: 3.8032, poly: 12.1081, cls_loss: 0.0000, line_iou: 248.6866), s/iter: 0.1045, lr: 3.0e-04
+[2024-12-24 11:03:41,875] [INFO] Epoch [1/2695], Step [71/910], Loss: 448.4941 (conf: 0.4891, lower: 0.0502, upper: 5.2453, poly: 135.6517, cls_loss: 0.0000, line_iou: 274.1207), s/iter: 0.1036, lr: 3.0e-04
+[2024-12-24 11:03:41,928] [INFO] Epoch [1/2695], Step [72/910], Loss: 445.8227 (conf: 0.4908, lower: 0.0529, upper: 4.7096, poly: 11.4096, cls_loss: 0.0000, line_iou: 239.4893), s/iter: 0.1027, lr: 3.0e-04
+[2024-12-24 11:03:41,975] [INFO] Epoch [1/2695], Step [73/910], Loss: 444.1489 (conf: 1.1249, lower: 0.0226, upper: 3.8084, poly: 25.0873, cls_loss: 0.0000, line_iou: 293.5907), s/iter: 0.1019, lr: 3.0e-04
+[2024-12-24 11:03:42,025] [INFO] Epoch [1/2695], Step [74/910], Loss: 442.5361 (conf: 1.1312, lower: 0.0330, upper: 3.7634, poly: 26.0897, cls_loss: 0.0000, line_iou: 293.7867), s/iter: 0.1010, lr: 3.0e-04
+[2024-12-24 11:03:42,081] [INFO] Epoch [1/2695], Step [75/910], Loss: 440.3406 (conf: 1.1263, lower: 0.0206, upper: 3.7610, poly: 15.5519, cls_loss: 0.0000, line_iou: 257.4134), s/iter: 0.1003, lr: 3.0e-04
+[2024-12-24 11:03:42,136] [INFO] Epoch [1/2695], Step [76/910], Loss: 438.6664 (conf: 0.9958, lower: 0.0347, upper: 2.5036, poly: 33.0090, cls_loss: 0.0000, line_iou: 276.5557), s/iter: 0.0996, lr: 3.0e-04
+[2024-12-24 11:03:42,194] [INFO] Epoch [1/2695], Step [77/910], Loss: 436.5162 (conf: 1.1203, lower: 0.0243, upper: 3.7859, poly: 18.2556, cls_loss: 0.0000, line_iou: 249.9161), s/iter: 0.0990, lr: 3.0e-04
+[2024-12-24 11:03:42,245] [INFO] Epoch [1/2695], Step [78/910], Loss: 434.9950 (conf: 1.1158, lower: 0.0174, upper: 3.7370, poly: 19.5396, cls_loss: 0.0000, line_iou: 293.4503), s/iter: 0.0982, lr: 3.0e-04
+[2024-12-24 11:03:42,298] [INFO] Epoch [1/2695], Step [79/910], Loss: 433.4463 (conf: 0.4770, lower: 0.0335, upper: 5.0070, poly: 36.1005, cls_loss: 0.0000, line_iou: 271.0336), s/iter: 0.0975, lr: 3.0e-04
+[2024-12-24 11:03:42,346] [INFO] Epoch [1/2695], Step [80/910], Loss: 431.9200 (conf: 1.1047, lower: 0.0293, upper: 3.6890, poly: 40.7068, cls_loss: 0.0000, line_iou: 265.8073), s/iter: 0.0968, lr: 3.0e-04
+[2024-12-24 11:03:42,393] [INFO] Epoch [1/2695], Step [81/910], Loss: 430.5572 (conf: 1.1016, lower: 0.0270, upper: 3.7561, poly: 30.9728, cls_loss: 0.0000, line_iou: 285.6823), s/iter: 0.0961, lr: 3.0e-04
+[2024-12-24 11:03:42,441] [INFO] Epoch [1/2695], Step [82/910], Loss: 429.7755 (conf: 0.4647, lower: 0.0341, upper: 5.1829, poly: 67.4955, cls_loss: 0.0000, line_iou: 293.2768), s/iter: 0.0954, lr: 3.0e-04
+[2024-12-24 11:03:42,493] [INFO] Epoch [1/2695], Step [83/910], Loss: 429.1113 (conf: 1.0092, lower: 0.0357, upper: 2.9957, poly: 79.2216, cls_loss: 0.0000, line_iou: 291.3831), s/iter: 0.0947, lr: 3.0e-04
+[2024-12-24 11:03:42,544] [INFO] Epoch [1/2695], Step [84/910], Loss: 427.9541 (conf: 0.4624, lower: 0.0329, upper: 5.1886, poly: 43.3859, cls_loss: 0.0000, line_iou: 282.8379), s/iter: 0.0941, lr: 3.0e-04
+[2024-12-24 11:03:42,596] [INFO] Epoch [1/2695], Step [85/910], Loss: 428.5450 (conf: 1.0108, lower: 0.0300, upper: 2.5599, poly: 175.6551, cls_loss: 0.0000, line_iou: 298.9269), s/iter: 0.0935, lr: 3.0e-04
+[2024-12-24 11:03:42,650] [INFO] Epoch [1/2695], Step [86/910], Loss: 428.0005 (conf: 1.0119, lower: 0.0328, upper: 2.9940, poly: 82.4674, cls_loss: 0.0000, line_iou: 295.2113), s/iter: 0.0929, lr: 3.0e-04
+[2024-12-24 11:03:42,708] [INFO] Epoch [1/2695], Step [87/910], Loss: 427.2180 (conf: 0.4628, lower: 0.0315, upper: 4.9745, poly: 81.7068, cls_loss: 0.0000, line_iou: 272.7484), s/iter: 0.0924, lr: 3.0e-04
+[2024-12-24 11:03:42,758] [INFO] Epoch [1/2695], Step [88/910], Loss: 426.6828 (conf: 0.4627, lower: 0.0250, upper: 5.0175, poly: 84.5616, cls_loss: 0.0000, line_iou: 290.0536), s/iter: 0.0919, lr: 3.0e-04
+[2024-12-24 11:03:42,810] [INFO] Epoch [1/2695], Step [89/910], Loss: 425.7398 (conf: 1.1058, lower: 0.0187, upper: 3.7302, poly: 61.5915, cls_loss: 0.0000, line_iou: 276.3069), s/iter: 0.0913, lr: 3.0e-04
+[2024-12-24 11:03:42,863] [INFO] Epoch [1/2695], Step [90/910], Loss: 424.7762 (conf: 1.0047, lower: 0.0113, upper: 2.9619, poly: 63.6667, cls_loss: 0.0000, line_iou: 271.3725), s/iter: 0.0908, lr: 3.0e-04
+[2024-12-24 11:03:42,915] [INFO] Epoch [1/2695], Step [91/910], Loss: 423.4331 (conf: 1.1133, lower: 0.0117, upper: 3.7031, poly: 28.7152, cls_loss: 0.0000, line_iou: 269.0102), s/iter: 0.0902, lr: 3.0e-04
+[2024-12-24 11:03:42,964] [INFO] Epoch [1/2695], Step [92/910], Loss: 421.9507 (conf: 1.1095, lower: 0.0143, upper: 3.6950, poly: 16.1061, cls_loss: 0.0000, line_iou: 266.1246), s/iter: 0.0897, lr: 3.0e-04
+[2024-12-24 11:03:43,011] [INFO] Epoch [1/2695], Step [93/910], Loss: 420.2595 (conf: 1.1083, lower: 0.0053, upper: 3.7083, poly: 10.4541, cls_loss: 0.0000, line_iou: 249.3997), s/iter: 0.0892, lr: 3.0e-04
+[2024-12-24 11:03:43,062] [INFO] Epoch [1/2695], Step [94/910], Loss: 419.7656 (conf: 1.1106, lower: 0.0003, upper: 2.9919, poly: 89.8601, cls_loss: 0.0000, line_iou: 279.8683), s/iter: 0.0886, lr: 3.0e-04
+[2024-12-24 11:03:43,111] [INFO] Epoch [1/2695], Step [95/910], Loss: 418.3054 (conf: 1.1094, lower: 0.0037, upper: 3.6177, poly: 14.5438, cls_loss: 0.0000, line_iou: 261.7673), s/iter: 0.0881, lr: 3.0e-04
+[2024-12-24 11:03:43,167] [INFO] Epoch [1/2695], Step [96/910], Loss: 416.8734 (conf: 1.1090, lower: 0.0036, upper: 3.5622, poly: 24.0777, cls_loss: 0.0000, line_iou: 252.0876), s/iter: 0.0877, lr: 3.0e-04
+[2024-12-24 11:03:43,216] [INFO] Epoch [1/2695], Step [97/910], Loss: 415.8723 (conf: 1.1105, lower: 0.0000, upper: 3.4140, poly: 32.7401, cls_loss: 0.0000, line_iou: 282.4939), s/iter: 0.0872, lr: 3.0e-04
+[2024-12-24 11:03:43,264] [INFO] Epoch [1/2695], Step [98/910], Loss: 414.9814 (conf: 0.9663, lower: 0.0021, upper: 2.1165, poly: 59.1432, cls_loss: 0.0000, line_iou: 266.3419), s/iter: 0.0867, lr: 3.0e-04
+[2024-12-24 11:03:43,314] [INFO] Epoch [1/2695], Step [99/910], Loss: 413.9348 (conf: 1.1099, lower: 0.0001, upper: 2.5612, poly: 31.4801, cls_loss: 0.0000, line_iou: 276.2136), s/iter: 0.0863, lr: 3.0e-04
+[2024-12-24 11:03:43,369] [INFO] Epoch [1/2695], Step [100/910], Loss: 413.0843 (conf: 1.1080, lower: 0.0035, upper: 3.4199, poly: 35.5338, cls_loss: 0.0000, line_iou: 288.8194), s/iter: 0.0858, lr: 3.0e-04
+[2024-12-24 11:03:43,427] [INFO] Epoch [1/2695], Step [101/910], Loss: 412.2671 (conf: 0.4861, lower: 0.0009, upper: 4.3849, poly: 32.7719, cls_loss: 0.0000, line_iou: 292.9023), s/iter: 0.0452, lr: 3.0e-04
+[2024-12-24 11:03:43,478] [INFO] Epoch [1/2695], Step [102/910], Loss: 411.6961 (conf: 1.1090, lower: 0.0026, upper: 3.3996, poly: 58.1937, cls_loss: 0.0000, line_iou: 291.3227), s/iter: 0.0451, lr: 3.0e-04
+[2024-12-24 11:03:43,550] [INFO] Epoch [1/2695], Step [103/910], Loss: 413.4331 (conf: 0.4848, lower: 0.0022, upper: 4.7886, poly: 289.2483, cls_loss: 0.0000, line_iou: 296.0860), s/iter: 0.0454, lr: 3.0e-04
+[2024-12-24 11:03:43,615] [INFO] Epoch [1/2695], Step [104/910], Loss: 412.8683 (conf: 0.9666, lower: 0.0008, upper: 2.7261, poly: 56.1131, cls_loss: 0.0000, line_iou: 294.8818), s/iter: 0.0452, lr: 3.0e-04
+[2024-12-24 11:03:43,694] [INFO] Epoch [1/2695], Step [105/910], Loss: 412.2245 (conf: 1.1033, lower: 0.0017, upper: 3.5937, poly: 47.3675, cls_loss: 0.0000, line_iou: 293.2063), s/iter: 0.0452, lr: 3.0e-04
+[2024-12-24 11:03:43,770] [INFO] Epoch [1/2695], Step [106/910], Loss: 411.3344 (conf: 0.9706, lower: 0.0051, upper: 2.8779, poly: 27.9784, cls_loss: 0.0000, line_iou: 286.0465), s/iter: 0.0453, lr: 3.0e-04
+[2024-12-24 11:03:43,830] [INFO] Epoch [1/2695], Step [107/910], Loss: 410.3358 (conf: 0.4711, lower: 0.0062, upper: 4.6759, poly: 32.2721, cls_loss: 0.0000, line_iou: 267.0562), s/iter: 0.0453, lr: 3.0e-04
+[2024-12-24 11:03:43,879] [INFO] Epoch [1/2695], Step [108/910], Loss: 409.2108 (conf: 0.9767, lower: 0.0110, upper: 2.8998, poly: 22.7244, cls_loss: 0.0000, line_iou: 262.2264), s/iter: 0.0452, lr: 3.0e-04
+[2024-12-24 11:03:43,927] [INFO] Epoch [1/2695], Step [109/910], Loss: 407.7949 (conf: 1.0957, lower: 0.0156, upper: 3.6349, poly: 12.5133, cls_loss: 0.0000, line_iou: 237.6105), s/iter: 0.0452, lr: 3.0e-04
+[2024-12-24 11:03:43,977] [INFO] Epoch [1/2695], Step [110/910], Loss: 406.7506 (conf: 1.0937, lower: 0.0090, upper: 3.4206, poly: 21.4949, cls_loss: 0.0000, line_iou: 266.9094), s/iter: 0.0451, lr: 3.0e-04
+[2024-12-24 11:03:44,025] [INFO] Epoch [1/2695], Step [111/910], Loss: 405.7748 (conf: 0.4587, lower: 0.0161, upper: 4.7535, poly: 16.4362, cls_loss: 0.0000, line_iou: 276.7678), s/iter: 0.0450, lr: 3.0e-04
+[2024-12-24 11:03:44,074] [INFO] Epoch [1/2695], Step [112/910], Loss: 404.8852 (conf: 1.0862, lower: 0.0236, upper: 3.6229, poly: 22.8856, cls_loss: 0.0000, line_iou: 278.5245), s/iter: 0.0449, lr: 3.0e-04
+[2024-12-24 11:03:44,125] [INFO] Epoch [1/2695], Step [113/910], Loss: 403.7410 (conf: 1.0844, lower: 0.0248, upper: 3.6627, poly: 25.2199, cls_loss: 0.0000, line_iou: 245.5950), s/iter: 0.0449, lr: 3.0e-04
+[2024-12-24 11:03:44,172] [INFO] Epoch [1/2695], Step [114/910], Loss: 402.8267 (conf: 1.0818, lower: 0.0226, upper: 3.6832, poly: 28.3248, cls_loss: 0.0000, line_iou: 266.4052), s/iter: 0.0448, lr: 3.0e-04
+[2024-12-24 11:03:44,249] [INFO] Epoch [1/2695], Step [115/910], Loss: 402.6667 (conf: 0.4545, lower: 0.0349, upper: 5.0091, poly: 100.3125, cls_loss: 0.0000, line_iou: 278.6144), s/iter: 0.0451, lr: 3.0e-04
+[2024-12-24 11:03:44,305] [INFO] Epoch [1/2695], Step [116/910], Loss: 401.8286 (conf: 1.0825, lower: 0.0253, upper: 3.6605, poly: 35.3990, cls_loss: 0.0000, line_iou: 265.2773), s/iter: 0.0452, lr: 3.0e-04
+[2024-12-24 11:03:44,382] [INFO] Epoch [1/2695], Step [117/910], Loss: 401.1864 (conf: 0.9845, lower: 0.0213, upper: 2.9437, poly: 61.6545, cls_loss: 0.0000, line_iou: 261.0855), s/iter: 0.0454, lr: 3.0e-04
+[2024-12-24 11:03:44,429] [INFO] Epoch [1/2695], Step [118/910], Loss: 400.5674 (conf: 1.0866, lower: 0.0232, upper: 3.6476, poly: 61.7876, cls_loss: 0.0000, line_iou: 261.6022), s/iter: 0.0454, lr: 3.0e-04
+[2024-12-24 11:03:44,476] [INFO] Epoch [1/2695], Step [119/910], Loss: 399.9657 (conf: 1.0906, lower: 0.0155, upper: 3.6680, poly: 32.9206, cls_loss: 0.0000, line_iou: 291.2687), s/iter: 0.0453, lr: 3.0e-04
+[2024-12-24 11:03:44,532] [INFO] Epoch [1/2695], Step [120/910], Loss: 399.6821 (conf: 0.9858, lower: 0.0156, upper: 3.0218, poly: 76.2934, cls_loss: 0.0000, line_iou: 285.6115), s/iter: 0.0453, lr: 3.0e-04
+[2024-12-24 11:03:44,584] [INFO] Epoch [1/2695], Step [121/910], Loss: 398.9835 (conf: 0.4692, lower: 0.0032, upper: 4.8790, poly: 26.1230, cls_loss: 0.0000, line_iou: 283.6786), s/iter: 0.0454, lr: 3.0e-04
+[2024-12-24 11:03:44,632] [INFO] Epoch [1/2695], Step [122/910], Loss: 398.2014 (conf: 1.0992, lower: 0.0001, upper: 3.6382, poly: 24.1010, cls_loss: 0.0000, line_iou: 274.7389), s/iter: 0.0453, lr: 3.0e-04
+[2024-12-24 11:03:44,683] [INFO] Epoch [1/2695], Step [123/910], Loss: 396.9630 (conf: 1.0961, lower: 0.0084, upper: 3.6625, poly: 12.9682, cls_loss: 0.0000, line_iou: 228.1388), s/iter: 0.0453, lr: 3.0e-04
+[2024-12-24 11:03:44,737] [INFO] Epoch [1/2695], Step [124/910], Loss: 396.2127 (conf: 0.9903, lower: 0.0077, upper: 2.9123, poly: 18.0210, cls_loss: 0.0000, line_iou: 281.9891), s/iter: 0.0453, lr: 3.0e-04
+[2024-12-24 11:03:44,794] [INFO] Epoch [1/2695], Step [125/910], Loss: 395.5080 (conf: 1.0923, lower: 0.0111, upper: 3.6330, poly: 23.3666, cls_loss: 0.0000, line_iou: 280.0305), s/iter: 0.0454, lr: 3.0e-04
+[2024-12-24 11:03:44,843] [INFO] Epoch [1/2695], Step [126/910], Loss: 396.9044 (conf: 0.9930, lower: 0.0224, upper: 2.3980, poly: 272.0632, cls_loss: 0.0000, line_iou: 295.9758), s/iter: 0.0453, lr: 3.0e-04
+[2024-12-24 11:03:44,889] [INFO] Epoch [1/2695], Step [127/910], Loss: 396.3319 (conf: 0.4579, lower: 0.0196, upper: 4.8123, poly: 30.9263, cls_loss: 0.0000, line_iou: 287.9723), s/iter: 0.0452, lr: 3.0e-04
+[2024-12-24 11:03:44,940] [INFO] Epoch [1/2695], Step [128/910], Loss: 396.2649 (conf: 0.4544, lower: 0.0218, upper: 4.3692, poly: 94.6740, cls_loss: 0.0000, line_iou: 288.2451), s/iter: 0.0452, lr: 3.0e-04
+[2024-12-24 11:03:44,988] [INFO] Epoch [1/2695], Step [129/910], Loss: 395.4151 (conf: 0.4553, lower: 0.0183, upper: 4.8472, poly: 36.4330, cls_loss: 0.0000, line_iou: 244.8894), s/iter: 0.0451, lr: 3.0e-04
+[2024-12-24 11:03:45,043] [INFO] Epoch [1/2695], Step [130/910], Loss: 394.3584 (conf: 0.4546, lower: 0.0118, upper: 4.8552, poly: 24.6306, cls_loss: 0.0000, line_iou: 228.0836), s/iter: 0.0451, lr: 3.0e-04
+[2024-12-24 11:03:45,093] [INFO] Epoch [1/2695], Step [131/910], Loss: 393.5493 (conf: 0.9912, lower: 0.0130, upper: 2.9069, poly: 17.1404, cls_loss: 0.0000, line_iou: 267.3220), s/iter: 0.0450, lr: 3.0e-04
+[2024-12-24 11:03:45,143] [INFO] Epoch [1/2695], Step [132/910], Loss: 392.4004 (conf: 1.0822, lower: 0.0119, upper: 3.5934, poly: 14.0074, cls_loss: 0.0000, line_iou: 223.1976), s/iter: 0.0450, lr: 3.0e-04
+[2024-12-24 11:03:45,191] [INFO] Epoch [1/2695], Step [133/910], Loss: 391.7934 (conf: 0.9862, lower: 0.0108, upper: 2.9126, poly: 31.1580, cls_loss: 0.0000, line_iou: 276.6056), s/iter: 0.0449, lr: 3.0e-04
+[2024-12-24 11:03:45,243] [INFO] Epoch [1/2695], Step [134/910], Loss: 391.3063 (conf: 0.4604, lower: 0.0154, upper: 4.8693, poly: 48.4954, cls_loss: 0.0000, line_iou: 272.6757), s/iter: 0.0448, lr: 3.0e-04
+[2024-12-24 11:03:45,296] [INFO] Epoch [1/2695], Step [135/910], Loss: 390.7458 (conf: 1.0855, lower: 0.0051, upper: 3.6223, poly: 22.2778, cls_loss: 0.0000, line_iou: 288.6508), s/iter: 0.0449, lr: 3.0e-04
+[2024-12-24 11:03:45,347] [INFO] Epoch [1/2695], Step [136/910], Loss: 390.1670 (conf: 1.0881, lower: 0.0135, upper: 3.6438, poly: 18.9844, cls_loss: 0.0000, line_iou: 288.2918), s/iter: 0.0446, lr: 3.0e-04
+[2024-12-24 11:03:45,405] [INFO] Epoch [1/2695], Step [137/910], Loss: 390.8693 (conf: 0.9872, lower: 0.0032, upper: 2.0275, poly: 186.6943, cls_loss: 0.0000, line_iou: 296.6690), s/iter: 0.0442, lr: 3.0e-04
+[2024-12-24 11:03:45,455] [INFO] Epoch [1/2695], Step [138/910], Loss: 390.8981 (conf: 0.4668, lower: 0.0034, upper: 4.8830, poly: 110.9519, cls_loss: 0.0000, line_iou: 278.5386), s/iter: 0.0439, lr: 3.0e-04
+[2024-12-24 11:03:45,509] [INFO] Epoch [1/2695], Step [139/910], Loss: 389.9928 (conf: 1.0922, lower: 0.0023, upper: 3.5246, poly: 21.6485, cls_loss: 0.0000, line_iou: 238.7960), s/iter: 0.0438, lr: 3.0e-04
+[2024-12-24 11:03:45,561] [INFO] Epoch [1/2695], Step [140/910], Loss: 389.2609 (conf: 1.0957, lower: 0.0036, upper: 3.4636, poly: 27.4221, cls_loss: 0.0000, line_iou: 255.5479), s/iter: 0.0438, lr: 3.0e-04
+[2024-12-24 11:03:45,614] [INFO] Epoch [1/2695], Step [141/910], Loss: 388.3296 (conf: 1.0995, lower: 0.0051, upper: 3.5335, poly: 21.5286, cls_loss: 0.0000, line_iou: 231.7792), s/iter: 0.0438, lr: 3.0e-04
+[2024-12-24 11:03:45,666] [INFO] Epoch [1/2695], Step [142/910], Loss: 388.0403 (conf: 0.9917, lower: 0.0125, upper: 2.2945, poly: 57.5735, cls_loss: 0.0000, line_iou: 286.3703), s/iter: 0.0438, lr: 3.0e-04
+[2024-12-24 11:03:45,722] [INFO] Epoch [1/2695], Step [143/910], Loss: 387.7993 (conf: 0.9893, lower: 0.0107, upper: 2.8252, poly: 54.4599, cls_loss: 0.0000, line_iou: 295.3006), s/iter: 0.0439, lr: 3.0e-04
+[2024-12-24 11:03:45,778] [INFO] Epoch [1/2695], Step [144/910], Loss: 388.3153 (conf: 0.4847, lower: 0.0048, upper: 4.7718, poly: 183.0153, cls_loss: 0.0000, line_iou: 273.8250), s/iter: 0.0439, lr: 3.0e-04
+[2024-12-24 11:03:45,826] [INFO] Epoch [1/2695], Step [145/910], Loss: 387.6508 (conf: 0.4841, lower: 0.0103, upper: 4.8070, poly: 25.9377, cls_loss: 0.0000, line_iou: 260.7228), s/iter: 0.0439, lr: 3.0e-04
+[2024-12-24 11:03:45,894] [INFO] Epoch [1/2695], Step [146/910], Loss: 387.2048 (conf: 1.1083, lower: 0.0138, upper: 3.6009, poly: 29.6131, cls_loss: 0.0000, line_iou: 288.2018), s/iter: 0.0441, lr: 3.0e-04
+[2024-12-24 11:03:45,968] [INFO] Epoch [1/2695], Step [147/910], Loss: 387.4495 (conf: 0.9935, lower: 0.0100, upper: 2.8535, poly: 136.9547, cls_loss: 0.0000, line_iou: 282.3558), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:46,041] [INFO] Epoch [1/2695], Step [148/910], Loss: 387.1522 (conf: 0.9928, lower: 0.0027, upper: 2.8556, poly: 89.5996, cls_loss: 0.0000, line_iou: 250.0038), s/iter: 0.0445, lr: 3.0e-04
+[2024-12-24 11:03:46,093] [INFO] Epoch [1/2695], Step [149/910], Loss: 386.0523 (conf: 0.4739, lower: 0.0004, upper: 4.7419, poly: 12.9337, cls_loss: 0.0000, line_iou: 205.1217), s/iter: 0.0445, lr: 3.0e-04
+[2024-12-24 11:03:46,141] [INFO] Epoch [1/2695], Step [150/910], Loss: 385.2746 (conf: 1.0960, lower: 0.0001, upper: 3.4993, poly: 19.7670, cls_loss: 0.0000, line_iou: 245.0253), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:46,190] [INFO] Epoch [1/2695], Step [151/910], Loss: 385.2635 (conf: 0.4685, lower: 0.0033, upper: 4.8059, poly: 91.9958, cls_loss: 0.0000, line_iou: 286.3295), s/iter: 0.0445, lr: 3.0e-04
+[2024-12-24 11:03:46,240] [INFO] Epoch [1/2695], Step [152/910], Loss: 384.4247 (conf: 1.0924, lower: 0.0043, upper: 3.5493, poly: 11.6221, cls_loss: 0.0000, line_iou: 241.5050), s/iter: 0.0445, lr: 3.0e-04
+[2024-12-24 11:03:46,286] [INFO] Epoch [1/2695], Step [153/910], Loss: 384.2631 (conf: 0.4645, lower: 0.0086, upper: 4.9274, poly: 91.3145, cls_loss: 0.0000, line_iou: 262.9710), s/iter: 0.0443, lr: 3.0e-04
+[2024-12-24 11:03:46,343] [INFO] Epoch [1/2695], Step [154/910], Loss: 383.4874 (conf: 1.0923, lower: 0.0039, upper: 3.5478, poly: 9.6144, cls_loss: 0.0000, line_iou: 250.5511), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:46,393] [INFO] Epoch [1/2695], Step [155/910], Loss: 383.5268 (conf: 0.9919, lower: 0.0028, upper: 2.2526, poly: 94.2435, cls_loss: 0.0000, line_iou: 292.1141), s/iter: 0.0443, lr: 3.0e-04
+[2024-12-24 11:03:46,441] [INFO] Epoch [1/2695], Step [156/910], Loss: 383.7859 (conf: 0.9904, lower: 0.0025, upper: 2.1672, poly: 124.0402, cls_loss: 0.0000, line_iou: 296.7365), s/iter: 0.0443, lr: 3.0e-04
+[2024-12-24 11:03:46,488] [INFO] Epoch [1/2695], Step [157/910], Loss: 383.1022 (conf: 0.4618, lower: 0.0054, upper: 4.6872, poly: 25.9560, cls_loss: 0.0000, line_iou: 245.3412), s/iter: 0.0442, lr: 3.0e-04
+[2024-12-24 11:03:46,535] [INFO] Epoch [1/2695], Step [158/910], Loss: 382.5728 (conf: 0.4621, lower: 0.0011, upper: 4.5454, poly: 30.9788, cls_loss: 0.0000, line_iou: 263.4709), s/iter: 0.0442, lr: 3.0e-04
+[2024-12-24 11:03:46,586] [INFO] Epoch [1/2695], Step [159/910], Loss: 382.1394 (conf: 1.1001, lower: 0.0005, upper: 3.4334, poly: 32.8541, cls_loss: 0.0000, line_iou: 276.2716), s/iter: 0.0442, lr: 3.0e-04
+[2024-12-24 11:03:46,639] [INFO] Epoch [1/2695], Step [160/910], Loss: 381.7055 (conf: 1.1013, lower: 0.0004, upper: 3.5188, poly: 33.3579, cls_loss: 0.0000, line_iou: 274.7315), s/iter: 0.0442, lr: 3.0e-04
+[2024-12-24 11:03:46,709] [INFO] Epoch [1/2695], Step [161/910], Loss: 382.2110 (conf: 0.9870, lower: 0.0000, upper: 1.9659, poly: 165.6581, cls_loss: 0.0000, line_iou: 294.4835), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:46,759] [INFO] Epoch [1/2695], Step [162/910], Loss: 381.7328 (conf: 0.9847, lower: 0.0012, upper: 2.1698, poly: 34.3750, cls_loss: 0.0000, line_iou: 267.2034), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:46,814] [INFO] Epoch [1/2695], Step [163/910], Loss: 381.4896 (conf: 1.1070, lower: 0.0003, upper: 3.4256, poly: 55.9920, cls_loss: 0.0000, line_iou: 281.5662), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:46,864] [INFO] Epoch [1/2695], Step [164/910], Loss: 381.9889 (conf: 0.4750, lower: 0.0002, upper: 4.8315, poly: 174.3292, cls_loss: 0.0000, line_iou: 283.7473), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:46,914] [INFO] Epoch [1/2695], Step [165/910], Loss: 381.8825 (conf: 1.1080, lower: 0.0001, upper: 3.3852, poly: 77.8605, cls_loss: 0.0000, line_iou: 282.0851), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:46,972] [INFO] Epoch [1/2695], Step [166/910], Loss: 381.6722 (conf: 0.9847, lower: 0.0016, upper: 2.7178, poly: 60.6783, cls_loss: 0.0000, line_iou: 282.5760), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:47,021] [INFO] Epoch [1/2695], Step [167/910], Loss: 381.2848 (conf: 0.9844, lower: 0.0000, upper: 2.3478, poly: 27.6368, cls_loss: 0.0000, line_iou: 286.0132), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:47,069] [INFO] Epoch [1/2695], Step [168/910], Loss: 381.0114 (conf: 1.1034, lower: 0.0001, upper: 3.4151, poly: 54.0779, cls_loss: 0.0000, line_iou: 276.7536), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:47,121] [INFO] Epoch [1/2695], Step [169/910], Loss: 380.8600 (conf: 1.1023, lower: 0.0049, upper: 3.5059, poly: 62.0405, cls_loss: 0.0000, line_iou: 288.7752), s/iter: 0.0443, lr: 3.0e-04
+[2024-12-24 11:03:47,176] [INFO] Epoch [1/2695], Step [170/910], Loss: 381.5923 (conf: 0.4667, lower: 0.0003, upper: 4.4017, poly: 200.4891, cls_loss: 0.0000, line_iou: 300.0000), s/iter: 0.0443, lr: 3.0e-04
+[2024-12-24 11:03:47,228] [INFO] Epoch [1/2695], Step [171/910], Loss: 381.1888 (conf: 1.0967, lower: 0.0061, upper: 3.5449, poly: 34.6283, cls_loss: 0.0000, line_iou: 273.3087), s/iter: 0.0443, lr: 3.0e-04
+[2024-12-24 11:03:47,287] [INFO] Epoch [1/2695], Step [172/910], Loss: 380.8333 (conf: 0.9912, lower: 0.0021, upper: 2.4089, poly: 37.4818, cls_loss: 0.0000, line_iou: 279.1565), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:47,336] [INFO] Epoch [1/2695], Step [173/910], Loss: 380.3871 (conf: 0.4572, lower: 0.0140, upper: 4.6794, poly: 38.3764, cls_loss: 0.0000, line_iou: 260.1181), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:47,384] [INFO] Epoch [1/2695], Step [174/910], Loss: 379.8675 (conf: 1.0929, lower: 0.0101, upper: 3.5750, poly: 21.7943, cls_loss: 0.0000, line_iou: 263.4976), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:47,432] [INFO] Epoch [1/2695], Step [175/910], Loss: 379.3231 (conf: 0.9945, lower: 0.0044, upper: 2.8302, poly: 20.1097, cls_loss: 0.0000, line_iou: 260.6718), s/iter: 0.0443, lr: 3.0e-04
+[2024-12-24 11:03:47,482] [INFO] Epoch [1/2695], Step [176/910], Loss: 378.6876 (conf: 1.0926, lower: 0.0045, upper: 3.5269, poly: 14.1690, cls_loss: 0.0000, line_iou: 248.6704), s/iter: 0.0442, lr: 3.0e-04
+[2024-12-24 11:03:47,536] [INFO] Epoch [1/2695], Step [177/910], Loss: 378.4718 (conf: 0.4548, lower: 0.0005, upper: 4.5505, poly: 67.5947, cls_loss: 0.0000, line_iou: 267.9048), s/iter: 0.0442, lr: 3.0e-04
+[2024-12-24 11:03:47,592] [INFO] Epoch [1/2695], Step [178/910], Loss: 377.7026 (conf: 1.0878, lower: 0.0001, upper: 3.4984, poly: 13.9823, cls_loss: 0.0000, line_iou: 222.9827), s/iter: 0.0443, lr: 3.0e-04
+[2024-12-24 11:03:47,646] [INFO] Epoch [1/2695], Step [179/910], Loss: 377.4269 (conf: 0.4503, lower: 0.0009, upper: 4.4735, poly: 56.8561, cls_loss: 0.0000, line_iou: 266.5668), s/iter: 0.0442, lr: 3.0e-04
+[2024-12-24 11:03:47,708] [INFO] Epoch [1/2695], Step [180/910], Loss: 377.7006 (conf: 0.9959, lower: 0.0013, upper: 2.4232, poly: 136.3190, cls_loss: 0.0000, line_iou: 286.9557), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:47,758] [INFO] Epoch [1/2695], Step [181/910], Loss: 378.5186 (conf: 0.9961, lower: 0.0075, upper: 2.2497, poly: 226.4787, cls_loss: 0.0000, line_iou: 296.0216), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:47,809] [INFO] Epoch [1/2695], Step [182/910], Loss: 378.0621 (conf: 0.4466, lower: 0.0010, upper: 4.2979, poly: 29.6041, cls_loss: 0.0000, line_iou: 261.0883), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:47,863] [INFO] Epoch [1/2695], Step [183/910], Loss: 377.5037 (conf: 0.4480, lower: 0.0013, upper: 4.4173, poly: 23.1696, cls_loss: 0.0000, line_iou: 247.8396), s/iter: 0.0445, lr: 3.0e-04
+[2024-12-24 11:03:47,911] [INFO] Epoch [1/2695], Step [184/910], Loss: 377.2349 (conf: 1.0879, lower: 0.0032, upper: 3.5710, poly: 44.0651, cls_loss: 0.0000, line_iou: 279.3176), s/iter: 0.0445, lr: 3.0e-04
+[2024-12-24 11:03:47,961] [INFO] Epoch [1/2695], Step [185/910], Loss: 377.3707 (conf: 0.9993, lower: 0.0105, upper: 2.6841, poly: 108.3179, cls_loss: 0.0000, line_iou: 290.3410), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:48,011] [INFO] Epoch [1/2695], Step [186/910], Loss: 377.0594 (conf: 1.0873, lower: 0.0158, upper: 3.7049, poly: 38.6069, cls_loss: 0.0000, line_iou: 276.0656), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:48,064] [INFO] Epoch [1/2695], Step [187/910], Loss: 376.7234 (conf: 1.0872, lower: 0.0116, upper: 3.6751, poly: 27.8216, cls_loss: 0.0000, line_iou: 281.6176), s/iter: 0.0443, lr: 3.0e-04
+[2024-12-24 11:03:48,122] [INFO] Epoch [1/2695], Step [188/910], Loss: 376.7001 (conf: 1.0002, lower: 0.0052, upper: 2.5751, poly: 83.8700, cls_loss: 0.0000, line_iou: 284.9053), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:48,169] [INFO] Epoch [1/2695], Step [189/910], Loss: 376.2901 (conf: 1.0894, lower: 0.0001, upper: 3.6165, poly: 17.4468, cls_loss: 0.0000, line_iou: 277.0454), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:48,218] [INFO] Epoch [1/2695], Step [190/910], Loss: 376.1296 (conf: 0.9984, lower: 0.0101, upper: 2.5901, poly: 59.9925, cls_loss: 0.0000, line_iou: 282.2064), s/iter: 0.0443, lr: 3.0e-04
+[2024-12-24 11:03:48,265] [INFO] Epoch [1/2695], Step [191/910], Loss: 375.7925 (conf: 1.0901, lower: 0.0111, upper: 3.6631, poly: 24.1245, cls_loss: 0.0000, line_iou: 282.8662), s/iter: 0.0443, lr: 3.0e-04
+[2024-12-24 11:03:48,323] [INFO] Epoch [1/2695], Step [192/910], Loss: 375.3304 (conf: 1.0908, lower: 0.0104, upper: 3.6386, poly: 15.5388, cls_loss: 0.0000, line_iou: 266.7755), s/iter: 0.0443, lr: 3.0e-04
+[2024-12-24 11:03:48,372] [INFO] Epoch [1/2695], Step [193/910], Loss: 374.8813 (conf: 1.0899, lower: 0.0072, upper: 3.5918, poly: 17.5234, cls_loss: 0.0000, line_iou: 266.4533), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:48,431] [INFO] Epoch [1/2695], Step [194/910], Loss: 374.2806 (conf: 1.0870, lower: 0.0003, upper: 3.6111, poly: 12.0338, cls_loss: 0.0000, line_iou: 241.6032), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:48,481] [INFO] Epoch [1/2695], Step [195/910], Loss: 374.3208 (conf: 0.9848, lower: 0.0012, upper: 2.4733, poly: 84.0747, cls_loss: 0.0000, line_iou: 294.5834), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:48,536] [INFO] Epoch [1/2695], Step [196/910], Loss: 373.9283 (conf: 0.4591, lower: 0.0008, upper: 4.7572, poly: 18.9248, cls_loss: 0.0000, line_iou: 273.2471), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:48,592] [INFO] Epoch [1/2695], Step [197/910], Loss: 374.3830 (conf: 1.0859, lower: 0.0011, upper: 3.5370, poly: 166.9798, cls_loss: 0.0000, line_iou: 291.9035), s/iter: 0.0445, lr: 3.0e-04
+[2024-12-24 11:03:48,651] [INFO] Epoch [1/2695], Step [198/910], Loss: 374.9774 (conf: 0.4615, lower: 0.0000, upper: 4.8166, poly: 187.2887, cls_loss: 0.0000, line_iou: 299.5090), s/iter: 0.0446, lr: 3.0e-04
+[2024-12-24 11:03:48,699] [INFO] Epoch [1/2695], Step [199/910], Loss: 374.5257 (conf: 1.0878, lower: 0.0004, upper: 3.5500, poly: 14.1207, cls_loss: 0.0000, line_iou: 266.3280), s/iter: 0.0446, lr: 3.0e-04
+[2024-12-24 11:03:48,752] [INFO] Epoch [1/2695], Step [200/910], Loss: 374.9962 (conf: 0.4609, lower: 0.0006, upper: 4.8353, poly: 163.3369, cls_loss: 0.0000, line_iou: 300.0000), s/iter: 0.0446, lr: 3.0e-04
+[2024-12-24 11:03:48,800] [INFO] Epoch [1/2695], Step [201/910], Loss: 374.4337 (conf: 1.0874, lower: 0.0010, upper: 3.1649, poly: 15.6689, cls_loss: 0.0000, line_iou: 242.0159), s/iter: 0.0445, lr: 3.0e-04
+[2024-12-24 11:03:48,849] [INFO] Epoch [1/2695], Step [202/910], Loss: 374.1072 (conf: 1.0869, lower: 0.0002, upper: 3.2812, poly: 28.3289, cls_loss: 0.0000, line_iou: 275.7793), s/iter: 0.0445, lr: 3.0e-04
+[2024-12-24 11:03:48,897] [INFO] Epoch [1/2695], Step [203/910], Loss: 373.6932 (conf: 1.0836, lower: 0.0005, upper: 3.1739, poly: 29.6698, cls_loss: 0.0000, line_iou: 256.1346), s/iter: 0.0442, lr: 3.0e-04
+[2024-12-24 11:03:48,948] [INFO] Epoch [1/2695], Step [204/910], Loss: 373.8242 (conf: 0.9853, lower: 0.0019, upper: 2.0606, poly: 98.6791, cls_loss: 0.0000, line_iou: 298.6906), s/iter: 0.0441, lr: 3.0e-04
+[2024-12-24 11:03:49,002] [INFO] Epoch [1/2695], Step [205/910], Loss: 373.8991 (conf: 0.4503, lower: 0.0032, upper: 4.5231, poly: 95.6102, cls_loss: 0.0000, line_iou: 288.5849), s/iter: 0.0438, lr: 3.0e-04
+[2024-12-24 11:03:49,052] [INFO] Epoch [1/2695], Step [206/910], Loss: 373.5007 (conf: 0.4480, lower: 0.0000, upper: 4.2726, poly: 53.7622, cls_loss: 0.0000, line_iou: 233.3611), s/iter: 0.0435, lr: 3.0e-04
+[2024-12-24 11:03:49,107] [INFO] Epoch [1/2695], Step [207/910], Loss: 373.2562 (conf: 1.0793, lower: 0.0001, upper: 3.0867, poly: 39.0358, cls_loss: 0.0000, line_iou: 279.6826), s/iter: 0.0435, lr: 3.0e-04
+[2024-12-24 11:03:49,164] [INFO] Epoch [1/2695], Step [208/910], Loss: 373.0433 (conf: 0.9868, lower: 0.0002, upper: 2.5197, poly: 40.5059, cls_loss: 0.0000, line_iou: 284.9620), s/iter: 0.0436, lr: 3.0e-04
+[2024-12-24 11:03:49,216] [INFO] Epoch [1/2695], Step [209/910], Loss: 372.9294 (conf: 0.9867, lower: 0.0027, upper: 2.3904, poly: 70.8424, cls_loss: 0.0000, line_iou: 275.0030), s/iter: 0.0436, lr: 3.0e-04
+[2024-12-24 11:03:49,271] [INFO] Epoch [1/2695], Step [210/910], Loss: 372.8680 (conf: 0.4480, lower: 0.0039, upper: 4.8576, poly: 60.2793, cls_loss: 0.0000, line_iou: 294.4632), s/iter: 0.0437, lr: 3.0e-04
+[2024-12-24 11:03:49,321] [INFO] Epoch [1/2695], Step [211/910], Loss: 372.4819 (conf: 1.0815, lower: 0.0004, upper: 3.5579, poly: 23.2262, cls_loss: 0.0000, line_iou: 263.5306), s/iter: 0.0437, lr: 3.0e-04
+[2024-12-24 11:03:49,378] [INFO] Epoch [1/2695], Step [212/910], Loss: 372.0931 (conf: 1.0792, lower: 0.0038, upper: 3.5650, poly: 19.3436, cls_loss: 0.0000, line_iou: 266.0690), s/iter: 0.0438, lr: 3.0e-04
+[2024-12-24 11:03:49,444] [INFO] Epoch [1/2695], Step [213/910], Loss: 371.9363 (conf: 0.4497, lower: 0.0044, upper: 4.8994, poly: 42.7433, cls_loss: 0.0000, line_iou: 290.5789), s/iter: 0.0439, lr: 3.0e-04
+[2024-12-24 11:03:49,495] [INFO] Epoch [1/2695], Step [214/910], Loss: 371.5387 (conf: 1.0809, lower: 0.0040, upper: 3.5565, poly: 19.5054, cls_loss: 0.0000, line_iou: 262.7102), s/iter: 0.0439, lr: 3.0e-04
+[2024-12-24 11:03:49,546] [INFO] Epoch [1/2695], Step [215/910], Loss: 371.1125 (conf: 1.0794, lower: 0.0066, upper: 3.5821, poly: 13.0327, cls_loss: 0.0000, line_iou: 262.2062), s/iter: 0.0437, lr: 3.0e-04
+[2024-12-24 11:03:49,603] [INFO] Epoch [1/2695], Step [216/910], Loss: 371.1003 (conf: 0.9906, lower: 0.0015, upper: 2.4098, poly: 70.1385, cls_loss: 0.0000, line_iou: 294.9441), s/iter: 0.0437, lr: 3.0e-04
+[2024-12-24 11:03:49,653] [INFO] Epoch [1/2695], Step [217/910], Loss: 370.8047 (conf: 1.0775, lower: 0.0000, upper: 3.3424, poly: 23.9534, cls_loss: 0.0000, line_iou: 278.5706), s/iter: 0.0434, lr: 3.0e-04
+[2024-12-24 11:03:49,703] [INFO] Epoch [1/2695], Step [218/910], Loss: 370.5415 (conf: 1.0776, lower: 0.0001, upper: 2.6376, poly: 17.7758, cls_loss: 0.0000, line_iou: 291.9530), s/iter: 0.0434, lr: 3.0e-04
+[2024-12-24 11:03:49,756] [INFO] Epoch [1/2695], Step [219/910], Loss: 370.1174 (conf: 1.0790, lower: 0.0013, upper: 3.4392, poly: 18.9771, cls_loss: 0.0000, line_iou: 254.1466), s/iter: 0.0435, lr: 3.0e-04
+[2024-12-24 11:03:49,807] [INFO] Epoch [1/2695], Step [220/910], Loss: 369.7208 (conf: 1.0805, lower: 0.0000, upper: 3.3117, poly: 11.0106, cls_loss: 0.0000, line_iou: 267.4619), s/iter: 0.0434, lr: 3.0e-04
+[2024-12-24 11:03:49,858] [INFO] Epoch [1/2695], Step [221/910], Loss: 369.2693 (conf: 1.0811, lower: 0.0001, upper: 3.2757, poly: 10.9260, cls_loss: 0.0000, line_iou: 254.6633), s/iter: 0.0434, lr: 3.0e-04
+[2024-12-24 11:03:49,907] [INFO] Epoch [1/2695], Step [222/910], Loss: 368.7590 (conf: 1.0830, lower: 0.0009, upper: 3.4813, poly: 13.8143, cls_loss: 0.0000, line_iou: 237.6004), s/iter: 0.0434, lr: 3.0e-04
+[2024-12-24 11:03:49,956] [INFO] Epoch [1/2695], Step [223/910], Loss: 368.7741 (conf: 1.0849, lower: 0.0020, upper: 3.6496, poly: 71.9489, cls_loss: 0.0000, line_iou: 295.4517), s/iter: 0.0434, lr: 3.0e-04
+[2024-12-24 11:03:50,010] [INFO] Epoch [1/2695], Step [224/910], Loss: 368.2978 (conf: 0.4627, lower: 0.0031, upper: 4.4493, poly: 8.5373, cls_loss: 0.0000, line_iou: 248.6338), s/iter: 0.0434, lr: 3.0e-04
+[2024-12-24 11:03:50,067] [INFO] Epoch [1/2695], Step [225/910], Loss: 368.2745 (conf: 0.9825, lower: 0.0003, upper: 2.1978, poly: 66.6527, cls_loss: 0.0000, line_iou: 293.2075), s/iter: 0.0434, lr: 3.0e-04
+[2024-12-24 11:03:50,143] [INFO] Epoch [1/2695], Step [226/910], Loss: 368.0157 (conf: 1.0860, lower: 0.0012, upper: 3.4681, poly: 24.9127, cls_loss: 0.0000, line_iou: 280.3242), s/iter: 0.0437, lr: 3.0e-04
+[2024-12-24 11:03:50,219] [INFO] Epoch [1/2695], Step [227/910], Loss: 367.6629 (conf: 1.0828, lower: 0.0015, upper: 3.4601, poly: 13.0724, cls_loss: 0.0000, line_iou: 270.3047), s/iter: 0.0440, lr: 3.0e-04
+[2024-12-24 11:03:50,287] [INFO] Epoch [1/2695], Step [228/910], Loss: 367.3447 (conf: 1.0829, lower: 0.0043, upper: 3.4526, poly: 13.9673, cls_loss: 0.0000, line_iou: 276.6157), s/iter: 0.0442, lr: 3.0e-04
+[2024-12-24 11:03:50,348] [INFO] Epoch [1/2695], Step [229/910], Loss: 367.0252 (conf: 1.0814, lower: 0.0009, upper: 3.4705, poly: 14.8245, cls_loss: 0.0000, line_iou: 274.8047), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:50,400] [INFO] Epoch [1/2695], Step [230/910], Loss: 366.9614 (conf: 0.9827, lower: 0.0002, upper: 2.1544, poly: 57.0500, cls_loss: 0.0000, line_iou: 292.1513), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:50,452] [INFO] Epoch [1/2695], Step [231/910], Loss: 366.6064 (conf: 1.0798, lower: 0.0034, upper: 3.4944, poly: 16.4291, cls_loss: 0.0000, line_iou: 263.9667), s/iter: 0.0443, lr: 3.0e-04
+[2024-12-24 11:03:50,514] [INFO] Epoch [1/2695], Step [232/910], Loss: 366.2489 (conf: 1.0761, lower: 0.0033, upper: 3.4872, poly: 14.5112, cls_loss: 0.0000, line_iou: 264.5739), s/iter: 0.0445, lr: 3.0e-04
+[2024-12-24 11:03:50,569] [INFO] Epoch [1/2695], Step [233/910], Loss: 366.2019 (conf: 0.4537, lower: 0.0001, upper: 4.5881, poly: 66.0588, cls_loss: 0.0000, line_iou: 284.1922), s/iter: 0.0446, lr: 3.0e-04
+[2024-12-24 11:03:50,631] [INFO] Epoch [1/2695], Step [234/910], Loss: 365.9178 (conf: 0.9845, lower: 0.0003, upper: 2.6606, poly: 23.8656, cls_loss: 0.0000, line_iou: 272.2184), s/iter: 0.0447, lr: 3.0e-04
+[2024-12-24 11:03:50,695] [INFO] Epoch [1/2695], Step [235/910], Loss: 365.6606 (conf: 1.0717, lower: 0.0000, upper: 3.3495, poly: 28.3086, cls_loss: 0.0000, line_iou: 272.7551), s/iter: 0.0447, lr: 3.0e-04
+[2024-12-24 11:03:50,761] [INFO] Epoch [1/2695], Step [236/910], Loss: 365.2907 (conf: 1.0737, lower: 0.0002, upper: 3.3237, poly: 23.7653, cls_loss: 0.0000, line_iou: 250.2040), s/iter: 0.0449, lr: 3.0e-04
+[2024-12-24 11:03:50,815] [INFO] Epoch [1/2695], Step [237/910], Loss: 365.3342 (conf: 0.9827, lower: 0.0007, upper: 2.1285, poly: 95.6927, cls_loss: 0.0000, line_iou: 276.7849), s/iter: 0.0449, lr: 3.0e-04
+[2024-12-24 11:03:50,871] [INFO] Epoch [1/2695], Step [238/910], Loss: 365.3761 (conf: 0.9808, lower: 0.0020, upper: 2.1005, poly: 97.7682, cls_loss: 0.0000, line_iou: 274.4505), s/iter: 0.0449, lr: 3.0e-04
+[2024-12-24 11:03:50,924] [INFO] Epoch [1/2695], Step [239/910], Loss: 365.1816 (conf: 1.0662, lower: 0.0037, upper: 3.3732, poly: 32.2633, cls_loss: 0.0000, line_iou: 282.1829), s/iter: 0.0449, lr: 3.0e-04
+[2024-12-24 11:03:50,979] [INFO] Epoch [1/2695], Step [240/910], Loss: 365.0170 (conf: 0.4420, lower: 0.0003, upper: 4.7197, poly: 60.6769, cls_loss: 0.0000, line_iou: 259.8549), s/iter: 0.0450, lr: 3.0e-04
+[2024-12-24 11:03:51,037] [INFO] Epoch [1/2695], Step [241/910], Loss: 364.7861 (conf: 1.0640, lower: 0.0001, upper: 3.4837, poly: 32.3988, cls_loss: 0.0000, line_iou: 272.4154), s/iter: 0.0450, lr: 3.0e-04
+[2024-12-24 11:03:51,100] [INFO] Epoch [1/2695], Step [242/910], Loss: 364.5435 (conf: 0.9753, lower: 0.0012, upper: 2.7652, poly: 34.3117, cls_loss: 0.0000, line_iou: 268.0240), s/iter: 0.0452, lr: 3.0e-04
+[2024-12-24 11:03:51,153] [INFO] Epoch [1/2695], Step [243/910], Loss: 364.6577 (conf: 0.9739, lower: 0.0002, upper: 2.2243, poly: 107.3129, cls_loss: 0.0000, line_iou: 281.7743), s/iter: 0.0451, lr: 3.0e-04
+[2024-12-24 11:03:51,207] [INFO] Epoch [1/2695], Step [244/910], Loss: 364.6776 (conf: 0.9749, lower: 0.0007, upper: 2.2561, poly: 93.4247, cls_loss: 0.0000, line_iou: 272.8609), s/iter: 0.0451, lr: 3.0e-04
+[2024-12-24 11:03:51,264] [INFO] Epoch [1/2695], Step [245/910], Loss: 364.3875 (conf: 1.0625, lower: 0.0006, upper: 3.3706, poly: 17.0386, cls_loss: 0.0000, line_iou: 272.1357), s/iter: 0.0452, lr: 3.0e-04
+[2024-12-24 11:03:51,315] [INFO] Epoch [1/2695], Step [246/910], Loss: 364.0176 (conf: 1.0663, lower: 0.0000, upper: 3.4574, poly: 11.9761, cls_loss: 0.0000, line_iou: 256.8841), s/iter: 0.0450, lr: 3.0e-04
+[2024-12-24 11:03:51,367] [INFO] Epoch [1/2695], Step [247/910], Loss: 363.5632 (conf: 1.0664, lower: 0.0011, upper: 3.4783, poly: 6.7727, cls_loss: 0.0000, line_iou: 240.4820), s/iter: 0.0448, lr: 3.0e-04
+[2024-12-24 11:03:51,416] [INFO] Epoch [1/2695], Step [248/910], Loss: 363.3989 (conf: 0.4492, lower: 0.0003, upper: 4.6192, poly: 30.5936, cls_loss: 0.0000, line_iou: 287.1438), s/iter: 0.0445, lr: 3.0e-04
+[2024-12-24 11:03:51,472] [INFO] Epoch [1/2695], Step [249/910], Loss: 363.1256 (conf: 1.0716, lower: 0.0000, upper: 3.4573, poly: 20.5934, cls_loss: 0.0000, line_iou: 270.2171), s/iter: 0.0446, lr: 3.0e-04
+[2024-12-24 11:03:51,524] [INFO] Epoch [1/2695], Step [250/910], Loss: 362.9638 (conf: 1.0716, lower: 0.0001, upper: 3.2580, poly: 37.6607, cls_loss: 0.0000, line_iou: 280.6957), s/iter: 0.0447, lr: 3.0e-04
+[2024-12-24 11:03:51,583] [INFO] Epoch [1/2695], Step [251/910], Loss: 362.8222 (conf: 1.0746, lower: 0.0001, upper: 3.4270, poly: 37.3577, cls_loss: 0.0000, line_iou: 285.5673), s/iter: 0.0448, lr: 3.0e-04
+[2024-12-24 11:03:51,642] [INFO] Epoch [1/2695], Step [252/910], Loss: 362.9523 (conf: 0.4563, lower: 0.0009, upper: 4.7175, poly: 98.0996, cls_loss: 0.0000, line_iou: 292.3347), s/iter: 0.0448, lr: 3.0e-04
+[2024-12-24 11:03:51,695] [INFO] Epoch [1/2695], Step [253/910], Loss: 362.8159 (conf: 0.9857, lower: 0.0034, upper: 2.5614, poly: 35.3451, cls_loss: 0.0000, line_iou: 289.5381), s/iter: 0.0449, lr: 3.0e-04
+[2024-12-24 11:03:51,756] [INFO] Epoch [1/2695], Step [254/910], Loss: 362.5789 (conf: 0.4578, lower: 0.0007, upper: 4.5815, poly: 25.0626, cls_loss: 0.0000, line_iou: 272.5141), s/iter: 0.0449, lr: 3.0e-04
+[2024-12-24 11:03:51,811] [INFO] Epoch [1/2695], Step [255/910], Loss: 362.2698 (conf: 1.0730, lower: 0.0010, upper: 3.4417, poly: 32.4236, cls_loss: 0.0000, line_iou: 246.8091), s/iter: 0.0450, lr: 3.0e-04
+[2024-12-24 11:03:51,867] [INFO] Epoch [1/2695], Step [256/910], Loss: 361.8662 (conf: 0.4567, lower: 0.0019, upper: 4.5645, poly: 17.7645, cls_loss: 0.0000, line_iou: 236.1638), s/iter: 0.0451, lr: 3.0e-04
+[2024-12-24 11:03:51,920] [INFO] Epoch [1/2695], Step [257/910], Loss: 361.6050 (conf: 1.0696, lower: 0.0000, upper: 3.4566, poly: 13.8836, cls_loss: 0.0000, line_iou: 276.3362), s/iter: 0.0451, lr: 3.0e-04
+[2024-12-24 11:03:51,974] [INFO] Epoch [1/2695], Step [258/910], Loss: 361.2811 (conf: 1.0678, lower: 0.0002, upper: 3.4160, poly: 11.1506, cls_loss: 0.0000, line_iou: 262.3948), s/iter: 0.0452, lr: 3.0e-04
+[2024-12-24 11:03:52,035] [INFO] Epoch [1/2695], Step [259/910], Loss: 361.0843 (conf: 0.9739, lower: 0.0000, upper: 2.7517, poly: 27.9397, cls_loss: 0.0000, line_iou: 278.6627), s/iter: 0.0453, lr: 3.0e-04
+[2024-12-24 11:03:52,093] [INFO] Epoch [1/2695], Step [260/910], Loss: 360.8551 (conf: 1.0656, lower: 0.0002, upper: 3.4469, poly: 23.4572, cls_loss: 0.0000, line_iou: 273.5177), s/iter: 0.0453, lr: 3.0e-04
+[2024-12-24 11:03:52,146] [INFO] Epoch [1/2695], Step [261/910], Loss: 360.8583 (conf: 0.9722, lower: 0.0000, upper: 2.3057, poly: 65.1139, cls_loss: 0.0000, line_iou: 293.2827), s/iter: 0.0451, lr: 3.0e-04
+[2024-12-24 11:03:52,201] [INFO] Epoch [1/2695], Step [262/910], Loss: 360.6445 (conf: 0.9702, lower: 0.0000, upper: 2.7340, poly: 23.0258, cls_loss: 0.0000, line_iou: 278.1224), s/iter: 0.0452, lr: 3.0e-04
+[2024-12-24 11:03:52,255] [INFO] Epoch [1/2695], Step [263/910], Loss: 360.4516 (conf: 1.0620, lower: 0.0000, upper: 3.3736, poly: 16.8859, cls_loss: 0.0000, line_iou: 288.5954), s/iter: 0.0452, lr: 3.0e-04
+[2024-12-24 11:03:52,320] [INFO] Epoch [1/2695], Step [264/910], Loss: 360.1365 (conf: 1.0626, lower: 0.0003, upper: 3.4036, poly: 12.2025, cls_loss: 0.0000, line_iou: 260.5912), s/iter: 0.0453, lr: 3.0e-04
+[2024-12-24 11:03:52,370] [INFO] Epoch [1/2695], Step [265/910], Loss: 359.8559 (conf: 1.0626, lower: 0.0036, upper: 3.3412, poly: 17.0093, cls_loss: 0.0000, line_iou: 264.3707), s/iter: 0.0453, lr: 3.0e-04
+[2024-12-24 11:03:52,425] [INFO] Epoch [1/2695], Step [266/910], Loss: 359.7330 (conf: 1.0613, lower: 0.0105, upper: 3.3659, poly: 31.3676, cls_loss: 0.0000, line_iou: 291.3637), s/iter: 0.0453, lr: 3.0e-04
+[2024-12-24 11:03:52,482] [INFO] Epoch [1/2695], Step [267/910], Loss: 359.4132 (conf: 1.0620, lower: 0.0075, upper: 3.3652, poly: 13.6490, cls_loss: 0.0000, line_iou: 256.2591), s/iter: 0.0454, lr: 3.0e-04
+[2024-12-24 11:03:52,532] [INFO] Epoch [1/2695], Step [268/910], Loss: 359.1648 (conf: 1.0570, lower: 0.0059, upper: 3.3049, poly: 19.8300, cls_loss: 0.0000, line_iou: 268.6404), s/iter: 0.0454, lr: 3.0e-04
+[2024-12-24 11:03:52,598] [INFO] Epoch [1/2695], Step [269/910], Loss: 358.8716 (conf: 0.9693, lower: 0.0021, upper: 2.6798, poly: 14.4696, cls_loss: 0.0000, line_iou: 262.1600), s/iter: 0.0456, lr: 3.0e-04
+[2024-12-24 11:03:52,697] [INFO] Epoch [1/2695], Step [270/910], Loss: 359.0149 (conf: 0.9704, lower: 0.0014, upper: 2.0921, poly: 116.7819, cls_loss: 0.0000, line_iou: 277.7188), s/iter: 0.0461, lr: 3.0e-04
+[2024-12-24 11:03:52,757] [INFO] Epoch [1/2695], Step [271/910], Loss: 358.8189 (conf: 1.0474, lower: 0.0020, upper: 3.3430, poly: 21.7194, cls_loss: 0.0000, line_iou: 279.7837), s/iter: 0.0461, lr: 3.0e-04
+[2024-12-24 11:03:52,816] [INFO] Epoch [1/2695], Step [272/910], Loss: 358.8281 (conf: 1.0470, lower: 0.0153, upper: 2.7222, poly: 100.4993, cls_loss: 0.0000, line_iou: 257.0550), s/iter: 0.0461, lr: 3.0e-04
+[2024-12-24 11:03:52,868] [INFO] Epoch [1/2695], Step [273/910], Loss: 358.7721 (conf: 1.0493, lower: 0.0027, upper: 3.4318, poly: 48.3505, cls_loss: 0.0000, line_iou: 290.6905), s/iter: 0.0462, lr: 3.0e-04
+[2024-12-24 11:03:52,924] [INFO] Epoch [1/2695], Step [274/910], Loss: 359.0002 (conf: 0.9715, lower: 0.0005, upper: 1.9741, poly: 119.6362, cls_loss: 0.0000, line_iou: 298.7082), s/iter: 0.0463, lr: 3.0e-04
+[2024-12-24 11:03:52,972] [INFO] Epoch [1/2695], Step [275/910], Loss: 358.7803 (conf: 1.0504, lower: 0.0003, upper: 3.1907, poly: 33.3434, cls_loss: 0.0000, line_iou: 260.9178), s/iter: 0.0463, lr: 3.0e-04
+[2024-12-24 11:03:53,019] [INFO] Epoch [1/2695], Step [276/910], Loss: 358.5707 (conf: 1.0506, lower: 0.0007, upper: 3.0536, poly: 41.3831, cls_loss: 0.0000, line_iou: 255.4508), s/iter: 0.0463, lr: 3.0e-04
+[2024-12-24 11:03:53,076] [INFO] Epoch [1/2695], Step [277/910], Loss: 358.4450 (conf: 0.4363, lower: 0.0044, upper: 4.5412, poly: 37.1927, cls_loss: 0.0000, line_iou: 281.5798), s/iter: 0.0463, lr: 3.0e-04
+[2024-12-24 11:03:53,122] [INFO] Epoch [1/2695], Step [278/910], Loss: 358.2277 (conf: 1.0507, lower: 0.0001, upper: 3.0249, poly: 39.3973, cls_loss: 0.0000, line_iou: 254.5617), s/iter: 0.0462, lr: 3.0e-04
+[2024-12-24 11:03:53,169] [INFO] Epoch [1/2695], Step [279/910], Loss: 358.3805 (conf: 0.9690, lower: 0.0006, upper: 1.9269, poly: 101.8180, cls_loss: 0.0000, line_iou: 296.1412), s/iter: 0.0461, lr: 3.0e-04
+[2024-12-24 11:03:53,223] [INFO] Epoch [1/2695], Step [280/910], Loss: 358.0205 (conf: 0.4369, lower: 0.0037, upper: 4.3726, poly: 7.4766, cls_loss: 0.0000, line_iou: 245.2848), s/iter: 0.0460, lr: 3.0e-04
+[2024-12-24 11:03:53,273] [INFO] Epoch [1/2695], Step [281/910], Loss: 357.9140 (conf: 0.4364, lower: 0.0000, upper: 4.2355, poly: 29.2779, cls_loss: 0.0000, line_iou: 294.1659), s/iter: 0.0460, lr: 3.0e-04
+[2024-12-24 11:03:53,323] [INFO] Epoch [1/2695], Step [282/910], Loss: 357.6883 (conf: 0.9598, lower: 0.0000, upper: 2.6910, poly: 15.5648, cls_loss: 0.0000, line_iou: 275.0368), s/iter: 0.0460, lr: 3.0e-04
+[2024-12-24 11:03:53,371] [INFO] Epoch [1/2695], Step [283/910], Loss: 357.8296 (conf: 0.9577, lower: 0.0183, upper: 1.8078, poly: 99.7707, cls_loss: 0.0000, line_iou: 295.1181), s/iter: 0.0459, lr: 3.0e-04
+[2024-12-24 11:03:53,435] [INFO] Epoch [1/2695], Step [284/910], Loss: 357.5560 (conf: 0.4372, lower: 0.0012, upper: 4.3139, poly: 11.7981, cls_loss: 0.0000, line_iou: 263.5979), s/iter: 0.0461, lr: 3.0e-04
+[2024-12-24 11:03:53,486] [INFO] Epoch [1/2695], Step [285/910], Loss: 357.2758 (conf: 0.9547, lower: 0.0001, upper: 2.6039, poly: 11.3914, cls_loss: 0.0000, line_iou: 262.7242), s/iter: 0.0461, lr: 3.0e-04
+[2024-12-24 11:03:53,542] [INFO] Epoch [1/2695], Step [286/910], Loss: 357.3813 (conf: 0.9508, lower: 0.0069, upper: 2.0258, poly: 91.1544, cls_loss: 0.0000, line_iou: 293.3110), s/iter: 0.0462, lr: 3.0e-04
+[2024-12-24 11:03:53,590] [INFO] Epoch [1/2695], Step [287/910], Loss: 357.1389 (conf: 0.9500, lower: 0.0018, upper: 2.6347, poly: 18.0343, cls_loss: 0.0000, line_iou: 266.1922), s/iter: 0.0461, lr: 3.0e-04
+[2024-12-24 11:03:53,639] [INFO] Epoch [1/2695], Step [288/910], Loss: 356.8820 (conf: 1.0488, lower: 0.0230, upper: 3.2016, poly: 17.7023, cls_loss: 0.0000, line_iou: 261.1796), s/iter: 0.0460, lr: 3.0e-04
+[2024-12-24 11:03:53,695] [INFO] Epoch [1/2695], Step [289/910], Loss: 356.5660 (conf: 0.4466, lower: 0.0029, upper: 4.3477, poly: 10.4221, cls_loss: 0.0000, line_iou: 250.3559), s/iter: 0.0461, lr: 3.0e-04
+[2024-12-24 11:03:53,750] [INFO] Epoch [1/2695], Step [290/910], Loss: 356.7037 (conf: 0.4472, lower: 0.0029, upper: 4.3724, poly: 119.7356, cls_loss: 0.0000, line_iou: 271.9217), s/iter: 0.0462, lr: 3.0e-04
+[2024-12-24 11:03:53,798] [INFO] Epoch [1/2695], Step [291/910], Loss: 356.4744 (conf: 0.9456, lower: 0.0029, upper: 2.5737, poly: 13.7793, cls_loss: 0.0000, line_iou: 272.6785), s/iter: 0.0462, lr: 3.0e-04
+[2024-12-24 11:03:53,859] [INFO] Epoch [1/2695], Step [292/910], Loss: 356.2520 (conf: 1.0522, lower: 0.0047, upper: 3.2748, poly: 14.2377, cls_loss: 0.0000, line_iou: 272.9687), s/iter: 0.0462, lr: 3.0e-04
+[2024-12-24 11:03:53,912] [INFO] Epoch [1/2695], Step [293/910], Loss: 355.9362 (conf: 1.0502, lower: 0.0015, upper: 3.1526, poly: 11.3580, cls_loss: 0.0000, line_iou: 248.1728), s/iter: 0.0463, lr: 3.0e-04
+[2024-12-24 11:03:53,961] [INFO] Epoch [1/2695], Step [294/910], Loss: 355.6166 (conf: 1.0508, lower: 0.0000, upper: 3.2334, poly: 12.5985, cls_loss: 0.0000, line_iou: 245.0914), s/iter: 0.0461, lr: 3.0e-04
+[2024-12-24 11:03:54,009] [INFO] Epoch [1/2695], Step [295/910], Loss: 355.7155 (conf: 0.9480, lower: 0.0045, upper: 2.0458, poly: 84.3249, cls_loss: 0.0000, line_iou: 297.4471), s/iter: 0.0461, lr: 3.0e-04
+[2024-12-24 11:03:54,058] [INFO] Epoch [1/2695], Step [296/910], Loss: 355.7568 (conf: 0.9495, lower: 0.0054, upper: 2.0354, poly: 71.5756, cls_loss: 0.0000, line_iou: 293.3726), s/iter: 0.0460, lr: 3.0e-04
+[2024-12-24 11:03:54,110] [INFO] Epoch [1/2695], Step [297/910], Loss: 355.7457 (conf: 0.9511, lower: 0.0091, upper: 2.0173, poly: 67.3297, cls_loss: 0.0000, line_iou: 282.1556), s/iter: 0.0460, lr: 3.0e-04
+[2024-12-24 11:03:54,168] [INFO] Epoch [1/2695], Step [298/910], Loss: 355.7545 (conf: 0.9507, lower: 0.0011, upper: 2.0189, poly: 67.3630, cls_loss: 0.0000, line_iou: 288.0580), s/iter: 0.0460, lr: 3.0e-04
+[2024-12-24 11:03:54,223] [INFO] Epoch [1/2695], Step [299/910], Loss: 355.6553 (conf: 0.9519, lower: 0.0005, upper: 1.9075, poly: 54.3007, cls_loss: 0.0000, line_iou: 268.9302), s/iter: 0.0461, lr: 3.0e-04
+[2024-12-24 11:03:54,272] [INFO] Epoch [1/2695], Step [300/910], Loss: 355.4931 (conf: 1.0523, lower: 0.0008, upper: 3.1974, poly: 23.2479, cls_loss: 0.0000, line_iou: 279.4857), s/iter: 0.0460, lr: 3.0e-04
+[2024-12-24 11:03:54,323] [INFO] Epoch [1/2695], Step [301/910], Loss: 355.5942 (conf: 0.4418, lower: 0.0000, upper: 4.5614, poly: 82.5635, cls_loss: 0.0000, line_iou: 298.3590), s/iter: 0.0461, lr: 3.0e-04
+[2024-12-24 11:03:54,373] [INFO] Epoch [1/2695], Step [302/910], Loss: 355.4876 (conf: 0.9546, lower: 0.0009, upper: 2.0532, poly: 43.8997, cls_loss: 0.0000, line_iou: 276.4876), s/iter: 0.0461, lr: 3.0e-04
+[2024-12-24 11:03:54,428] [INFO] Epoch [1/2695], Step [303/910], Loss: 355.3898 (conf: 1.0545, lower: 0.0000, upper: 3.2617, poly: 40.9744, cls_loss: 0.0000, line_iou: 280.5721), s/iter: 0.0461, lr: 3.0e-04
+[2024-12-24 11:03:54,480] [INFO] Epoch [1/2695], Step [304/910], Loss: 355.3108 (conf: 1.0558, lower: 0.0014, upper: 3.0731, poly: 35.9334, cls_loss: 0.0000, line_iou: 291.3002), s/iter: 0.0461, lr: 3.0e-04
+[2024-12-24 11:03:54,537] [INFO] Epoch [1/2695], Step [305/910], Loss: 355.2371 (conf: 0.4443, lower: 0.0057, upper: 4.2072, poly: 42.1874, cls_loss: 0.0000, line_iou: 285.9836), s/iter: 0.0462, lr: 3.0e-04
+[2024-12-24 11:03:54,586] [INFO] Epoch [1/2695], Step [306/910], Loss: 355.1472 (conf: 1.0542, lower: 0.0043, upper: 3.2248, poly: 36.9687, cls_loss: 0.0000, line_iou: 286.4905), s/iter: 0.0462, lr: 3.0e-04
+[2024-12-24 11:03:54,636] [INFO] Epoch [1/2695], Step [307/910], Loss: 354.9057 (conf: 1.0532, lower: 0.0080, upper: 3.2611, poly: 19.6063, cls_loss: 0.0000, line_iou: 257.0739), s/iter: 0.0461, lr: 3.0e-04
+[2024-12-24 11:03:54,685] [INFO] Epoch [1/2695], Step [308/910], Loss: 354.6552 (conf: 1.0526, lower: 0.0039, upper: 3.2071, poly: 12.3335, cls_loss: 0.0000, line_iou: 261.1592), s/iter: 0.0460, lr: 3.0e-04
+[2024-12-24 11:03:54,734] [INFO] Epoch [1/2695], Step [309/910], Loss: 354.3820 (conf: 1.0509, lower: 0.0035, upper: 3.2402, poly: 9.7515, cls_loss: 0.0000, line_iou: 256.1827), s/iter: 0.0460, lr: 3.0e-04
+[2024-12-24 11:03:54,795] [INFO] Epoch [1/2695], Step [310/910], Loss: 354.1117 (conf: 1.0473, lower: 0.0034, upper: 3.2399, poly: 11.1250, cls_loss: 0.0000, line_iou: 255.1635), s/iter: 0.0460, lr: 3.0e-04
+[2024-12-24 11:03:54,845] [INFO] Epoch [1/2695], Step [311/910], Loss: 353.9028 (conf: 1.0430, lower: 0.0060, upper: 3.1966, poly: 12.6684, cls_loss: 0.0000, line_iou: 272.2268), s/iter: 0.0460, lr: 3.0e-04
+[2024-12-24 11:03:54,898] [INFO] Epoch [1/2695], Step [312/910], Loss: 353.6892 (conf: 0.9566, lower: 0.0138, upper: 2.5880, poly: 28.8484, cls_loss: 0.0000, line_iou: 254.8789), s/iter: 0.0460, lr: 3.0e-04
+[2024-12-24 11:03:54,949] [INFO] Epoch [1/2695], Step [313/910], Loss: 353.9192 (conf: 0.4380, lower: 0.0001, upper: 4.5082, poly: 127.0297, cls_loss: 0.0000, line_iou: 293.7064), s/iter: 0.0459, lr: 3.0e-04
+[2024-12-24 11:03:55,002] [INFO] Epoch [1/2695], Step [314/910], Loss: 353.7401 (conf: 1.0357, lower: 0.0003, upper: 3.0638, poly: 22.3780, cls_loss: 0.0000, line_iou: 271.1984), s/iter: 0.0459, lr: 3.0e-04
+[2024-12-24 11:03:55,056] [INFO] Epoch [1/2695], Step [315/910], Loss: 353.5813 (conf: 1.0352, lower: 0.0001, upper: 2.9412, poly: 26.2387, cls_loss: 0.0000, line_iou: 273.5043), s/iter: 0.0459, lr: 3.0e-04
+[2024-12-24 11:03:55,109] [INFO] Epoch [1/2695], Step [316/910], Loss: 353.7102 (conf: 0.9592, lower: 0.0006, upper: 1.9495, poly: 96.3132, cls_loss: 0.0000, line_iou: 295.0967), s/iter: 0.0459, lr: 3.0e-04
+[2024-12-24 11:03:55,155] [INFO] Epoch [1/2695], Step [317/910], Loss: 353.5321 (conf: 1.0355, lower: 0.0013, upper: 3.1276, poly: 17.1422, cls_loss: 0.0000, line_iou: 275.9280), s/iter: 0.0458, lr: 3.0e-04
+[2024-12-24 11:03:55,213] [INFO] Epoch [1/2695], Step [318/910], Loss: 353.5206 (conf: 0.4315, lower: 0.0058, upper: 4.4410, poly: 52.2558, cls_loss: 0.0000, line_iou: 292.7333), s/iter: 0.0459, lr: 3.0e-04
+[2024-12-24 11:03:55,263] [INFO] Epoch [1/2695], Step [319/910], Loss: 353.7772 (conf: 0.9598, lower: 0.0012, upper: 1.8191, poly: 140.1497, cls_loss: 0.0000, line_iou: 292.4606), s/iter: 0.0459, lr: 3.0e-04
+[2024-12-24 11:03:55,311] [INFO] Epoch [1/2695], Step [320/910], Loss: 353.6970 (conf: 0.4296, lower: 0.0015, upper: 4.4758, poly: 36.5521, cls_loss: 0.0000, line_iou: 286.6393), s/iter: 0.0458, lr: 3.0e-04
+[2024-12-24 11:03:55,363] [INFO] Epoch [1/2695], Step [321/910], Loss: 353.6892 (conf: 0.9600, lower: 0.0036, upper: 2.7145, poly: 48.4431, cls_loss: 0.0000, line_iou: 299.0772), s/iter: 0.0458, lr: 3.0e-04
+[2024-12-24 11:03:55,409] [INFO] Epoch [1/2695], Step [322/910], Loss: 353.5300 (conf: 0.9605, lower: 0.0022, upper: 2.6198, poly: 29.3275, cls_loss: 0.0000, line_iou: 269.5096), s/iter: 0.0458, lr: 3.0e-04
+[2024-12-24 11:03:55,469] [INFO] Epoch [1/2695], Step [323/910], Loss: 353.3694 (conf: 1.0367, lower: 0.0033, upper: 3.2923, poly: 34.2095, cls_loss: 0.0000, line_iou: 263.1151), s/iter: 0.0459, lr: 3.0e-04
+[2024-12-24 11:03:55,518] [INFO] Epoch [1/2695], Step [324/910], Loss: 353.2344 (conf: 0.9613, lower: 0.0013, upper: 2.6096, poly: 34.8275, cls_loss: 0.0000, line_iou: 271.2394), s/iter: 0.0458, lr: 3.0e-04
+[2024-12-24 11:03:55,573] [INFO] Epoch [1/2695], Step [325/910], Loss: 353.0880 (conf: 1.0383, lower: 0.0048, upper: 3.2246, poly: 47.9226, cls_loss: 0.0000, line_iou: 253.4607), s/iter: 0.0458, lr: 3.0e-04
+[2024-12-24 11:03:55,625] [INFO] Epoch [1/2695], Step [326/910], Loss: 352.9663 (conf: 0.9604, lower: 0.0003, upper: 1.8955, poly: 47.9098, cls_loss: 0.0000, line_iou: 262.6676), s/iter: 0.0456, lr: 3.0e-04
+[2024-12-24 11:03:55,675] [INFO] Epoch [1/2695], Step [327/910], Loss: 352.8835 (conf: 1.0394, lower: 0.0012, upper: 3.2377, poly: 42.4109, cls_loss: 0.0000, line_iou: 279.2013), s/iter: 0.0453, lr: 3.0e-04
+[2024-12-24 11:03:55,735] [INFO] Epoch [1/2695], Step [328/910], Loss: 352.7326 (conf: 1.0394, lower: 0.0049, upper: 3.2807, poly: 25.6173, cls_loss: 0.0000, line_iou: 273.4447), s/iter: 0.0452, lr: 3.0e-04
+[2024-12-24 11:03:55,785] [INFO] Epoch [1/2695], Step [329/910], Loss: 352.5871 (conf: 1.0410, lower: 0.0009, upper: 3.1308, poly: 22.8771, cls_loss: 0.0000, line_iou: 277.8034), s/iter: 0.0451, lr: 3.0e-04
+[2024-12-24 11:03:55,835] [INFO] Epoch [1/2695], Step [330/910], Loss: 352.5744 (conf: 0.4326, lower: 0.0012, upper: 4.4687, poly: 52.7072, cls_loss: 0.0000, line_iou: 290.7744), s/iter: 0.0451, lr: 3.0e-04
+[2024-12-24 11:03:55,891] [INFO] Epoch [1/2695], Step [331/910], Loss: 352.3460 (conf: 1.0380, lower: 0.0001, upper: 3.1071, poly: 12.3974, cls_loss: 0.0000, line_iou: 260.4244), s/iter: 0.0451, lr: 3.0e-04
+[2024-12-24 11:03:55,941] [INFO] Epoch [1/2695], Step [332/910], Loss: 352.4204 (conf: 0.4345, lower: 0.0084, upper: 4.4697, poly: 79.4197, cls_loss: 0.0000, line_iou: 292.7352), s/iter: 0.0450, lr: 3.0e-04
+[2024-12-24 11:03:55,997] [INFO] Epoch [1/2695], Step [333/910], Loss: 352.6555 (conf: 1.0397, lower: 0.0002, upper: 2.3620, poly: 127.3779, cls_loss: 0.0000, line_iou: 299.9291), s/iter: 0.0451, lr: 3.0e-04
+[2024-12-24 11:03:56,049] [INFO] Epoch [1/2695], Step [334/910], Loss: 352.3766 (conf: 0.4365, lower: 0.0022, upper: 4.1355, poly: 12.7760, cls_loss: 0.0000, line_iou: 242.1314), s/iter: 0.0449, lr: 3.0e-04
+[2024-12-24 11:03:56,096] [INFO] Epoch [1/2695], Step [335/910], Loss: 352.4615 (conf: 0.9594, lower: 0.0000, upper: 1.9359, poly: 83.3968, cls_loss: 0.0000, line_iou: 294.5514), s/iter: 0.0448, lr: 3.0e-04
+[2024-12-24 11:03:56,145] [INFO] Epoch [1/2695], Step [336/910], Loss: 352.2382 (conf: 0.4394, lower: 0.0036, upper: 4.1461, poly: 17.7813, cls_loss: 0.0000, line_iou: 255.0395), s/iter: 0.0447, lr: 3.0e-04
+[2024-12-24 11:03:56,194] [INFO] Epoch [1/2695], Step [337/910], Loss: 352.0291 (conf: 1.0444, lower: 0.0011, upper: 3.1671, poly: 17.5529, cls_loss: 0.0000, line_iou: 260.0180), s/iter: 0.0446, lr: 3.0e-04
+[2024-12-24 11:03:56,242] [INFO] Epoch [1/2695], Step [338/910], Loss: 351.8475 (conf: 1.0444, lower: 0.0034, upper: 3.1855, poly: 15.7484, cls_loss: 0.0000, line_iou: 270.6788), s/iter: 0.0445, lr: 3.0e-04
+[2024-12-24 11:03:56,291] [INFO] Epoch [1/2695], Step [339/910], Loss: 351.8914 (conf: 0.9589, lower: 0.0009, upper: 1.9490, poly: 71.7852, cls_loss: 0.0000, line_iou: 292.0154), s/iter: 0.0445, lr: 3.0e-04
+[2024-12-24 11:03:56,337] [INFO] Epoch [1/2695], Step [340/910], Loss: 351.6039 (conf: 1.0418, lower: 0.0087, upper: 3.1603, poly: 10.9547, cls_loss: 0.0000, line_iou: 238.9877), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:56,400] [INFO] Epoch [1/2695], Step [341/910], Loss: 351.3885 (conf: 1.0379, lower: 0.0021, upper: 3.1233, poly: 14.9485, cls_loss: 0.0000, line_iou: 259.0304), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:56,453] [INFO] Epoch [1/2695], Step [342/910], Loss: 351.1616 (conf: 1.0351, lower: 0.0096, upper: 3.1591, poly: 12.0354, cls_loss: 0.0000, line_iou: 257.5518), s/iter: 0.0443, lr: 3.0e-04
+[2024-12-24 11:03:56,500] [INFO] Epoch [1/2695], Step [343/910], Loss: 351.2009 (conf: 0.9595, lower: 0.0052, upper: 1.9717, poly: 69.8327, cls_loss: 0.0000, line_iou: 291.8753), s/iter: 0.0443, lr: 3.0e-04
+[2024-12-24 11:03:56,554] [INFO] Epoch [1/2695], Step [344/910], Loss: 350.8737 (conf: 1.0350, lower: 0.0043, upper: 3.1632, poly: 9.2129, cls_loss: 0.0000, line_iou: 225.2379), s/iter: 0.0443, lr: 3.0e-04
+[2024-12-24 11:03:56,601] [INFO] Epoch [1/2695], Step [345/910], Loss: 350.6318 (conf: 0.9587, lower: 0.0061, upper: 2.5499, poly: 16.9716, cls_loss: 0.0000, line_iou: 246.9404), s/iter: 0.0442, lr: 3.0e-04
+[2024-12-24 11:03:56,660] [INFO] Epoch [1/2695], Step [346/910], Loss: 350.3738 (conf: 1.0345, lower: 0.0152, upper: 3.1742, poly: 10.6820, cls_loss: 0.0000, line_iou: 246.4327), s/iter: 0.0443, lr: 3.0e-04
+[2024-12-24 11:03:56,742] [INFO] Epoch [1/2695], Step [347/910], Loss: 350.1171 (conf: 0.4302, lower: 0.0202, upper: 4.1727, poly: 15.2190, cls_loss: 0.0000, line_iou: 241.4757), s/iter: 0.0446, lr: 3.0e-04
+[2024-12-24 11:03:56,821] [INFO] Epoch [1/2695], Step [348/910], Loss: 349.8406 (conf: 1.0321, lower: 0.0054, upper: 3.1617, poly: 8.7687, cls_loss: 0.0000, line_iou: 240.9182), s/iter: 0.0449, lr: 3.0e-04
+[2024-12-24 11:03:56,875] [INFO] Epoch [1/2695], Step [349/910], Loss: 349.5162 (conf: 1.0339, lower: 0.0205, upper: 3.2029, poly: 6.9909, cls_loss: 0.0000, line_iou: 225.3649), s/iter: 0.0449, lr: 3.0e-04
+[2024-12-24 11:03:56,928] [INFO] Epoch [1/2695], Step [350/910], Loss: 349.2340 (conf: 1.0328, lower: 0.0045, upper: 3.1636, poly: 7.9347, cls_loss: 0.0000, line_iou: 238.6091), s/iter: 0.0449, lr: 3.0e-04
+[2024-12-24 11:03:56,974] [INFO] Epoch [1/2695], Step [351/910], Loss: 348.7823 (conf: 0.4351, lower: 0.0111, upper: 4.1419, poly: 4.7764, cls_loss: 0.0000, line_iou: 181.3199), s/iter: 0.0448, lr: 3.0e-04
+[2024-12-24 11:03:57,025] [INFO] Epoch [1/2695], Step [352/910], Loss: 348.6108 (conf: 1.0359, lower: 0.0101, upper: 3.1752, poly: 12.1783, cls_loss: 0.0000, line_iou: 272.0270), s/iter: 0.0447, lr: 3.0e-04
+[2024-12-24 11:03:57,086] [INFO] Epoch [1/2695], Step [353/910], Loss: 348.4235 (conf: 1.0365, lower: 0.0167, upper: 3.1410, poly: 9.1030, cls_loss: 0.0000, line_iou: 269.2183), s/iter: 0.0448, lr: 3.0e-04
+[2024-12-24 11:03:57,136] [INFO] Epoch [1/2695], Step [354/910], Loss: 348.2101 (conf: 1.0370, lower: 0.0065, upper: 3.0274, poly: 10.2555, cls_loss: 0.0000, line_iou: 258.5342), s/iter: 0.0447, lr: 3.0e-04
+[2024-12-24 11:03:57,188] [INFO] Epoch [1/2695], Step [355/910], Loss: 347.9846 (conf: 1.0378, lower: 0.0087, upper: 3.1416, poly: 14.2446, cls_loss: 0.0000, line_iou: 249.7294), s/iter: 0.0447, lr: 3.0e-04
+[2024-12-24 11:03:57,237] [INFO] Epoch [1/2695], Step [356/910], Loss: 348.2349 (conf: 0.4392, lower: 0.0144, upper: 4.3845, poly: 145.9671, cls_loss: 0.0000, line_iou: 286.2899), s/iter: 0.0446, lr: 3.0e-04
+[2024-12-24 11:03:57,299] [INFO] Epoch [1/2695], Step [357/910], Loss: 348.0769 (conf: 0.9556, lower: 0.0063, upper: 2.5039, poly: 22.8999, cls_loss: 0.0000, line_iou: 265.4722), s/iter: 0.0447, lr: 3.0e-04
+[2024-12-24 11:03:57,349] [INFO] Epoch [1/2695], Step [358/910], Loss: 347.8765 (conf: 1.0361, lower: 0.0075, upper: 3.1449, poly: 14.5400, cls_loss: 0.0000, line_iou: 257.5779), s/iter: 0.0447, lr: 3.0e-04
+[2024-12-24 11:03:57,400] [INFO] Epoch [1/2695], Step [359/910], Loss: 348.0583 (conf: 0.4375, lower: 0.0280, upper: 4.2719, poly: 118.9523, cls_loss: 0.0000, line_iou: 289.4792), s/iter: 0.0446, lr: 3.0e-04
+[2024-12-24 11:03:57,452] [INFO] Epoch [1/2695], Step [360/910], Loss: 347.9248 (conf: 0.4370, lower: 0.0105, upper: 4.1896, poly: 18.1778, cls_loss: 0.0000, line_iou: 277.1536), s/iter: 0.0445, lr: 3.0e-04
+[2024-12-24 11:03:57,501] [INFO] Epoch [1/2695], Step [361/910], Loss: 347.9189 (conf: 0.9569, lower: 0.0006, upper: 1.8244, poly: 55.4468, cls_loss: 0.0000, line_iou: 287.5878), s/iter: 0.0445, lr: 3.0e-04
+[2024-12-24 11:03:57,550] [INFO] Epoch [1/2695], Step [362/910], Loss: 347.6993 (conf: 1.0323, lower: 0.0004, upper: 3.0129, poly: 9.8098, cls_loss: 0.0000, line_iou: 254.5474), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:57,605] [INFO] Epoch [1/2695], Step [363/910], Loss: 347.4534 (conf: 1.0322, lower: 0.0024, upper: 3.0339, poly: 9.8061, cls_loss: 0.0000, line_iou: 244.5790), s/iter: 0.0444, lr: 3.0e-04
+[2024-12-24 11:03:57,656] [INFO] Epoch [1/2695], Step [364/910], Loss: 347.4180 (conf: 0.4328, lower: 0.0007, upper: 4.0873, poly: 44.8025, cls_loss: 0.0000, line_iou: 285.2478), s/iter: 0.0443, lr: 3.0e-04
+[2024-12-24 11:03:57,708] [INFO] Epoch [1/2695], Step [365/910], Loss: 347.2239 (conf: 1.0274, lower: 0.0001, upper: 2.9762, poly: 12.4173, cls_loss: 0.0000, line_iou: 260.1638), s/iter: 0.0443, lr: 3.0e-04
+[2024-12-24 11:03:57,757] [INFO] Epoch [1/2695], Step [366/910], Loss: 347.4435 (conf: 0.4328, lower: 0.0010, upper: 4.2550, poly: 146.4187, cls_loss: 0.0000, line_iou: 276.4549), s/iter: 0.0443, lr: 3.0e-04
+[2024-12-24 11:03:57,808] [INFO] Epoch [1/2695], Step [367/910], Loss: 347.3339 (conf: 1.0258, lower: 0.0013, upper: 2.9891, poly: 20.4402, cls_loss: 0.0000, line_iou: 282.7913), s/iter: 0.0442, lr: 3.0e-04
+[2024-12-24 11:03:57,854] [INFO] Epoch [1/2695], Step [368/910], Loss: 347.3629 (conf: 0.9503, lower: 0.0030, upper: 1.8828, poly: 75.6247, cls_loss: 0.0000, line_iou: 279.5410), s/iter: 0.0442, lr: 3.0e-04
+[2024-12-24 11:03:57,902] [INFO] Epoch [1/2695], Step [369/910], Loss: 347.2831 (conf: 1.0232, lower: 0.0018, upper: 3.1285, poly: 27.8966, cls_loss: 0.0000, line_iou: 285.8645), s/iter: 0.0440, lr: 3.0e-04
+[2024-12-24 11:03:57,953] [INFO] Epoch [1/2695], Step [370/910], Loss: 347.5106 (conf: 1.0232, lower: 0.0001, upper: 2.5183, poly: 138.1376, cls_loss: 0.0000, line_iou: 289.7847), s/iter: 0.0435, lr: 3.0e-04
+[2024-12-24 11:03:57,999] [INFO] Epoch [1/2695], Step [371/910], Loss: 347.4495 (conf: 1.0218, lower: 0.0017, upper: 3.1231, poly: 31.8521, cls_loss: 0.0000, line_iou: 288.8378), s/iter: 0.0433, lr: 3.0e-04
+[2024-12-24 11:03:58,058] [INFO] Epoch [1/2695], Step [372/910], Loss: 347.3190 (conf: 1.0227, lower: 0.0005, upper: 3.1247, poly: 22.0169, cls_loss: 0.0000, line_iou: 272.7220), s/iter: 0.0433, lr: 3.0e-04
+[2024-12-24 11:03:58,109] [INFO] Epoch [1/2695], Step [373/910], Loss: 347.3943 (conf: 0.9473, lower: 0.0022, upper: 2.5500, poly: 87.5331, cls_loss: 0.0000, line_iou: 284.4054), s/iter: 0.0433, lr: 3.0e-04
+[2024-12-24 11:03:58,157] [INFO] Epoch [1/2695], Step [374/910], Loss: 347.3873 (conf: 0.9504, lower: 0.0017, upper: 2.5264, poly: 58.1803, cls_loss: 0.0000, line_iou: 283.0979), s/iter: 0.0432, lr: 3.0e-04
+[2024-12-24 11:03:58,207] [INFO] Epoch [1/2695], Step [375/910], Loss: 347.2512 (conf: 1.0214, lower: 0.0018, upper: 3.1113, poly: 20.7688, cls_loss: 0.0000, line_iou: 271.4568), s/iter: 0.0432, lr: 3.0e-04
+[2024-12-24 11:03:58,255] [INFO] Epoch [1/2695], Step [376/910], Loss: 347.1358 (conf: 1.0215, lower: 0.0022, upper: 3.1013, poly: 28.6555, cls_loss: 0.0000, line_iou: 271.0538), s/iter: 0.0432, lr: 3.0e-04
+[2024-12-24 11:03:58,313] [INFO] Epoch [1/2695], Step [377/910], Loss: 347.0661 (conf: 0.4229, lower: 0.0070, upper: 4.1657, poly: 51.9272, cls_loss: 0.0000, line_iou: 264.3444), s/iter: 0.0432, lr: 3.0e-04
+[2024-12-24 11:03:58,361] [INFO] Epoch [1/2695], Step [378/910], Loss: 347.1020 (conf: 0.9521, lower: 0.0000, upper: 1.9883, poly: 84.3063, cls_loss: 0.0000, line_iou: 273.3940), s/iter: 0.0433, lr: 3.0e-04
+[2024-12-24 11:03:58,407] [INFO] Epoch [1/2695], Step [379/910], Loss: 347.0380 (conf: 1.0200, lower: 0.0006, upper: 3.0832, poly: 41.0688, cls_loss: 0.0000, line_iou: 277.6793), s/iter: 0.0433, lr: 3.0e-04
+[2024-12-24 11:03:58,464] [INFO] Epoch [1/2695], Step [380/910], Loss: 346.9951 (conf: 1.0193, lower: 0.0002, upper: 3.0546, poly: 39.8292, cls_loss: 0.0000, line_iou: 286.8141), s/iter: 0.0433, lr: 3.0e-04
+[2024-12-24 11:03:58,511] [INFO] Epoch [1/2695], Step [381/910], Loss: 347.0497 (conf: 0.9553, lower: 0.0078, upper: 1.9481, poly: 93.4356, cls_loss: 0.0000, line_iou: 271.4643), s/iter: 0.0433, lr: 3.0e-04
+[2024-12-24 11:03:58,557] [INFO] Epoch [1/2695], Step [382/910], Loss: 347.0101 (conf: 1.0204, lower: 0.0019, upper: 3.1028, poly: 46.1268, cls_loss: 0.0000, line_iou: 281.6724), s/iter: 0.0432, lr: 3.0e-04
+[2024-12-24 11:03:58,608] [INFO] Epoch [1/2695], Step [383/910], Loss: 346.9581 (conf: 0.4242, lower: 0.0000, upper: 4.1299, poly: 51.6873, cls_loss: 0.0000, line_iou: 270.8361), s/iter: 0.0433, lr: 3.0e-04
+[2024-12-24 11:03:58,657] [INFO] Epoch [1/2695], Step [384/910], Loss: 346.9044 (conf: 1.0218, lower: 0.0001, upper: 3.0949, poly: 44.8699, cls_loss: 0.0000, line_iou: 277.3604), s/iter: 0.0431, lr: 3.0e-04
+[2024-12-24 11:03:58,707] [INFO] Epoch [1/2695], Step [385/910], Loss: 346.7974 (conf: 0.9534, lower: 0.0076, upper: 2.5306, poly: 25.8494, cls_loss: 0.0000, line_iou: 276.3589), s/iter: 0.0431, lr: 3.0e-04
+[2024-12-24 11:03:58,764] [INFO] Epoch [1/2695], Step [386/910], Loss: 346.6046 (conf: 0.4265, lower: 0.0003, upper: 4.1998, poly: 22.1924, cls_loss: 0.0000, line_iou: 245.5894), s/iter: 0.0431, lr: 3.0e-04
+[2024-12-24 11:03:58,813] [INFO] Epoch [1/2695], Step [387/910], Loss: 346.4634 (conf: 1.0210, lower: 0.0063, upper: 3.1598, poly: 21.0386, cls_loss: 0.0000, line_iou: 266.7259), s/iter: 0.0431, lr: 3.0e-04
+[2024-12-24 11:03:58,863] [INFO] Epoch [1/2695], Step [388/910], Loss: 346.3134 (conf: 0.9453, lower: 0.0033, upper: 2.5236, poly: 18.2233, cls_loss: 0.0000, line_iou: 266.5640), s/iter: 0.0432, lr: 3.0e-04
+[2024-12-24 11:03:58,912] [INFO] Epoch [1/2695], Step [389/910], Loss: 346.1364 (conf: 1.0197, lower: 0.0000, upper: 3.1481, poly: 18.1736, cls_loss: 0.0000, line_iou: 255.1198), s/iter: 0.0431, lr: 3.0e-04
+[2024-12-24 11:03:58,965] [INFO] Epoch [1/2695], Step [390/910], Loss: 345.9813 (conf: 1.0205, lower: 0.0035, upper: 3.1144, poly: 26.8417, cls_loss: 0.0000, line_iou: 254.6639), s/iter: 0.0431, lr: 3.0e-04
+[2024-12-24 11:03:59,016] [INFO] Epoch [1/2695], Step [391/910], Loss: 346.0509 (conf: 0.9389, lower: 0.0001, upper: 2.0040, poly: 85.5737, cls_loss: 0.0000, line_iou: 284.6885), s/iter: 0.0431, lr: 3.0e-04
+[2024-12-24 11:03:59,069] [INFO] Epoch [1/2695], Step [392/910], Loss: 346.0415 (conf: 0.4310, lower: 0.0040, upper: 4.1244, poly: 57.2630, cls_loss: 0.0000, line_iou: 280.5276), s/iter: 0.0430, lr: 3.0e-04
+[2024-12-24 11:03:59,124] [INFO] Epoch [1/2695], Step [393/910], Loss: 346.0397 (conf: 1.0230, lower: 0.0021, upper: 3.1343, poly: 74.4601, cls_loss: 0.0000, line_iou: 266.7383), s/iter: 0.0430, lr: 3.0e-04
+[2024-12-24 11:03:59,176] [INFO] Epoch [1/2695], Step [394/910], Loss: 345.8513 (conf: 1.0202, lower: 0.0000, upper: 2.9099, poly: 10.5472, cls_loss: 0.0000, line_iou: 257.3306), s/iter: 0.0431, lr: 3.0e-04
+[2024-12-24 11:04:00,449] [INFO] Training session terminated.
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u1ef1' in position 106: character maps to <undefined>
+Call stack:
+  File "D:\manga\nckh_polylanenet\train.py", line 323, in <module>
+    wandb.finish()
+  File "D:\manga\myenv\Lib\site-packages\wandb\sdk\wandb_run.py", line 4066, in finish
+    wandb.run.finish(exit_code=exit_code, quiet=quiet)
+  File "D:\manga\myenv\Lib\site-packages\wandb\sdk\wandb_run.py", line 440, in wrapper
+    return func(self, *args, **kwargs)
+  File "D:\manga\myenv\Lib\site-packages\wandb\sdk\wandb_run.py", line 382, in wrapper
+    return func(self, *args, **kwargs)
+  File "D:\manga\myenv\Lib\site-packages\wandb\sdk\wandb_run.py", line 2094, in finish
+    return self._finish(exit_code)
+  File "D:\manga\myenv\Lib\site-packages\wandb\sdk\wandb_run.py", line 2100, in _finish
+    logger.info(f"finishing run {self._get_path()}")
+Message: 'finishing run teambhh/Tên_dự_án_của_bạn/pcr2f6vg'
+Arguments: ()

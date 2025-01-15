@@ -1,0 +1,447 @@
+[2024-12-24 15:41:12,903] [INFO] Experiment name: tusimple
+[2024-12-24 15:41:12,903] [INFO] Config:
+# Training settings
+exps_dir: 'experiments'
+iter_log_interval: 1
+iter_time_window: 100
+model_save_interval: 1
+seed: 1
+backup:
+model:
+  name: PolyRegression
+  parameters:
+    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+    pretrained: true
+    backbone: 'mobilenet_v2'
+    pred_category: false
+    curriculum_steps: [0, 0, 0, 0]
+loss_parameters:
+  conf_weight: 1
+  lower_weight: 1
+  upper_weight: 1
+  cls_weight: 0
+  poly_weight: 1000
+batch_size: 1
+epochs: 2695
+optimizer:
+  name: Adam
+  parameters:
+    lr: 3.0e-4
+lr_scheduler:
+  name: CosineAnnealingLR
+  parameters:
+    T_max: 385
+
+
+# Testing settings
+test_parameters:
+  conf_threshold: 0.5
+
+# Dataset settings
+datasets:
+  train:
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: train
+      img_size: [360, 640]
+      normalize: true
+      aug_chance: 0.9090909090909091 # 10/11
+      augmentations:
+       - name: Affine
+         parameters:
+           rotate: !!python/tuple [-10, 10]
+       - name: HorizontalFlip
+         parameters:
+           p: 0.5
+       - name: CropToFixedSize
+         parameters:
+           width: 1152
+           height: 648
+      root: "D:/manga/nckh_polylanenet/TUSimple/train_set"
+
+  test: &test
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: val
+      max_lanes: 5
+      img_size: [360, 640]
+      root: "D:/manga/nckh_polylanenet/TUSimple/train_set"
+      # D:\manga\nckh_polylanenet\TUSimple\train_set
+      normalize: true
+      augmentations: []
+
+  # val = test
+  val:
+    <<: *test
+
+[2024-12-24 15:41:12,907] [INFO] Args:
+Namespace(exp_name='tusimple', cfg='D:\\manga\\nckh_polylanenet\\cfgs\\tusimple.yaml', resume=False, validate=False, deterministic=False)
+total annos 910
+Transforming annotations...
+Done.
+[2024-12-24 15:41:13,258] [INFO] Model structure: PolyRegression(
+  (sigmoid): Sigmoid()
+  (model): ModuleList(
+    (0): Sequential(
+      (0): Conv2dNormActivation(
+        (0): Conv2d(3, 32, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+        (1): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): ReLU6(inplace=True)
+      )
+      (1): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=32, bias=False)
+            (1): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2d(32, 16, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (2): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+    )
+    (1): Sequential(
+      (2): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(16, 96, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(96, 96, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), groups=96, bias=False)
+            (1): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(96, 24, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(24, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (3): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(24, 144, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(144, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(144, 144, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=144, bias=False)
+            (1): BatchNorm2d(144, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(144, 24, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(24, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+    )
+    (2): Sequential(
+      (4): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(24, 144, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(144, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(144, 144, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), groups=144, bias=False)
+            (1): BatchNorm2d(144, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(144, 32, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (5): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(32, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=192, bias=False)
+            (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(192, 32, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (6): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(32, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=192, bias=False)
+            (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(192, 32, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+    )
+    (3): Sequential(
+      (7): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(32, 192, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(192, 192, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), groups=192, bias=False)
+            (1): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(192, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (8): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(64, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(384, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=384, bias=False)
+            (1): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(384, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (9): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(64, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(384, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=384, bias=False)
+            (1): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(384, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (10): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(64, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(384, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=384, bias=False)
+            (1): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(384, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (11): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(64, 384, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(384, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=384, bias=False)
+            (1): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(384, 96, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (12): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(96, 576, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(576, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(576, 576, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=576, bias=False)
+            (1): BatchNorm2d(576, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(576, 96, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (13): InvertedResidual(
+        (conv): Sequential(
+          (0): Conv2dNormActivation(
+            (0): Conv2d(96, 576, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(576, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (1): Conv2dNormActivation(
+            (0): Conv2d(576, 576, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), groups=576, bias=False)
+            (1): BatchNorm2d(576, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): ReLU6(inplace=True)
+          )
+          (2): Conv2d(576, 96, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (3): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+    )
+  )
+  (papfn): PathAggregationFeaturePyramidNetwork(
+    (inner_blocks): ModuleList(
+      (0): Conv2d(16, 256, kernel_size=(1, 1), stride=(1, 1))
+      (1): Conv2d(24, 256, kernel_size=(1, 1), stride=(1, 1))
+      (2): Conv2d(32, 256, kernel_size=(1, 1), stride=(1, 1))
+      (3): Conv2d(96, 256, kernel_size=(1, 1), stride=(1, 1))
+    )
+    (layer_blocks): ModuleList(
+      (0-3): 4 x Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    )
+  )
+  (papfn_output): Conv2d(256, 35, kernel_size=(1, 1), stride=(1, 1))
+  (attention): SelfAttention(
+    (attention): MultiheadAttention(
+      (out_proj): NonDynamicallyQuantizableLinear(in_features=35, out_features=35, bias=True)
+    )
+    (norm): LayerNorm((35,), eps=1e-05, elementwise_affine=True)
+  )
+  (flip_block): FeatureFlipBlock(
+    (conv): Conv2d(6, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (avg_pool): AvgPool2d(kernel_size=(1, 2), stride=(1, 2), padding=0)
+  )
+  (curvature_block): CurvatureAwareFeatureBlock(
+    (conv_main): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (conv_curve1): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(2, 2), dilation=(2, 2))
+    (conv_curve2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(3, 3), dilation=(3, 3))
+    (fusion): Conv2d(768, 256, kernel_size=(1, 1), stride=(1, 1))
+    (avg_pool): AvgPool2d(kernel_size=2, stride=2, padding=0)
+  )
+  (channel_adapter): Conv2d(256, 3, kernel_size=(1, 1), stride=(1, 1))
+)
+[2024-12-24 15:41:13,277] [INFO] Starting training.
+[2024-12-24 15:41:13,277] [INFO] Beginning epoch 1
+D:\manga\myenv\Lib\site-packages\torch\functional.py:513: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\builder\windows\pytorch\aten\src\ATen\native\TensorShape.cpp:3610.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+[2024-12-24 15:42:07,732] [INFO] Epoch [1/2695], Step [1/910], Loss: 4046.3823 (conf: 1.1705, lower: 0.3883, upper: 1.0868, poly: 3743.6477, cls_loss: 0.0000, line_iou: 300.0000, length_reg: 0.0889), s/iter: 3.6799, lr: 3.0e-04
+[2024-12-24 15:42:07,791] [INFO] Epoch [1/2695], Step [2/910], Loss: 3487.4039 (conf: 0.9707, lower: 0.1737, upper: 2.4898, poly: 2624.7439, cls_loss: 0.0000, line_iou: 300.0000, length_reg: 0.0473), s/iter: 1.8634, lr: 3.0e-04
+[2024-12-24 15:42:07,852] [INFO] Epoch [1/2695], Step [3/910], Loss: 2490.4070 (conf: 1.1254, lower: 0.0755, upper: 2.7745, poly: 194.0320, cls_loss: 0.0000, line_iou: 298.3616, length_reg: 0.0440), s/iter: 1.2596, lr: 3.0e-04
+[2024-12-24 15:42:07,910] [INFO] Epoch [1/2695], Step [4/910], Loss: 1958.5481 (conf: 1.1789, lower: 0.0164, upper: 2.3426, poly: 83.7245, cls_loss: 0.0000, line_iou: 275.6717, length_reg: 0.0374), s/iter: 0.9567, lr: 3.0e-04
+[2024-12-24 15:42:07,961] [INFO] Epoch [1/2695], Step [5/910], Loss: 1716.9023 (conf: 1.1819, lower: 0.0000, upper: 2.7230, poly: 448.6725, cls_loss: 0.0000, line_iou: 297.6891, length_reg: 0.0527), s/iter: 0.7738, lr: 3.0e-04
+[2024-12-24 15:42:08,016] [INFO] Epoch [1/2695], Step [6/910], Loss: 1524.6310 (conf: 1.1905, lower: 0.0026, upper: 2.7528, poly: 261.2611, cls_loss: 0.0000, line_iou: 297.9946, length_reg: 0.0725), s/iter: 0.6528, lr: 3.0e-04
+[2024-12-24 15:42:08,065] [INFO] Epoch [1/2695], Step [7/910], Loss: 1357.6842 (conf: 1.1782, lower: 0.0049, upper: 2.8923, poly: 59.4928, cls_loss: 0.0000, line_iou: 292.3657, length_reg: 0.0700), s/iter: 0.5651, lr: 3.0e-04
+[2024-12-24 15:42:08,115] [INFO] Epoch [1/2695], Step [8/910], Loss: 1224.5700 (conf: 0.4942, lower: 0.0125, upper: 3.7182, poly: 28.9371, cls_loss: 0.0000, line_iou: 259.5714, length_reg: 0.0372), s/iter: 0.4995, lr: 3.0e-04
+[2024-12-24 15:42:08,161] [INFO] Epoch [1/2695], Step [9/910], Loss: 1130.4193 (conf: 1.1663, lower: 0.0248, upper: 3.2917, poly: 81.0461, cls_loss: 0.0000, line_iou: 291.6479, length_reg: 0.0366), s/iter: 0.4483, lr: 3.0e-04
+[2024-12-24 15:42:08,209] [INFO] Epoch [1/2695], Step [10/910], Loss: 1056.7789 (conf: 1.1554, lower: 0.0226, upper: 3.2924, poly: 96.3258, cls_loss: 0.0000, line_iou: 293.1802, length_reg: 0.0389), s/iter: 0.4072, lr: 3.0e-04
+[2024-12-24 15:42:08,262] [INFO] Epoch [1/2695], Step [11/910], Loss: 1019.1387 (conf: 1.0149, lower: 0.0436, upper: 2.6286, poly: 342.8707, cls_loss: 0.0000, line_iou: 296.1144, length_reg: 0.0647), s/iter: 0.3742, lr: 3.0e-04
+[2024-12-24 15:42:08,317] [INFO] Epoch [1/2695], Step [12/910], Loss: 963.2278 (conf: 0.4800, lower: 0.0588, upper: 4.4522, poly: 59.6560, cls_loss: 0.0000, line_iou: 283.5257, length_reg: 0.0346), s/iter: 0.3471, lr: 3.0e-04
+[2024-12-24 15:42:08,372] [INFO] Epoch [1/2695], Step [13/910], Loss: 925.1787 (conf: 0.4877, lower: 0.0361, upper: 4.4762, poly: 169.6808, cls_loss: 0.0000, line_iou: 293.8384, length_reg: 0.0705), s/iter: 0.3239, lr: 3.0e-04
+[2024-12-24 15:42:08,419] [INFO] Epoch [1/2695], Step [14/910], Loss: 881.4661 (conf: 1.1404, lower: 0.0555, upper: 3.3405, poly: 53.4671, cls_loss: 0.0000, line_iou: 255.1418, length_reg: 0.0569), s/iter: 0.3035, lr: 3.0e-04
+[2024-12-24 15:42:08,469] [INFO] Epoch [1/2695], Step [15/910], Loss: 845.0722 (conf: 1.1404, lower: 0.0379, upper: 3.4262, poly: 36.0148, cls_loss: 0.0000, line_iou: 294.8799, length_reg: 0.0584), s/iter: 0.2860, lr: 3.0e-04
+[2024-12-24 15:42:08,520] [INFO] Epoch [1/2695], Step [16/910], Loss: 809.7999 (conf: 1.1415, lower: 0.0796, upper: 3.4640, poly: 24.1881, cls_loss: 0.0000, line_iou: 251.7809, length_reg: 0.0622), s/iter: 0.2707, lr: 3.0e-04
+[2024-12-24 15:42:08,575] [INFO] Epoch [1/2695], Step [17/910], Loss: 781.0987 (conf: 0.4764, lower: 0.0543, upper: 4.7305, poly: 48.5370, cls_loss: 0.0000, line_iou: 268.0145, length_reg: 0.0654), s/iter: 0.2575, lr: 3.0e-04
+[2024-12-24 15:42:08,627] [INFO] Epoch [1/2695], Step [18/910], Loss: 754.2429 (conf: 0.4668, lower: 0.0570, upper: 4.7057, poly: 28.7343, cls_loss: 0.0000, line_iou: 263.6659, length_reg: 0.0661), s/iter: 0.2456, lr: 3.0e-04
+[2024-12-24 15:42:08,685] [INFO] Epoch [1/2695], Step [19/910], Loss: 735.7943 (conf: 1.1387, lower: 0.0901, upper: 3.5558, poly: 111.1783, cls_loss: 0.0000, line_iou: 287.6841, length_reg: 0.0713), s/iter: 0.2353, lr: 3.0e-04
+[2024-12-24 15:42:08,752] [INFO] Epoch [1/2695], Step [20/910], Loss: 718.7164 (conf: 1.1350, lower: 0.0590, upper: 3.5629, poly: 106.3953, cls_loss: 0.0000, line_iou: 283.0162, length_reg: 0.0686), s/iter: 0.2264, lr: 3.0e-04
+[2024-12-24 15:42:08,802] [INFO] Epoch [1/2695], Step [21/910], Loss: 702.2015 (conf: 1.1318, lower: 0.0422, upper: 3.4753, poly: 88.7955, cls_loss: 0.0000, line_iou: 278.3968, length_reg: 0.0625), s/iter: 0.2176, lr: 3.0e-04
+[2024-12-24 15:42:08,854] [INFO] Epoch [1/2695], Step [22/910], Loss: 685.6054 (conf: 1.1411, lower: 0.0561, upper: 3.5671, poly: 50.1499, cls_loss: 0.0000, line_iou: 282.0957, length_reg: 0.0775), s/iter: 0.2096, lr: 3.0e-04
+[2024-12-24 15:42:08,904] [INFO] Epoch [1/2695], Step [23/910], Loss: 669.9556 (conf: 1.1328, lower: 0.0637, upper: 3.6097, poly: 33.3623, cls_loss: 0.0000, line_iou: 287.4197, length_reg: 0.0718), s/iter: 0.2023, lr: 3.0e-04
+[2024-12-24 15:42:08,961] [INFO] Epoch [1/2695], Step [24/910], Loss: 655.4242 (conf: 1.1379, lower: 0.0539, upper: 3.6057, poly: 33.6711, cls_loss: 0.0000, line_iou: 282.6625, length_reg: 0.0693), s/iter: 0.1959, lr: 3.0e-04
+[2024-12-24 15:42:09,017] [INFO] Epoch [1/2695], Step [25/910], Loss: 639.8224 (conf: 1.1374, lower: 0.0196, upper: 3.5746, poly: 16.0384, cls_loss: 0.0000, line_iou: 244.5352, length_reg: 0.0740), s/iter: 0.1899, lr: 3.0e-04
+[2024-12-24 15:42:09,072] [INFO] Epoch [1/2695], Step [26/910], Loss: 625.6188 (conf: 1.1426, lower: 0.0026, upper: 3.5670, poly: 29.2388, cls_loss: 0.0000, line_iou: 236.5181, length_reg: 0.0593), s/iter: 0.1844, lr: 3.0e-04
+[2024-12-24 15:42:09,131] [INFO] Epoch [1/2695], Step [27/910], Loss: 613.7386 (conf: 0.4922, lower: 0.0164, upper: 4.6547, poly: 26.3605, cls_loss: 0.0000, line_iou: 273.2871, length_reg: 0.0422), s/iter: 0.1794, lr: 3.0e-04
+[2024-12-24 15:42:09,188] [INFO] Epoch [1/2695], Step [28/910], Loss: 601.4655 (conf: 1.1367, lower: 0.0266, upper: 3.5514, poly: 13.9054, cls_loss: 0.0000, line_iou: 251.4014, length_reg: 0.0728), s/iter: 0.1747, lr: 3.0e-04
+[2024-12-24 15:42:09,251] [INFO] Epoch [1/2695], Step [29/910], Loss: 592.3727 (conf: 0.4909, lower: 0.0232, upper: 4.6757, poly: 59.6313, cls_loss: 0.0000, line_iou: 272.8937, length_reg: 0.0591), s/iter: 0.1706, lr: 3.0e-04
+[2024-12-24 15:42:09,301] [INFO] Epoch [1/2695], Step [30/910], Loss: 584.5808 (conf: 1.0079, lower: 0.0216, upper: 2.8781, poly: 73.1012, cls_loss: 0.0000, line_iou: 281.5227, length_reg: 0.0847), s/iter: 0.1663, lr: 3.0e-04
+[2024-12-24 15:42:09,381] [INFO] Epoch [1/2695], Step [31/910], Loss: 578.1418 (conf: 1.0074, lower: 0.0246, upper: 2.7479, poly: 85.3937, cls_loss: 0.0000, line_iou: 295.7194, length_reg: 0.0761), s/iter: 0.1631, lr: 3.0e-04
+[2024-12-24 15:42:09,448] [INFO] Epoch [1/2695], Step [32/910], Loss: 572.3153 (conf: 1.1270, lower: 0.0326, upper: 3.5192, poly: 92.2581, cls_loss: 0.0000, line_iou: 294.6866, length_reg: 0.0702), s/iter: 0.1599, lr: 3.0e-04
+[2024-12-24 15:42:09,520] [INFO] Epoch [1/2695], Step [33/910], Loss: 566.4831 (conf: 0.4862, lower: 0.0516, upper: 4.7041, poly: 88.1622, cls_loss: 0.0000, line_iou: 286.3949, length_reg: 0.0545), s/iter: 0.1570, lr: 3.0e-04
+[2024-12-24 15:42:09,585] [INFO] Epoch [1/2695], Step [34/910], Loss: 561.4160 (conf: 1.1272, lower: 0.0643, upper: 3.6234, poly: 96.1940, cls_loss: 0.0000, line_iou: 293.1295, length_reg: 0.0628), s/iter: 0.1540, lr: 3.0e-04
+[2024-12-24 15:42:09,656] [INFO] Epoch [1/2695], Step [35/910], Loss: 555.6814 (conf: 1.0064, lower: 0.0559, upper: 2.8974, poly: 69.7186, cls_loss: 0.0000, line_iou: 286.9543, length_reg: 0.0724), s/iter: 0.1514, lr: 3.0e-04
+[2024-12-24 15:42:09,725] [INFO] Epoch [1/2695], Step [36/910], Loss: 551.1940 (conf: 1.0074, lower: 0.0438, upper: 2.5943, poly: 101.1898, cls_loss: 0.0000, line_iou: 289.2314, length_reg: 0.0686), s/iter: 0.1489, lr: 3.0e-04
+[2024-12-24 15:42:09,775] [INFO] Epoch [1/2695], Step [37/910], Loss: 547.1853 (conf: 1.0059, lower: 0.0627, upper: 2.5397, poly: 107.9823, cls_loss: 0.0000, line_iou: 291.2170, length_reg: 0.0652), s/iter: 0.1460, lr: 3.0e-04
+[2024-12-24 15:42:09,823] [INFO] Epoch [1/2695], Step [38/910], Loss: 540.7983 (conf: 1.1274, lower: 0.0572, upper: 3.6773, poly: 21.4625, cls_loss: 0.0000, line_iou: 278.0800, length_reg: 0.0757), s/iter: 0.1432, lr: 3.0e-04
+[2024-12-24 15:42:09,876] [INFO] Epoch [1/2695], Step [39/910], Loss: 534.4604 (conf: 0.9970, lower: 0.0284, upper: 2.9042, poly: 15.7156, cls_loss: 0.0000, line_iou: 273.8896, length_reg: 0.0849), s/iter: 0.1407, lr: 3.0e-04
+[2024-12-24 15:42:09,924] [INFO] Epoch [1/2695], Step [40/910], Loss: 530.6865 (conf: 0.9965, lower: 0.0234, upper: 2.5572, poly: 91.4262, cls_loss: 0.0000, line_iou: 288.4395, length_reg: 0.0612), s/iter: 0.1381, lr: 3.0e-04
+[2024-12-24 15:42:09,972] [INFO] Epoch [1/2695], Step [41/910], Loss: 524.9367 (conf: 1.1272, lower: 0.0356, upper: 3.6180, poly: 17.6385, cls_loss: 0.0000, line_iou: 272.4520, length_reg: 0.0720), s/iter: 0.1357, lr: 3.0e-04
+[2024-12-24 15:42:10,029] [INFO] Epoch [1/2695], Step [42/910], Loss: 519.7423 (conf: 1.1263, lower: 0.0327, upper: 3.5847, poly: 23.0223, cls_loss: 0.0000, line_iou: 278.9308, length_reg: 0.0775), s/iter: 0.1336, lr: 3.0e-04
+[2024-12-24 15:42:10,091] [INFO] Epoch [1/2695], Step [43/910], Loss: 514.7584 (conf: 0.4953, lower: 0.0374, upper: 4.7070, poly: 16.4865, cls_loss: 0.0000, line_iou: 283.6584, length_reg: 0.0471), s/iter: 0.1317, lr: 3.0e-04
+[2024-12-24 15:42:10,147] [INFO] Epoch [1/2695], Step [44/910], Loss: 510.0235 (conf: 0.9894, lower: 0.0303, upper: 2.9179, poly: 27.7398, cls_loss: 0.0000, line_iou: 274.6712, length_reg: 0.0747), s/iter: 0.1298, lr: 3.0e-04
+[2024-12-24 15:42:10,194] [INFO] Epoch [1/2695], Step [45/910], Loss: 505.9436 (conf: 0.9878, lower: 0.0257, upper: 2.4381, poly: 49.2112, cls_loss: 0.0000, line_iou: 273.7013, length_reg: 0.0660), s/iter: 0.1278, lr: 3.0e-04
+[2024-12-24 15:42:10,241] [INFO] Epoch [1/2695], Step [46/910], Loss: 501.2857 (conf: 1.1272, lower: 0.0350, upper: 3.6432, poly: 17.3026, cls_loss: 0.0000, line_iou: 269.5018, length_reg: 0.0720), s/iter: 0.1258, lr: 3.0e-04
+[2024-12-24 15:42:10,291] [INFO] Epoch [1/2695], Step [47/910], Loss: 499.4823 (conf: 1.1242, lower: 0.0284, upper: 3.6355, poly: 118.6595, cls_loss: 0.0000, line_iou: 293.0101, length_reg: 0.0676), s/iter: 0.1240, lr: 3.0e-04
+[2024-12-24 15:42:10,348] [INFO] Epoch [1/2695], Step [48/910], Loss: 495.3278 (conf: 1.1265, lower: 0.0306, upper: 3.6601, poly: 31.5179, cls_loss: 0.0000, line_iou: 263.6497, length_reg: 0.0780), s/iter: 0.1224, lr: 3.0e-04
+[2024-12-24 15:42:10,397] [INFO] Epoch [1/2695], Step [49/910], Loss: 493.5134 (conf: 0.4928, lower: 0.0107, upper: 4.8575, poly: 109.2653, cls_loss: 0.0000, line_iou: 291.7490, length_reg: 0.0472), s/iter: 0.1207, lr: 3.0e-04
+[2024-12-24 15:42:10,446] [INFO] Epoch [1/2695], Step [50/910], Loss: 490.4446 (conf: 1.1191, lower: 0.0158, upper: 3.7221, poly: 45.1644, cls_loss: 0.0000, line_iou: 289.9827, length_reg: 0.0716), s/iter: 0.1191, lr: 3.0e-04
+[2024-12-24 15:42:10,493] [INFO] Epoch [1/2695], Step [51/910], Loss: 487.1592 (conf: 0.4860, lower: 0.0217, upper: 4.9464, poly: 38.7204, cls_loss: 0.0000, line_iou: 278.6586, length_reg: 0.0535), s/iter: 0.1175, lr: 3.0e-04
+[2024-12-24 15:42:10,547] [INFO] Epoch [1/2695], Step [52/910], Loss: 484.4955 (conf: 1.1188, lower: 0.0289, upper: 3.7218, poly: 60.0820, cls_loss: 0.0000, line_iou: 283.6368, length_reg: 0.0621), s/iter: 0.1161, lr: 3.0e-04
+[2024-12-24 15:42:10,594] [INFO] Epoch [1/2695], Step [53/910], Loss: 486.2476 (conf: 1.0143, lower: 0.0239, upper: 2.3102, poly: 276.4428, cls_loss: 0.0000, line_iou: 297.5029, length_reg: 0.0584), s/iter: 0.1147, lr: 3.0e-04
+[2024-12-24 15:42:10,645] [INFO] Epoch [1/2695], Step [54/910], Loss: 483.1746 (conf: 1.1189, lower: 0.0290, upper: 3.7295, poly: 31.0723, cls_loss: 0.0000, line_iou: 284.2857, length_reg: 0.0743), s/iter: 0.1133, lr: 3.0e-04
+[2024-12-24 15:42:10,692] [INFO] Epoch [1/2695], Step [55/910], Loss: 479.2101 (conf: 0.4789, lower: 0.0291, upper: 4.9897, poly: 9.4873, cls_loss: 0.0000, line_iou: 250.0829, length_reg: 0.0557), s/iter: 0.1119, lr: 3.0e-04
+[2024-12-24 15:42:10,744] [INFO] Epoch [1/2695], Step [56/910], Loss: 476.5176 (conf: 1.1087, lower: 0.0269, upper: 3.7671, poly: 32.2097, cls_loss: 0.0000, line_iou: 291.2452, length_reg: 0.0719), s/iter: 0.1107, lr: 3.0e-04
+[2024-12-24 15:42:10,796] [INFO] Epoch [1/2695], Step [57/910], Loss: 473.7009 (conf: 1.1102, lower: 0.0471, upper: 3.8054, poly: 35.6176, cls_loss: 0.0000, line_iou: 275.3156, length_reg: 0.0736), s/iter: 0.1095, lr: 3.0e-04
+[2024-12-24 15:42:10,848] [INFO] Epoch [1/2695], Step [58/910], Loss: 471.8397 (conf: 1.1110, lower: 0.0566, upper: 3.7964, poly: 72.7572, cls_loss: 0.0000, line_iou: 287.9571, length_reg: 0.0739), s/iter: 0.1083, lr: 3.0e-04
+[2024-12-24 15:42:10,899] [INFO] Epoch [1/2695], Step [59/910], Loss: 470.3629 (conf: 1.1082, lower: 0.0450, upper: 3.8423, poly: 85.9506, cls_loss: 0.0000, line_iou: 293.6918, length_reg: 0.0667), s/iter: 0.1072, lr: 3.0e-04
+[2024-12-24 15:42:10,947] [INFO] Epoch [1/2695], Step [60/910], Loss: 468.3076 (conf: 1.1113, lower: 0.0342, upper: 3.8164, poly: 47.6739, cls_loss: 0.0000, line_iou: 294.3442, length_reg: 0.0690), s/iter: 0.1061, lr: 3.0e-04
+[2024-12-24 15:42:10,996] [INFO] Epoch [1/2695], Step [61/910], Loss: 466.1492 (conf: 1.1121, lower: 0.0343, upper: 3.8314, poly: 40.7558, cls_loss: 0.0000, line_iou: 290.8348, length_reg: 0.0716), s/iter: 0.1050, lr: 3.0e-04
+[2024-12-24 15:42:11,044] [INFO] Epoch [1/2695], Step [62/910], Loss: 463.4610 (conf: 1.1153, lower: 0.0448, upper: 3.8531, poly: 24.0287, cls_loss: 0.0000, line_iou: 270.3673, length_reg: 0.0750), s/iter: 0.1039, lr: 3.0e-04
+[2024-12-24 15:42:11,093] [INFO] Epoch [1/2695], Step [63/910], Loss: 460.6498 (conf: 1.1219, lower: 0.0461, upper: 3.8450, poly: 14.9135, cls_loss: 0.0000, line_iou: 266.3539, length_reg: 0.0719), s/iter: 0.1029, lr: 3.0e-04
+[2024-12-24 15:42:11,147] [INFO] Epoch [1/2695], Step [64/910], Loss: 457.3784 (conf: 1.1247, lower: 0.0324, upper: 3.8901, poly: 13.6934, cls_loss: 0.0000, line_iou: 232.4840, length_reg: 0.0570), s/iter: 0.1020, lr: 3.0e-04
+[2024-12-24 15:42:11,196] [INFO] Epoch [1/2695], Step [65/910], Loss: 454.1874 (conf: 1.1233, lower: 0.0510, upper: 3.8148, poly: 9.4909, cls_loss: 0.0000, line_iou: 235.4108, length_reg: 0.0754), s/iter: 0.1011, lr: 3.0e-04
+[2024-12-24 15:42:11,246] [INFO] Epoch [1/2695], Step [66/910], Loss: 451.2601 (conf: 1.1254, lower: 0.0410, upper: 3.8201, poly: 11.2784, cls_loss: 0.0000, line_iou: 244.6432, length_reg: 0.0750), s/iter: 0.1001, lr: 3.0e-04
+[2024-12-24 15:42:11,296] [INFO] Epoch [1/2695], Step [67/910], Loss: 448.3084 (conf: 1.1217, lower: 0.0295, upper: 3.6916, poly: 12.8337, cls_loss: 0.0000, line_iou: 235.7419, length_reg: 0.0796), s/iter: 0.0993, lr: 3.0e-04
+[2024-12-24 15:42:11,355] [INFO] Epoch [1/2695], Step [68/910], Loss: 445.7975 (conf: 1.1200, lower: 0.0493, upper: 3.8462, poly: 20.9324, cls_loss: 0.0000, line_iou: 251.5464, length_reg: 0.0702), s/iter: 0.0985, lr: 3.0e-04
+[2024-12-24 15:42:11,408] [INFO] Epoch [1/2695], Step [69/910], Loss: 445.3689 (conf: 0.9974, lower: 0.0465, upper: 2.4313, poly: 116.8148, cls_loss: 0.0000, line_iou: 295.8756, length_reg: 0.0577), s/iter: 0.0977, lr: 3.0e-04
+[2024-12-24 15:42:11,455] [INFO] Epoch [1/2695], Step [70/910], Loss: 443.4527 (conf: 1.1178, lower: 0.0376, upper: 3.8041, poly: 22.3797, cls_loss: 0.0000, line_iou: 283.8317, length_reg: 0.0696), s/iter: 0.0969, lr: 3.0e-04
+[2024-12-24 15:42:11,504] [INFO] Epoch [1/2695], Step [71/910], Loss: 443.9943 (conf: 0.4910, lower: 0.0580, upper: 5.2069, poly: 184.4102, cls_loss: 0.0000, line_iou: 291.6817, length_reg: 0.0573), s/iter: 0.0961, lr: 3.0e-04
+[2024-12-24 15:42:11,546] [INFO] Epoch [1/2695], Step [72/910], Loss: 441.1896 (conf: 0.4901, lower: 0.0668, upper: 4.7008, poly: 7.9711, cls_loss: 0.0000, line_iou: 228.7775, length_reg: 0.0511), s/iter: 0.0953, lr: 3.0e-04
+[2024-12-24 15:42:11,612] [INFO] Epoch [1/2695], Step [73/910], Loss: 439.0697 (conf: 1.1145, lower: 0.0442, upper: 3.8188, poly: 17.8377, cls_loss: 0.0000, line_iou: 263.5503, length_reg: 0.0703), s/iter: 0.0946, lr: 3.0e-04
+[2024-12-24 15:42:11,656] [INFO] Epoch [1/2695], Step [74/910], Loss: 437.0048 (conf: 1.1186, lower: 0.0538, upper: 3.7735, poly: 13.6607, cls_loss: 0.0000, line_iou: 267.5786, length_reg: 0.0770), s/iter: 0.0939, lr: 3.0e-04
+[2024-12-24 15:42:11,705] [INFO] Epoch [1/2695], Step [75/910], Loss: 434.5522 (conf: 1.1146, lower: 0.0469, upper: 3.7633, poly: 11.7906, cls_loss: 0.0000, line_iou: 236.2849, length_reg: 0.0641), s/iter: 0.0932, lr: 3.0e-04
+[2024-12-24 15:42:11,756] [INFO] Epoch [1/2695], Step [76/910], Loss: 433.2890 (conf: 0.9953, lower: 0.0601, upper: 2.5399, poly: 49.6095, cls_loss: 0.0000, line_iou: 285.2665, length_reg: 0.0730), s/iter: 0.0925, lr: 3.0e-04
+[2024-12-24 15:42:11,804] [INFO] Epoch [1/2695], Step [77/910], Loss: 431.1985 (conf: 1.1152, lower: 0.0498, upper: 3.7994, poly: 15.1938, cls_loss: 0.0000, line_iou: 252.0817, length_reg: 0.0803), s/iter: 0.0918, lr: 3.0e-04
+[2024-12-24 15:42:11,856] [INFO] Epoch [1/2695], Step [78/910], Loss: 429.2278 (conf: 1.1144, lower: 0.0356, upper: 3.7369, poly: 12.7950, cls_loss: 0.0000, line_iou: 259.7231, length_reg: 0.0807), s/iter: 0.0912, lr: 3.0e-04
+[2024-12-24 15:42:11,913] [INFO] Epoch [1/2695], Step [79/910], Loss: 428.3944 (conf: 0.4807, lower: 0.0556, upper: 4.9927, poly: 68.8603, cls_loss: 0.0000, line_iou: 288.9445, length_reg: 0.0582), s/iter: 0.0906, lr: 3.0e-04
+[2024-12-24 15:42:11,956] [INFO] Epoch [1/2695], Step [80/910], Loss: 425.8360 (conf: 1.1113, lower: 0.0441, upper: 3.6956, poly: 9.8704, cls_loss: 0.0000, line_iou: 208.9319, length_reg: 0.0683), s/iter: 0.0899, lr: 3.0e-04
+[2024-12-24 15:42:12,014] [INFO] Epoch [1/2695], Step [81/910], Loss: 423.9748 (conf: 1.1062, lower: 0.0363, upper: 3.7438, poly: 14.0832, cls_loss: 0.0000, line_iou: 256.0392, length_reg: 0.0696), s/iter: 0.0893, lr: 3.0e-04
+[2024-12-24 15:42:12,064] [INFO] Epoch [1/2695], Step [82/910], Loss: 423.4594 (conf: 0.4758, lower: 0.0466, upper: 5.1547, poly: 81.3708, cls_loss: 0.0000, line_iou: 294.5998, length_reg: 0.0608), s/iter: 0.0887, lr: 3.0e-04
+[2024-12-24 15:42:12,114] [INFO] Epoch [1/2695], Step [83/910], Loss: 422.2492 (conf: 0.9946, lower: 0.0459, upper: 2.9664, poly: 35.2427, cls_loss: 0.0000, line_iou: 283.6970, length_reg: 0.0732), s/iter: 0.0880, lr: 3.0e-04
+[2024-12-24 15:42:12,163] [INFO] Epoch [1/2695], Step [84/910], Loss: 421.3141 (conf: 0.4695, lower: 0.0447, upper: 5.1385, poly: 52.1944, cls_loss: 0.0000, line_iou: 285.7871, length_reg: 0.0612), s/iter: 0.0874, lr: 3.0e-04
+[2024-12-24 15:42:12,214] [INFO] Epoch [1/2695], Step [85/910], Loss: 420.9178 (conf: 1.0025, lower: 0.0460, upper: 2.5103, poly: 100.4529, cls_loss: 0.0000, line_iou: 283.5492, length_reg: 0.0698), s/iter: 0.0869, lr: 3.0e-04
+[2024-12-24 15:42:18,368] [INFO] Training session terminated.
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\logging\__init__.py", line 1113, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\LENOVO\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u1ef1' in position 105: character maps to <undefined>
+Call stack:
+  File "D:\manga\nckh_polylanenet\train.py", line 323, in <module>
+    wandb.finish()
+  File "D:\manga\myenv\Lib\site-packages\wandb\sdk\wandb_run.py", line 4066, in finish
+    wandb.run.finish(exit_code=exit_code, quiet=quiet)
+  File "D:\manga\myenv\Lib\site-packages\wandb\sdk\wandb_run.py", line 440, in wrapper
+    return func(self, *args, **kwargs)
+  File "D:\manga\myenv\Lib\site-packages\wandb\sdk\wandb_run.py", line 382, in wrapper
+    return func(self, *args, **kwargs)
+  File "D:\manga\myenv\Lib\site-packages\wandb\sdk\wandb_run.py", line 2094, in finish
+    return self._finish(exit_code)
+  File "D:\manga\myenv\Lib\site-packages\wandb\sdk\wandb_run.py", line 2100, in _finish
+    logger.info(f"finishing run {self._get_path()}")
+Message: 'finishing run teambhh/Tên_dự_án_của_bạn/04skcihy'
+Arguments: ()

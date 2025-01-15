@@ -1,0 +1,16 @@
+{"time":"2024-12-24T21:12:24.5340414+07:00","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-24T21:12:24.5340414+07:00","level":"INFO","msg":"created symlink","path":"D:\\manga\\nckh_polylanenet\\wandb\\run-20241224_211224-iryj3c1t\\logs\\debug-core.log"}
+{"time":"2024-12-24T21:12:25.0297259+07:00","level":"INFO","msg":"created new stream","id":"iryj3c1t"}
+{"time":"2024-12-24T21:12:25.0297259+07:00","level":"INFO","msg":"handler: started","stream_id":"iryj3c1t"}
+{"time":"2024-12-24T21:12:25.0301231+07:00","level":"INFO","msg":"writer: Do: started","stream_id":"iryj3c1t"}
+{"time":"2024-12-24T21:12:25.0301231+07:00","level":"INFO","msg":"stream: started","id":"iryj3c1t"}
+{"time":"2024-12-24T21:12:25.0301231+07:00","level":"INFO","msg":"sender: started","stream_id":"iryj3c1t"}
+{"time":"2024-12-24T21:12:25.6263488+07:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-24T21:12:28.9113475+07:00","level":"INFO","msg":"stream: closing","id":"iryj3c1t"}
+{"time":"2024-12-24T21:12:28.911921+07:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-24T21:12:28.9128669+07:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-12-24T21:12:30.2604552+07:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-12-24T21:12:30.7891526+07:00","level":"INFO","msg":"handler: closed","stream_id":"iryj3c1t"}
+{"time":"2024-12-24T21:12:30.7891526+07:00","level":"INFO","msg":"writer: Close: closed","stream_id":"iryj3c1t"}
+{"time":"2024-12-24T21:12:30.7891526+07:00","level":"INFO","msg":"sender: closed","stream_id":"iryj3c1t"}
+{"time":"2024-12-24T21:12:30.7892943+07:00","level":"INFO","msg":"stream: closed","id":"iryj3c1t"}

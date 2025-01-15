@@ -1,0 +1,1 @@
+{"_runtime":57.20012,"_wandb":{"runtime":57},"epoch":1,"train_upper":1.2746858596801758,"_timestamp":1.7351355438872786e+09,"learning_rate":0.0003,"_step":8,"train_lower":0.14926400780677795,"train_line_iou":291.6839294433594,"train_poly":103.64473724365234,"train_cls_loss":0,"train_conf":1.2923787832260132,"s_per_iter":0.7573590278625488,"train_loss":634.1457138061523}

@@ -1,0 +1,17 @@
+{"time":"2024-12-26T12:48:04.2676687+07:00","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-26T12:48:04.2682588+07:00","level":"INFO","msg":"created symlink","path":"D:\\manga\\nckh_polylanenet\\wandb\\run-20241226_124804-voawoaid\\logs\\debug-core.log"}
+{"time":"2024-12-26T12:48:04.3938804+07:00","level":"INFO","msg":"created new stream","id":"voawoaid"}
+{"time":"2024-12-26T12:48:04.3938804+07:00","level":"INFO","msg":"stream: started","id":"voawoaid"}
+{"time":"2024-12-26T12:48:04.3938804+07:00","level":"INFO","msg":"writer: Do: started","stream_id":"voawoaid"}
+{"time":"2024-12-26T12:48:04.3938804+07:00","level":"INFO","msg":"handler: started","stream_id":"voawoaid"}
+{"time":"2024-12-26T12:48:04.3944241+07:00","level":"INFO","msg":"sender: started","stream_id":"voawoaid"}
+{"time":"2024-12-26T12:48:05.0707123+07:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-26T12:49:34.8667239+07:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-26T12:49:34.867254+07:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-12-26T12:49:35.8783829+07:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading config.yaml","runtime_seconds":0.1340736,"progress":"5.4KB/5.4KB"},{"desc":"uploading output.log","runtime_seconds":0.1340736,"progress":"80.0KB/155.7KB"}],"total_operations":2}}
+{"time":"2024-12-26T12:49:37.4199173+07:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-12-26T12:49:38.8569574+07:00","level":"INFO","msg":"stream: closing","id":"voawoaid"}
+{"time":"2024-12-26T12:49:38.8569574+07:00","level":"INFO","msg":"handler: closed","stream_id":"voawoaid"}
+{"time":"2024-12-26T12:49:38.8569574+07:00","level":"INFO","msg":"writer: Close: closed","stream_id":"voawoaid"}
+{"time":"2024-12-26T12:49:38.8569574+07:00","level":"INFO","msg":"sender: closed","stream_id":"voawoaid"}
+{"time":"2024-12-26T12:49:38.8569574+07:00","level":"INFO","msg":"stream: closed","id":"voawoaid"}

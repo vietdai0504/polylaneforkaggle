@@ -1,0 +1,17 @@
+{"time":"2024-12-24T15:34:16.9361428+07:00","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-24T15:34:16.9361428+07:00","level":"INFO","msg":"created symlink","path":"D:\\manga\\nckh_polylanenet\\wandb\\run-20241224_153416-bcku0km6\\logs\\debug-core.log"}
+{"time":"2024-12-24T15:34:17.0540163+07:00","level":"INFO","msg":"created new stream","id":"bcku0km6"}
+{"time":"2024-12-24T15:34:17.0540163+07:00","level":"INFO","msg":"stream: started","id":"bcku0km6"}
+{"time":"2024-12-24T15:34:17.0540163+07:00","level":"INFO","msg":"handler: started","stream_id":"bcku0km6"}
+{"time":"2024-12-24T15:34:17.0540163+07:00","level":"INFO","msg":"sender: started","stream_id":"bcku0km6"}
+{"time":"2024-12-24T15:34:17.0540163+07:00","level":"INFO","msg":"writer: Do: started","stream_id":"bcku0km6"}
+{"time":"2024-12-24T15:34:17.5317177+07:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-24T15:37:02.1557118+07:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-24T15:37:02.1562324+07:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-12-24T15:37:03.1629167+07:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading config.yaml","runtime_seconds":0.1061002,"progress":"5.4KB/5.4KB"},{"desc":"uploading output.log","runtime_seconds":0.1061002,"progress":"96.0KB/274.4KB"}],"total_operations":2}}
+{"time":"2024-12-24T15:37:04.7226211+07:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-12-24T15:37:06.1564427+07:00","level":"INFO","msg":"stream: closing","id":"bcku0km6"}
+{"time":"2024-12-24T15:37:06.1564427+07:00","level":"INFO","msg":"handler: closed","stream_id":"bcku0km6"}
+{"time":"2024-12-24T15:37:06.1564427+07:00","level":"INFO","msg":"writer: Close: closed","stream_id":"bcku0km6"}
+{"time":"2024-12-24T15:37:06.1564427+07:00","level":"INFO","msg":"sender: closed","stream_id":"bcku0km6"}
+{"time":"2024-12-24T15:37:06.1570447+07:00","level":"INFO","msg":"stream: closed","id":"bcku0km6"}

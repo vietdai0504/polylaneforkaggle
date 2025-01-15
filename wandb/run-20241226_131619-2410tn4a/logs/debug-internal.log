@@ -1,0 +1,16 @@
+{"time":"2024-12-26T13:16:19.1870893+07:00","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-26T13:16:19.1870893+07:00","level":"INFO","msg":"created symlink","path":"D:\\manga\\nckh_polylanenet\\wandb\\run-20241226_131619-2410tn4a\\logs\\debug-core.log"}
+{"time":"2024-12-26T13:16:19.3099268+07:00","level":"INFO","msg":"created new stream","id":"2410tn4a"}
+{"time":"2024-12-26T13:16:19.3104389+07:00","level":"INFO","msg":"stream: started","id":"2410tn4a"}
+{"time":"2024-12-26T13:16:19.3104978+07:00","level":"INFO","msg":"writer: Do: started","stream_id":"2410tn4a"}
+{"time":"2024-12-26T13:16:19.3104978+07:00","level":"INFO","msg":"sender: started","stream_id":"2410tn4a"}
+{"time":"2024-12-26T13:16:19.3104978+07:00","level":"INFO","msg":"handler: started","stream_id":"2410tn4a"}
+{"time":"2024-12-26T13:16:19.8050675+07:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-26T13:17:20.1811687+07:00","level":"INFO","msg":"stream: closing","id":"2410tn4a"}
+{"time":"2024-12-26T13:17:20.1811687+07:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-26T13:17:20.1824054+07:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-12-26T13:17:22.4625466+07:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-12-26T13:17:22.9359867+07:00","level":"INFO","msg":"handler: closed","stream_id":"2410tn4a"}
+{"time":"2024-12-26T13:17:22.9359867+07:00","level":"INFO","msg":"writer: Close: closed","stream_id":"2410tn4a"}
+{"time":"2024-12-26T13:17:22.9359867+07:00","level":"INFO","msg":"sender: closed","stream_id":"2410tn4a"}
+{"time":"2024-12-26T13:17:22.9365526+07:00","level":"INFO","msg":"stream: closed","id":"2410tn4a"}

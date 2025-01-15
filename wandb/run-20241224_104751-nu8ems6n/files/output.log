@@ -1,0 +1,112 @@
+[2024-12-24 10:47:52,804] [INFO] Experiment name: tusimple
+[2024-12-24 10:47:52,805] [INFO] Config:
+# Training settings
+exps_dir: 'experiments'
+iter_log_interval: 1
+iter_time_window: 100
+model_save_interval: 1
+seed: 1
+backup:
+model:
+  name: PolyRegression
+  parameters:
+    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+    pretrained: true
+    backbone: 'mobilenet_v2'
+    pred_category: false
+    curriculum_steps: [0, 0, 0, 0]
+loss_parameters:
+  conf_weight: 1
+  lower_weight: 1
+  upper_weight: 1
+  cls_weight: 0
+  poly_weight: 1000
+batch_size: 16
+epochs: 2695
+optimizer:
+  name: Adam
+  parameters:
+    lr: 3.0e-4
+lr_scheduler:
+  name: CosineAnnealingLR
+  parameters:
+    T_max: 385
+
+
+# Testing settings
+test_parameters:
+  conf_threshold: 0.5
+
+# Dataset settings
+datasets:
+  train:
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: train
+      img_size: [360, 640]
+      normalize: true
+      aug_chance: 0.9090909090909091 # 10/11
+      augmentations:
+       - name: Affine
+         parameters:
+           rotate: !!python/tuple [-10, 10]
+       - name: HorizontalFlip
+         parameters:
+           p: 0.5
+       - name: CropToFixedSize
+         parameters:
+           width: 1152
+           height: 648
+      root: "../tusimple/TUSimple/train_set"
+
+  test: &test
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: val
+      max_lanes: 5
+      img_size: [360, 640]
+      root: "../tusimple/TUSimple/train_set"
+      normalize: true
+      augmentations: []
+
+  # val = test
+  val:
+    <<: *test
+
+[2024-12-24 10:47:52,809] [INFO] Args:
+Namespace(exp_name='tusimple', cfg='D:\\manga\\nckh_polylanenet\\cfgs\\tusimple.yaml', resume=False, validate=False, deterministic=False)
+Traceback (most recent call last):
+  File "D:\manga\nckh_polylanenet\train.py", line 274, in <module>
+    train_dataset = cfg.get_dataset("train")
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\manga\nckh_polylanenet\lib\config.py", line 22, in get_dataset
+    return getattr(datasets,
+           ^^^^^^^^^^^^^^^^^
+  File "D:\manga\nckh_polylanenet\lib\datasets\lane_dataset.py", line 32, in __init__
+    self.dataset = TuSimple(split=split, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\manga\nckh_polylanenet\lib\datasets\tusimple.py", line 35, in __init__
+    self.load_annotations()
+  File "D:\manga\nckh_polylanenet\lib\datasets\tusimple.py", line 71, in load_annotations
+    with open(anno_file, 'r') as anno_obj:
+         ^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '../tusimple/TUSimple/train_set\\label_data_0313.json'
+[2024-12-24 10:47:52,816] [ERROR] Uncaught exception
+Traceback (most recent call last):
+  File "D:\manga\nckh_polylanenet\train.py", line 274, in <module>
+    train_dataset = cfg.get_dataset("train")
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\manga\nckh_polylanenet\lib\config.py", line 22, in get_dataset
+    return getattr(datasets,
+           ^^^^^^^^^^^^^^^^^
+  File "D:\manga\nckh_polylanenet\lib\datasets\lane_dataset.py", line 32, in __init__
+    self.dataset = TuSimple(split=split, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\manga\nckh_polylanenet\lib\datasets\tusimple.py", line 35, in __init__
+    self.load_annotations()
+  File "D:\manga\nckh_polylanenet\lib\datasets\tusimple.py", line 71, in load_annotations
+    with open(anno_file, 'r') as anno_obj:
+         ^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '../tusimple/TUSimple/train_set\\label_data_0313.json'

@@ -1,0 +1,17 @@
+{"time":"2024-12-24T10:51:56.7444033+07:00","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-24T10:51:56.7444033+07:00","level":"INFO","msg":"created symlink","path":"D:\\manga\\nckh_polylanenet\\wandb\\run-20241224_105156-xc4bd12c\\logs\\debug-core.log"}
+{"time":"2024-12-24T10:51:56.8680136+07:00","level":"INFO","msg":"created new stream","id":"xc4bd12c"}
+{"time":"2024-12-24T10:51:56.8681972+07:00","level":"INFO","msg":"stream: started","id":"xc4bd12c"}
+{"time":"2024-12-24T10:51:56.8681972+07:00","level":"INFO","msg":"writer: Do: started","stream_id":"xc4bd12c"}
+{"time":"2024-12-24T10:51:56.8681972+07:00","level":"INFO","msg":"sender: started","stream_id":"xc4bd12c"}
+{"time":"2024-12-24T10:51:56.8681972+07:00","level":"INFO","msg":"handler: started","stream_id":"xc4bd12c"}
+{"time":"2024-12-24T10:51:57.3437732+07:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-24T10:54:27.2181148+07:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-24T10:54:27.2197093+07:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-12-24T10:54:28.2263531+07:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading wandb-summary.json","runtime_seconds":0.3991712,"progress":"378B/378B"},{"desc":"uploading config.yaml","runtime_seconds":0.1088865,"progress":"5.4KB/5.4KB"},{"desc":"uploading output.log","runtime_seconds":0.1088865,"progress":"80.0KB/199.2KB"},{"desc":"uploading history steps 778-909, summary, console lines 1114-1269","runtime_seconds":0.0298493}],"total_operations":4}}
+{"time":"2024-12-24T10:54:29.6729847+07:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-12-24T10:54:31.1909681+07:00","level":"INFO","msg":"stream: closing","id":"xc4bd12c"}
+{"time":"2024-12-24T10:54:31.1909681+07:00","level":"INFO","msg":"handler: closed","stream_id":"xc4bd12c"}
+{"time":"2024-12-24T10:54:31.1909681+07:00","level":"INFO","msg":"writer: Close: closed","stream_id":"xc4bd12c"}
+{"time":"2024-12-24T10:54:31.1909681+07:00","level":"INFO","msg":"sender: closed","stream_id":"xc4bd12c"}
+{"time":"2024-12-24T10:54:31.1909681+07:00","level":"INFO","msg":"stream: closed","id":"xc4bd12c"}

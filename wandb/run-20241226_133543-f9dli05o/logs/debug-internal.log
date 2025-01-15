@@ -1,0 +1,16 @@
+{"time":"2024-12-26T13:35:43.6914476+07:00","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-26T13:35:43.6914476+07:00","level":"INFO","msg":"created symlink","path":"D:\\manga\\nckh_polylanenet\\wandb\\run-20241226_133543-f9dli05o\\logs\\debug-core.log"}
+{"time":"2024-12-26T13:35:43.811759+07:00","level":"INFO","msg":"created new stream","id":"f9dli05o"}
+{"time":"2024-12-26T13:35:43.8123396+07:00","level":"INFO","msg":"stream: started","id":"f9dli05o"}
+{"time":"2024-12-26T13:35:43.8125961+07:00","level":"INFO","msg":"writer: Do: started","stream_id":"f9dli05o"}
+{"time":"2024-12-26T13:35:43.8125961+07:00","level":"INFO","msg":"handler: started","stream_id":"f9dli05o"}
+{"time":"2024-12-26T13:35:43.8125961+07:00","level":"INFO","msg":"sender: started","stream_id":"f9dli05o"}
+{"time":"2024-12-26T13:35:44.3161812+07:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-26T13:36:57.9397573+07:00","level":"INFO","msg":"stream: closing","id":"f9dli05o"}
+{"time":"2024-12-26T13:36:57.9406079+07:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-26T13:36:57.9422467+07:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-12-26T13:36:59.1713103+07:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-12-26T13:36:59.637655+07:00","level":"INFO","msg":"handler: closed","stream_id":"f9dli05o"}
+{"time":"2024-12-26T13:36:59.637655+07:00","level":"INFO","msg":"sender: closed","stream_id":"f9dli05o"}
+{"time":"2024-12-26T13:36:59.637655+07:00","level":"INFO","msg":"writer: Close: closed","stream_id":"f9dli05o"}
+{"time":"2024-12-26T13:36:59.6382463+07:00","level":"INFO","msg":"stream: closed","id":"f9dli05o"}

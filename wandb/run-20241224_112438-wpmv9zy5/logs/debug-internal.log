@@ -1,0 +1,8 @@
+{"time":"2024-12-24T11:24:38.2887934+07:00","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-24T11:24:38.2887934+07:00","level":"INFO","msg":"created symlink","path":"D:\\manga\\nckh_polylanenet\\wandb\\run-20241224_112438-wpmv9zy5\\logs\\debug-core.log"}
+{"time":"2024-12-24T11:24:38.4151824+07:00","level":"INFO","msg":"created new stream","id":"wpmv9zy5"}
+{"time":"2024-12-24T11:24:38.4151824+07:00","level":"INFO","msg":"stream: started","id":"wpmv9zy5"}
+{"time":"2024-12-24T11:24:38.4151824+07:00","level":"INFO","msg":"writer: Do: started","stream_id":"wpmv9zy5"}
+{"time":"2024-12-24T11:24:38.4151824+07:00","level":"INFO","msg":"sender: started","stream_id":"wpmv9zy5"}
+{"time":"2024-12-24T11:24:38.4151824+07:00","level":"INFO","msg":"handler: started","stream_id":"wpmv9zy5"}
+{"time":"2024-12-24T11:24:38.8853296+07:00","level":"INFO","msg":"Starting system monitor"}

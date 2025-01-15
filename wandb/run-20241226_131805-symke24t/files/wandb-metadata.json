@@ -1,0 +1,48 @@
+{
+  "os": "Windows-10-10.0.22631-SP0",
+  "python": "CPython 3.11.9",
+  "startedAt": "2024-12-26T06:18:06.028410Z",
+  "args": [
+    "--exp_name",
+    "tusimple",
+    "--cfg",
+    "D:\\manga\\nckh_polylanenet\\cfgs\\tusimple.yaml"
+  ],
+  "program": "D:\\manga\\nckh_polylanenet\\train.py",
+  "codePath": "train.py",
+  "git": {
+    "remote": "https://github.com/viethung2002/nckh_polylanenet.git",
+    "commit": "833c48aa8bc1ef1dbe7712c5064a80bddfc66536"
+  },
+  "email": "nh2515901@gmail.com",
+  "root": "D:\\manga\\nckh_polylanenet",
+  "host": "DESKTOP-0T6C1IG",
+  "executable": "D:\\manga\\myenv\\Scripts\\python.exe",
+  "codePathLocal": "train.py",
+  "cpu_count": 12,
+  "cpu_count_logical": 16,
+  "gpu": "NVIDIA GeForce RTX 3050 Ti Laptop GPU",
+  "gpu_count": 1,
+  "disk": {
+    "/": {
+      "total": "94739886080",
+      "used": "20011843584"
+    }
+  },
+  "memory": {
+    "total": "16891633664"
+  },
+  "cpu": {
+    "count": 12,
+    "countLogical": 16
+  },
+  "gpu_nvidia": [
+    {
+      "name": "NVIDIA GeForce RTX 3050 Ti Laptop GPU",
+      "memoryTotal": "4294967296",
+      "cudaCores": 2560,
+      "architecture": "Ampere"
+    }
+  ],
+  "cudaVersion": "12.0"
+}

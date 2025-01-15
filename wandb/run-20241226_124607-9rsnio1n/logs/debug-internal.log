@@ -1,0 +1,8 @@
+{"time":"2024-12-26T12:46:07.9912272+07:00","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-26T12:46:07.9912272+07:00","level":"INFO","msg":"created symlink","path":"D:\\manga\\nckh_polylanenet\\wandb\\run-20241226_124607-9rsnio1n\\logs\\debug-core.log"}
+{"time":"2024-12-26T12:46:08.1017341+07:00","level":"INFO","msg":"created new stream","id":"9rsnio1n"}
+{"time":"2024-12-26T12:46:08.1022601+07:00","level":"INFO","msg":"stream: started","id":"9rsnio1n"}
+{"time":"2024-12-26T12:46:08.1022601+07:00","level":"INFO","msg":"handler: started","stream_id":"9rsnio1n"}
+{"time":"2024-12-26T12:46:08.1022601+07:00","level":"INFO","msg":"writer: Do: started","stream_id":"9rsnio1n"}
+{"time":"2024-12-26T12:46:08.1022601+07:00","level":"INFO","msg":"sender: started","stream_id":"9rsnio1n"}
+{"time":"2024-12-26T12:46:08.890373+07:00","level":"INFO","msg":"Starting system monitor"}

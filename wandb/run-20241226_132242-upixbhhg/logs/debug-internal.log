@@ -1,0 +1,16 @@
+{"time":"2024-12-26T13:22:42.0813387+07:00","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-26T13:22:42.0815375+07:00","level":"INFO","msg":"created symlink","path":"D:\\manga\\nckh_polylanenet\\wandb\\run-20241226_132242-upixbhhg\\logs\\debug-core.log"}
+{"time":"2024-12-26T13:22:42.202077+07:00","level":"INFO","msg":"created new stream","id":"upixbhhg"}
+{"time":"2024-12-26T13:22:42.2023241+07:00","level":"INFO","msg":"stream: started","id":"upixbhhg"}
+{"time":"2024-12-26T13:22:42.2024741+07:00","level":"INFO","msg":"writer: Do: started","stream_id":"upixbhhg"}
+{"time":"2024-12-26T13:22:42.2026397+07:00","level":"INFO","msg":"sender: started","stream_id":"upixbhhg"}
+{"time":"2024-12-26T13:22:42.2026397+07:00","level":"INFO","msg":"handler: started","stream_id":"upixbhhg"}
+{"time":"2024-12-26T13:22:42.7040653+07:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-26T13:23:43.6366472+07:00","level":"INFO","msg":"stream: closing","id":"upixbhhg"}
+{"time":"2024-12-26T13:23:43.6371708+07:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-26T13:23:43.638429+07:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-12-26T13:23:45.8391698+07:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-12-26T13:23:46.2614139+07:00","level":"INFO","msg":"handler: closed","stream_id":"upixbhhg"}
+{"time":"2024-12-26T13:23:46.2619295+07:00","level":"INFO","msg":"sender: closed","stream_id":"upixbhhg"}
+{"time":"2024-12-26T13:23:46.2619295+07:00","level":"INFO","msg":"writer: Close: closed","stream_id":"upixbhhg"}
+{"time":"2024-12-26T13:23:46.2620441+07:00","level":"INFO","msg":"stream: closed","id":"upixbhhg"}

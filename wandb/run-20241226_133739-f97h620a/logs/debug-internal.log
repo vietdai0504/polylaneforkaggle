@@ -1,0 +1,18 @@
+{"time":"2024-12-26T13:37:39.8373415+07:00","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-26T13:37:39.8378643+07:00","level":"INFO","msg":"created symlink","path":"D:\\manga\\nckh_polylanenet\\wandb\\run-20241226_133739-f97h620a\\logs\\debug-core.log"}
+{"time":"2024-12-26T13:37:39.9640526+07:00","level":"INFO","msg":"created new stream","id":"f97h620a"}
+{"time":"2024-12-26T13:37:39.9640526+07:00","level":"INFO","msg":"stream: started","id":"f97h620a"}
+{"time":"2024-12-26T13:37:39.9640526+07:00","level":"INFO","msg":"writer: Do: started","stream_id":"f97h620a"}
+{"time":"2024-12-26T13:37:39.9640526+07:00","level":"INFO","msg":"sender: started","stream_id":"f97h620a"}
+{"time":"2024-12-26T13:37:39.9645669+07:00","level":"INFO","msg":"handler: started","stream_id":"f97h620a"}
+{"time":"2024-12-26T13:37:40.5619566+07:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-26T13:38:49.2707124+07:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-26T13:38:49.2717372+07:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-12-26T13:38:50.272274+07:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading config.yaml","runtime_seconds":0.4121898,"progress":"5.4KB/5.4KB"},{"desc":"uploading output.log","runtime_seconds":0.4121898,"progress":"35.6KB/35.6KB"}],"total_operations":2}}
+{"time":"2024-12-26T13:38:51.1677306+07:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-12-26T13:38:51.717232+07:00","level":"INFO","msg":"stream: closing","id":"f97h620a"}
+{"time":"2024-12-26T13:38:51.7177028+07:00","level":"INFO","msg":"handler: closed","stream_id":"f97h620a"}
+{"time":"2024-12-26T13:38:51.7177028+07:00","level":"INFO","msg":"writer: Close: closed","stream_id":"f97h620a"}
+{"time":"2024-12-26T13:38:51.717232+07:00","level":"WARN","msg":"sender: received Exit record more than once, ignoring"}
+{"time":"2024-12-26T13:38:51.7179746+07:00","level":"INFO","msg":"sender: closed","stream_id":"f97h620a"}
+{"time":"2024-12-26T13:38:51.7181299+07:00","level":"INFO","msg":"stream: closed","id":"f97h620a"}

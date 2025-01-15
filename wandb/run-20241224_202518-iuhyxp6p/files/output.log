@@ -1,0 +1,112 @@
+[2024-12-24 20:25:20,057] [INFO] Experiment name: tusimple
+[2024-12-24 20:25:20,059] [INFO] Config:
+# Training settings
+exps_dir: 'experiments'
+iter_log_interval: 1
+iter_time_window: 100
+model_save_interval: 1
+seed: 1
+backup:
+model:
+  name: PolyRegression
+  parameters:
+    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+    pretrained: true
+    backbone: 'mobilenet_v2'
+    pred_category: false
+    curriculum_steps: [0, 0, 0, 0]
+loss_parameters:
+  conf_weight: 1
+  lower_weight: 1
+  upper_weight: 1
+  cls_weight: 0
+  poly_weight: 1000
+batch_size: 1
+epochs: 2695
+optimizer:
+  name: Adam
+  parameters:
+    lr: 3.0e-4
+lr_scheduler:
+  name: CosineAnnealingLR
+  parameters:
+    T_max: 385
+
+
+# Testing settings
+test_parameters:
+  conf_threshold: 0.5
+
+# Dataset settings
+datasets:
+  train:
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: train
+      img_size: [360, 640]
+      normalize: true
+      aug_chance: 0.9090909090909091 # 10/11
+      augmentations:
+       - name: Affine
+         parameters:
+           rotate: !!python/tuple [-10, 10]
+       - name: HorizontalFlip
+         parameters:
+           p: 0.5
+       - name: CropToFixedSize
+         parameters:
+           width: 1152
+           height: 648
+      root: "D:/manga/nckh_polylanenet/TUSimple/train_set"
+
+  test: &test
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: val
+      max_lanes: 5
+      img_size: [360, 640]
+      root: "D:/manga/nckh_polylanenet/TUSimple/train_set"
+      # D:\manga\nckh_polylanenet\TUSimple\train_set
+      normalize: true
+      augmentations: []
+
+  # val = test
+  val:
+    <<: *test
+
+[2024-12-24 20:25:20,072] [INFO] Args:
+Namespace(exp_name='tusimple', cfg='D:\\manga\\nckh_polylanenet\\cfgs\\tusimple.yaml', resume=True, validate=True, deterministic=False)
+total annos 910
+Transforming annotations...
+Done.
+D:\manga\nckh_polylanenet\train.py:33: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(checkpoint_path, map_location=device)
+Traceback (most recent call last):
+  File "D:\manga\nckh_polylanenet\train.py", line 288, in <module>
+    train_state = get_exp_train_state(exp_root)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\manga\nckh_polylanenet\train.py", line 223, in get_exp_train_state
+    model, optimizer, scheduler, epoch = load_checkpoint(model, optimizer, scheduler, checkpoint_path)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\manga\nckh_polylanenet\train.py", line 37, in load_checkpoint
+    model.load_state_dict(checkpoint['model'])
+  File "D:\manga\myenv\Lib\site-packages\torch\nn\modules\module.py", line 2215, in load_state_dict
+    raise RuntimeError('Error(s) in loading state_dict for {}:\n\t{}'.format(
+RuntimeError: Error(s) in loading state_dict for PolyRegression:
+	Missing key(s) in state_dict: "hough_block.conv.weight", "hough_block.conv.bias".
+[2024-12-24 20:25:20,703] [ERROR] Uncaught exception
+Traceback (most recent call last):
+  File "D:\manga\nckh_polylanenet\train.py", line 288, in <module>
+    train_state = get_exp_train_state(exp_root)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\manga\nckh_polylanenet\train.py", line 223, in get_exp_train_state
+    model, optimizer, scheduler, epoch = load_checkpoint(model, optimizer, scheduler, checkpoint_path)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\manga\nckh_polylanenet\train.py", line 37, in load_checkpoint
+    model.load_state_dict(checkpoint['model'])
+  File "D:\manga\myenv\Lib\site-packages\torch\nn\modules\module.py", line 2215, in load_state_dict
+    raise RuntimeError('Error(s) in loading state_dict for {}:\n\t{}'.format(
+RuntimeError: Error(s) in loading state_dict for PolyRegression:
+	Missing key(s) in state_dict: "hough_block.conv.weight", "hough_block.conv.bias".

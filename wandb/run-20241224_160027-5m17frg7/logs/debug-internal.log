@@ -1,0 +1,17 @@
+{"time":"2024-12-24T16:00:27.7442182+07:00","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-24T16:00:27.7447252+07:00","level":"INFO","msg":"created symlink","path":"D:\\manga\\nckh_polylanenet\\wandb\\run-20241224_160027-5m17frg7\\logs\\debug-core.log"}
+{"time":"2024-12-24T16:00:27.8619974+07:00","level":"INFO","msg":"created new stream","id":"5m17frg7"}
+{"time":"2024-12-24T16:00:27.8619974+07:00","level":"INFO","msg":"stream: started","id":"5m17frg7"}
+{"time":"2024-12-24T16:00:27.8629389+07:00","level":"INFO","msg":"writer: Do: started","stream_id":"5m17frg7"}
+{"time":"2024-12-24T16:00:27.863198+07:00","level":"INFO","msg":"sender: started","stream_id":"5m17frg7"}
+{"time":"2024-12-24T16:00:27.863198+07:00","level":"INFO","msg":"handler: started","stream_id":"5m17frg7"}
+{"time":"2024-12-24T16:00:28.3751052+07:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-24T16:03:22.8700984+07:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-24T16:03:22.8748262+07:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-12-24T16:03:23.8769854+07:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading wandb-summary.json","runtime_seconds":0.3914411,"progress":"397B/397B"},{"desc":"uploading config.yaml","runtime_seconds":0.0959472,"progress":"5.4KB/5.4KB"},{"desc":"uploading output.log","runtime_seconds":0.0959472,"progress":"80.0KB/206.8KB"}],"total_operations":3}}
+{"time":"2024-12-24T16:03:25.3532368+07:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-12-24T16:03:26.9044818+07:00","level":"INFO","msg":"stream: closing","id":"5m17frg7"}
+{"time":"2024-12-24T16:03:26.9044818+07:00","level":"INFO","msg":"handler: closed","stream_id":"5m17frg7"}
+{"time":"2024-12-24T16:03:26.9044818+07:00","level":"INFO","msg":"writer: Close: closed","stream_id":"5m17frg7"}
+{"time":"2024-12-24T16:03:26.9044818+07:00","level":"INFO","msg":"sender: closed","stream_id":"5m17frg7"}
+{"time":"2024-12-24T16:03:26.9050886+07:00","level":"INFO","msg":"stream: closed","id":"5m17frg7"}

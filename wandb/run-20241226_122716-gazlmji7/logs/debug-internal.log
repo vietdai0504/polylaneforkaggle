@@ -1,0 +1,16 @@
+{"time":"2024-12-26T12:27:16.1374786+07:00","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-26T12:27:16.1379943+07:00","level":"INFO","msg":"created symlink","path":"D:\\manga\\nckh_polylanenet\\wandb\\run-20241226_122716-gazlmji7\\logs\\debug-core.log"}
+{"time":"2024-12-26T12:27:16.2563542+07:00","level":"INFO","msg":"created new stream","id":"gazlmji7"}
+{"time":"2024-12-26T12:27:16.2563542+07:00","level":"INFO","msg":"stream: started","id":"gazlmji7"}
+{"time":"2024-12-26T12:27:16.2563542+07:00","level":"INFO","msg":"handler: started","stream_id":"gazlmji7"}
+{"time":"2024-12-26T12:27:16.2563542+07:00","level":"INFO","msg":"sender: started","stream_id":"gazlmji7"}
+{"time":"2024-12-26T12:27:16.2563542+07:00","level":"INFO","msg":"writer: Do: started","stream_id":"gazlmji7"}
+{"time":"2024-12-26T12:27:16.9054603+07:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-26T12:28:18.8627001+07:00","level":"INFO","msg":"stream: closing","id":"gazlmji7"}
+{"time":"2024-12-26T12:28:18.8632739+07:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-26T12:28:18.8643894+07:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-12-26T12:28:20.0726283+07:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-12-26T12:28:20.4922497+07:00","level":"INFO","msg":"handler: closed","stream_id":"gazlmji7"}
+{"time":"2024-12-26T12:28:20.4922497+07:00","level":"INFO","msg":"writer: Close: closed","stream_id":"gazlmji7"}
+{"time":"2024-12-26T12:28:20.4924397+07:00","level":"INFO","msg":"sender: closed","stream_id":"gazlmji7"}
+{"time":"2024-12-26T12:28:20.4937914+07:00","level":"INFO","msg":"stream: closed","id":"gazlmji7"}

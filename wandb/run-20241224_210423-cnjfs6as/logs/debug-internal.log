@@ -1,0 +1,16 @@
+{"time":"2024-12-24T21:04:23.5149036+07:00","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-24T21:04:23.5154329+07:00","level":"INFO","msg":"created symlink","path":"D:\\manga\\nckh_polylanenet\\wandb\\run-20241224_210423-cnjfs6as\\logs\\debug-core.log"}
+{"time":"2024-12-24T21:04:23.7342562+07:00","level":"INFO","msg":"created new stream","id":"cnjfs6as"}
+{"time":"2024-12-24T21:04:23.7342562+07:00","level":"INFO","msg":"handler: started","stream_id":"cnjfs6as"}
+{"time":"2024-12-24T21:04:23.7342562+07:00","level":"INFO","msg":"stream: started","id":"cnjfs6as"}
+{"time":"2024-12-24T21:04:23.7342562+07:00","level":"INFO","msg":"writer: Do: started","stream_id":"cnjfs6as"}
+{"time":"2024-12-24T21:04:23.7342562+07:00","level":"INFO","msg":"sender: started","stream_id":"cnjfs6as"}
+{"time":"2024-12-24T21:04:24.3006474+07:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-24T21:05:33.9256141+07:00","level":"INFO","msg":"stream: closing","id":"cnjfs6as"}
+{"time":"2024-12-24T21:05:33.9261194+07:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-24T21:05:33.9276733+07:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-12-24T21:05:35.8818839+07:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-12-24T21:05:36.3463943+07:00","level":"INFO","msg":"handler: closed","stream_id":"cnjfs6as"}
+{"time":"2024-12-24T21:05:36.3463943+07:00","level":"INFO","msg":"writer: Close: closed","stream_id":"cnjfs6as"}
+{"time":"2024-12-24T21:05:36.3463943+07:00","level":"INFO","msg":"sender: closed","stream_id":"cnjfs6as"}
+{"time":"2024-12-24T21:05:36.3463943+07:00","level":"INFO","msg":"stream: closed","id":"cnjfs6as"}

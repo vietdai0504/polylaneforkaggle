@@ -1,0 +1,17 @@
+{"time":"2024-12-24T21:18:09.7972125+07:00","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-24T21:18:09.7978055+07:00","level":"INFO","msg":"created symlink","path":"D:\\manga\\nckh_polylanenet\\wandb\\run-20241224_211809-ig72pb2z\\logs\\debug-core.log"}
+{"time":"2024-12-24T21:18:09.9205348+07:00","level":"INFO","msg":"created new stream","id":"ig72pb2z"}
+{"time":"2024-12-24T21:18:09.9205348+07:00","level":"INFO","msg":"stream: started","id":"ig72pb2z"}
+{"time":"2024-12-24T21:18:09.9205348+07:00","level":"INFO","msg":"writer: Do: started","stream_id":"ig72pb2z"}
+{"time":"2024-12-24T21:18:09.9205348+07:00","level":"INFO","msg":"handler: started","stream_id":"ig72pb2z"}
+{"time":"2024-12-24T21:18:09.9205348+07:00","level":"INFO","msg":"sender: started","stream_id":"ig72pb2z"}
+{"time":"2024-12-24T21:18:10.4638145+07:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-24T21:19:25.8403979+07:00","level":"INFO","msg":"stream: closing","id":"ig72pb2z"}
+{"time":"2024-12-24T21:19:25.8409537+07:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-24T21:19:25.8424775+07:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-12-24T21:19:27.4947304+07:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-12-24T21:19:27.9549308+07:00","level":"INFO","msg":"handler: closed","stream_id":"ig72pb2z"}
+{"time":"2024-12-24T21:19:27.9549308+07:00","level":"INFO","msg":"writer: Close: closed","stream_id":"ig72pb2z"}
+{"time":"2024-12-24T21:19:27.9549308+07:00","level":"INFO","msg":"sender: closed","stream_id":"ig72pb2z"}
+{"time":"2024-12-24T21:19:27.95577+07:00","level":"INFO","msg":"stream: closed","id":"ig72pb2z"}
+{"time":"2024-12-24T21:19:27.9589887+07:00","level":"WARN","msg":"runwork: ignoring record after close","work":{"Record":{"RecordType":{"Request":{"RequestType":{"StopStatus":{}}}},"control":{"local":true,"mailbox_slot":"98iogug6qdlh","connection_id":"127.0.0.1:64200"},"_info":{"stream_id":"ig72pb2z"}}}}

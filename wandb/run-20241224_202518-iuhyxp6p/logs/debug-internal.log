@@ -1,0 +1,16 @@
+{"time":"2024-12-24T20:25:18.7187969+07:00","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-24T20:25:18.7187969+07:00","level":"INFO","msg":"created symlink","path":"D:\\manga\\nckh_polylanenet\\wandb\\run-20241224_202518-iuhyxp6p\\logs\\debug-core.log"}
+{"time":"2024-12-24T20:25:19.2852913+07:00","level":"INFO","msg":"created new stream","id":"iuhyxp6p"}
+{"time":"2024-12-24T20:25:19.2852913+07:00","level":"INFO","msg":"handler: started","stream_id":"iuhyxp6p"}
+{"time":"2024-12-24T20:25:19.2858446+07:00","level":"INFO","msg":"stream: started","id":"iuhyxp6p"}
+{"time":"2024-12-24T20:25:19.2858446+07:00","level":"INFO","msg":"writer: Do: started","stream_id":"iuhyxp6p"}
+{"time":"2024-12-24T20:25:19.2858446+07:00","level":"INFO","msg":"sender: started","stream_id":"iuhyxp6p"}
+{"time":"2024-12-24T20:25:19.8749346+07:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-24T20:25:20.7053789+07:00","level":"INFO","msg":"stream: closing","id":"iuhyxp6p"}
+{"time":"2024-12-24T20:25:20.7053789+07:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-24T20:25:20.705887+07:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-12-24T20:25:22.7384372+07:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-12-24T20:25:23.1565614+07:00","level":"INFO","msg":"handler: closed","stream_id":"iuhyxp6p"}
+{"time":"2024-12-24T20:25:23.1565614+07:00","level":"INFO","msg":"writer: Close: closed","stream_id":"iuhyxp6p"}
+{"time":"2024-12-24T20:25:23.1565614+07:00","level":"INFO","msg":"sender: closed","stream_id":"iuhyxp6p"}
+{"time":"2024-12-24T20:25:23.1570844+07:00","level":"INFO","msg":"stream: closed","id":"iuhyxp6p"}

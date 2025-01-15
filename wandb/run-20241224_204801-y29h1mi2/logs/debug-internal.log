@@ -1,0 +1,16 @@
+{"time":"2024-12-24T20:48:01.2510156+07:00","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-24T20:48:01.2510156+07:00","level":"INFO","msg":"created symlink","path":"D:\\manga\\nckh_polylanenet\\wandb\\run-20241224_204801-y29h1mi2\\logs\\debug-core.log"}
+{"time":"2024-12-24T20:48:01.3701237+07:00","level":"INFO","msg":"created new stream","id":"y29h1mi2"}
+{"time":"2024-12-24T20:48:01.3701237+07:00","level":"INFO","msg":"stream: started","id":"y29h1mi2"}
+{"time":"2024-12-24T20:48:01.3701237+07:00","level":"INFO","msg":"handler: started","stream_id":"y29h1mi2"}
+{"time":"2024-12-24T20:48:01.3706659+07:00","level":"INFO","msg":"sender: started","stream_id":"y29h1mi2"}
+{"time":"2024-12-24T20:48:01.3706659+07:00","level":"INFO","msg":"writer: Do: started","stream_id":"y29h1mi2"}
+{"time":"2024-12-24T20:48:01.8397528+07:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-24T20:49:10.9409627+07:00","level":"INFO","msg":"stream: closing","id":"y29h1mi2"}
+{"time":"2024-12-24T20:49:10.941635+07:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-24T20:49:10.9432191+07:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-12-24T20:49:12.8985514+07:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-12-24T20:49:13.3734161+07:00","level":"INFO","msg":"handler: closed","stream_id":"y29h1mi2"}
+{"time":"2024-12-24T20:49:13.3734161+07:00","level":"INFO","msg":"writer: Close: closed","stream_id":"y29h1mi2"}
+{"time":"2024-12-24T20:49:13.3734161+07:00","level":"INFO","msg":"sender: closed","stream_id":"y29h1mi2"}
+{"time":"2024-12-24T20:49:13.3740028+07:00","level":"INFO","msg":"stream: closed","id":"y29h1mi2"}

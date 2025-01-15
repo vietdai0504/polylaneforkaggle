@@ -1,0 +1,118 @@
+[2024-12-24 21:12:28,506] [INFO] Experiment name: tusimple
+[2024-12-24 21:12:28,508] [INFO] Config:
+# Training settings
+exps_dir: 'experiments'
+iter_log_interval: 1
+iter_time_window: 100
+model_save_interval: 1
+seed: 1
+backup:
+model:
+  name: PolyRegression
+  parameters:
+    num_outputs: 35 # (5 lanes) * (1 conf + 2 (upper & lower) + 4 poly coeffs)
+    pretrained: true
+    backbone: 'mobilenet_v2'
+    pred_category: false
+    curriculum_steps: [0, 0, 0, 0]
+loss_parameters:
+  conf_weight: 1
+  lower_weight: 1
+  upper_weight: 1
+  cls_weight: 0
+  poly_weight: 1000
+batch_size: 1
+epochs: 2695
+optimizer:
+  name: Adam
+  parameters:
+    lr: 3.0e-4
+lr_scheduler:
+  name: CosineAnnealingLR
+  parameters:
+    T_max: 385
+
+
+# Testing settings
+test_parameters:
+  conf_threshold: 0.5
+
+# Dataset settings
+datasets:
+  train:
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: train
+      img_size: [360, 640]
+      normalize: true
+      aug_chance: 0.9090909090909091 # 10/11
+      augmentations:
+       - name: Affine
+         parameters:
+           rotate: !!python/tuple [-10, 10]
+       - name: HorizontalFlip
+         parameters:
+           p: 0.5
+       - name: CropToFixedSize
+         parameters:
+           width: 1152
+           height: 648
+      root: "D:/manga/nckh_polylanenet/TUSimple/train_set"
+
+  test: &test
+    type: LaneDataset
+    parameters:
+      dataset: tusimple
+      split: val
+      max_lanes: 5
+      img_size: [360, 640]
+      root: "D:/manga/nckh_polylanenet/TUSimple/train_set"
+      # D:\manga\nckh_polylanenet\TUSimple\train_set
+      normalize: true
+      augmentations: []
+
+  # val = test
+  val:
+    <<: *test
+
+[2024-12-24 21:12:28,512] [INFO] Args:
+Namespace(exp_name='tusimple', cfg='D:\\manga\\nckh_polylanenet\\cfgs\\tusimple.yaml', resume=False, validate=False, deterministic=False)
+total annos 910
+Transforming annotations...
+Done.
+Traceback (most recent call last):
+  File "D:\manga\nckh_polylanenet\train.py", line 287, in <module>
+    model = cfg.get_model().to(device)
+            ^^^^^^^^^^^^^^^
+  File "D:\manga\nckh_polylanenet\lib\config.py", line 28, in get_model
+    return getattr(models, name)(**parameters)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\manga\nckh_polylanenet\lib\models.py", line 260, in __init__
+    self.attention = SelfAttention(embed_size=num_outputs, heads=attention_heads)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\manga\nckh_polylanenet\lib\models.py", line 57, in __init__
+    self.attention = nn.MultiheadAttention(embed_dim=embed_size, num_heads=heads)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\manga\myenv\Lib\site-packages\torch\nn\modules\activation.py", line 1020, in __init__
+    assert self.head_dim * num_heads == self.embed_dim, "embed_dim must be divisible by num_heads"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: embed_dim must be divisible by num_heads
+[2024-12-24 21:12:28,905] [ERROR] Uncaught exception
+Traceback (most recent call last):
+  File "D:\manga\nckh_polylanenet\train.py", line 287, in <module>
+    model = cfg.get_model().to(device)
+            ^^^^^^^^^^^^^^^
+  File "D:\manga\nckh_polylanenet\lib\config.py", line 28, in get_model
+    return getattr(models, name)(**parameters)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\manga\nckh_polylanenet\lib\models.py", line 260, in __init__
+    self.attention = SelfAttention(embed_size=num_outputs, heads=attention_heads)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\manga\nckh_polylanenet\lib\models.py", line 57, in __init__
+    self.attention = nn.MultiheadAttention(embed_dim=embed_size, num_heads=heads)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\manga\myenv\Lib\site-packages\torch\nn\modules\activation.py", line 1020, in __init__
+    assert self.head_dim * num_heads == self.embed_dim, "embed_dim must be divisible by num_heads"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: embed_dim must be divisible by num_heads
