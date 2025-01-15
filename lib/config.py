@@ -1,7 +1,7 @@
 import yaml
 import torch
 
-import lib.models as models
+import lib.models_PAFPN as models
 import lib.datasets as datasets
 
 
