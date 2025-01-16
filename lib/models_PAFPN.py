@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torchvision import models
 from collections import OrderedDict
+from timm.models.vision_transformer import VisionTransformer
 from lib.papfn import PathAggregationFeaturePyramidNetwork
 
 
@@ -23,20 +24,6 @@ class OutputLayer(nn.Module):
         return regular_outputs, extra_outputs
 
 
-class SelfAttention(nn.Module):
-    def __init__(self, embed_size, heads):
-        super(SelfAttention, self).__init__()
-        self.embed_size = embed_size
-        self.heads = heads
-        self.attention = nn.MultiheadAttention(embed_dim=embed_size, num_heads=heads)
-        self.norm = nn.LayerNorm(embed_size)
-
-    def forward(self, value, key, query, mask=None):
-        attention_output, attention_weights = self.attention(query, key, value, attn_mask=mask)
-        output = self.norm(attention_output + query)  # Add residual connection
-        return output, attention_weights
-
-
 class FeatureFlipBlock(nn.Module):
     def __init__(self, in_channels, out_channels, axis=1, kernel_size=3):
         super(FeatureFlipBlock, self).__init__()
@@ -49,22 +36,10 @@ class FeatureFlipBlock(nn.Module):
         self.avg_pool = nn.AvgPool2d(kernel_size=(1, 2))  # Giảm chiều rộng còn một nửa
 
     def forward(self, x):
-        # print(f"Input to FeatureFlipBlock: {x.shape}")  # Debugging input shape
-        # Lật đặc trưng theo chiều axis
         flipped = torch.flip(x, [self.axis])
-
-        # Kết hợp đặc trưng gốc và lật theo chiều kênh (2C)
         merged = torch.cat([x, flipped], dim=1)
-        # print(f"After concatenation: {merged.shape}")  # Debugging shape after concatenation
-
-        # Pooling để giảm chiều rộng
         pooled = self.avg_pool(merged)
-        # print(f"After average pooling: {pooled.shape}")  # Debugging shape after pooling
-
-        # Tích chập để giảm chiều kênh về out_channels
         output = self.conv(pooled)
-        # print(f"Output of FeatureFlipBlock: {output.shape}")  # Debugging output shape
-
         return output
 
 
@@ -77,7 +52,11 @@ class PolyRegression(nn.Module):
                  extra_outputs=0,
                  share_top_y=True,
                  pred_category=False,
-                 attention_heads=5,
+                 vit_patch_size=16,
+                 vit_embed_dim=768,
+                 vit_depth=12,
+                 vit_heads=12,
+                 vit_mlp_dim=3072,
                  use_flip_block=True,
                  flip_axis=1):
         super(PolyRegression, self).__init__()
@@ -103,15 +82,27 @@ class PolyRegression(nn.Module):
             nn.Conv2d(256, extra_outputs, kernel_size=1) if extra_outputs > 0 else None
         )
 
-        # Self-Attention
-        self.attention = SelfAttention(embed_size=num_outputs, heads=attention_heads)
+        # Vision Transformer (ViT)
+        self.vit = VisionTransformer(
+            img_size=224,  # Input image size
+            patch_size=vit_patch_size,  # Patch size
+            embed_dim=vit_embed_dim,  # Embedding dimension
+            depth=vit_depth,  # Number of transformer blocks
+            num_heads=vit_heads,  # Number of attention heads
+            mlp_ratio=vit_mlp_dim // vit_embed_dim,  # MLP hidden dimension ratio
+            num_classes=num_outputs,  # Number of output classes
+            drop_rate=0.0,  # Dropout rate
+            attn_drop_rate=0.0,  # Attention dropout rate
+            drop_path_rate=0.0,  # Stochastic depth rate
+        )
 
         # Flip block
         if self.use_flip_block:
-            self.flip_block = FeatureFlipBlock(in_channels=3, out_channels=256, axis=self.flip_axis)  # Match the expected input channels of the backbone
+            self.flip_block = FeatureFlipBlock(in_channels=3, out_channels=256, axis=self.flip_axis)
 
         # Channel adapter to match the backbone input channels
         self.channel_adapter = nn.Conv2d(256, 3, kernel_size=1)
+        self.channel_adapter_vit = nn.Conv2d(35, 3, kernel_size=1)
 
     def _initialize_backbone(self, backbone, num_outputs, pretrained, extra_outputs):
         if 'mobilenet_v2' in backbone:
@@ -126,22 +117,16 @@ class PolyRegression(nn.Module):
             raise NotImplementedError(f"Backbone {backbone} not supported")
 
     def _extract_backbone_features(self, x):
-        """
-        Extract features from backbone for each stage. Ensure features match FPN stages.
-        """
         features = OrderedDict()
         for idx, layer in enumerate(self.model):
             x = layer(x)
-            # print(f"Backbone stage {idx} output shape: {x.shape}")  # Debugging output shape
             features[str(idx)] = x
         return features
 
     def forward(self, x, epoch=None, **kwargs):
-        
         if self.use_flip_block:
             x = self.flip_block(x)
-            x = self.channel_adapter(x)  # Adjust channels to match backbone input
-            # print(f"After channel adapter: {x.shape}")  # Debugging shape after channel adapter
+            x = self.channel_adapter(x)
 
         # Extract features from backbone
         features = self._extract_backbone_features(x)
@@ -159,8 +144,11 @@ class PolyRegression(nn.Module):
             extra_outputs = self.extra_output_layer(papfn_features["3"])
             extra_outputs = F.adaptive_avg_pool2d(extra_outputs, (1, 1)).view(extra_outputs.size(0), -1)
 
-        # Apply Self-Attention
-        papfn_output, _ = self.attention(papfn_output, papfn_output, papfn_output)
+        # Apply Vision Transformer (ViT)
+        papfn_output = papfn_output.unsqueeze(-1).unsqueeze(-1)  # Reshape for ViT compatibility
+        papfn_output = F.interpolate(papfn_output, size=(224, 224), mode='bilinear', align_corners=False)
+        papfn_output = self.channel_adapter_vit(papfn_output)
+        papfn_output = self.vit(papfn_output)
 
         # Curriculum learning
         for i in range(len(self.curriculum_steps)):
@@ -174,11 +162,12 @@ class PolyRegression(nn.Module):
         if extra_outputs is not None:
             extra_outputs = extra_outputs.reshape(labels.shape[0], 5, -1)
             extra_outputs = extra_outputs.argmax(dim=2)
-        outputs = outputs.reshape(len(outputs), -1, 7)  # score + upper + lower + 4 coeffs = 7
+        outputs = outputs.reshape(len(outputs), -1, 7)
         outputs[:, :, 0] = self.sigmoid(outputs[:, :, 0])
         outputs[outputs[:, :, 0] < conf_threshold] = 0
 
         return outputs, extra_outputs
+
     def line_iou_loss(self, pred_points, target_points, radius=0.1):
         """
         Calculate Line IoU Loss.

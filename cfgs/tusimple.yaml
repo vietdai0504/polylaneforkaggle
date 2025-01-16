@@ -19,7 +19,7 @@ loss_parameters:
   upper_weight: 1
   cls_weight: 0
   poly_weight: 1000
-batch_size: 1
+batch_size: 16
 epochs: 200
 optimizer:
   name: Adam
