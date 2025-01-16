@@ -65,7 +65,7 @@ datasets:
       split: val
       max_lanes: 5
       img_size: [360, 640]
-      root: "../tusimple/TUSimple/train_set"
+      root: "../tusimple/TUSimple/test_set"
       # D:\manga\nckh_polylanenet\TUSimple\train_set
       normalize: true
       augmentations: []
