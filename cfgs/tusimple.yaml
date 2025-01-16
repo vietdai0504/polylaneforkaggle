@@ -56,7 +56,7 @@ datasets:
          parameters:
            width: 1152
            height: 648
-      root: "/kaggle/input/tusimple/TUSimple/train_set"
+      root: "../tusimple/TUSimple/train_set"
 
   test: &test
     type: LaneDataset
@@ -65,7 +65,7 @@ datasets:
       split: val
       max_lanes: 5
       img_size: [360, 640]
-      root: "/kaggle/input/tusimple/TUSimple/train_set"
+      root: "../tusimple/TUSimple/train_set"
       # D:\manga\nckh_polylanenet\TUSimple\train_set
       normalize: true
       augmentations: []
